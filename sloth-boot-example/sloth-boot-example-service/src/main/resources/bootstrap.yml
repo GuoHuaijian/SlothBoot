@@ -1,11 +1,12 @@
-# Nacos 配置示例，默认注释，开发环境可先直连本地配置
+# Spring Boot 3.5 + Spring Cloud Alibaba 2025.x 推荐使用 spring.config.import。
+# 如需接入 Nacos，请将下面配置迁移到 application.yml 或 application-dev.yml 中。
+#
 # spring:
+#   config:
+#     import:
+#       - optional:nacos:${spring.application.name}.yml?group=DEFAULT_GROUP&refreshEnabled=true
 #   cloud:
 #     nacos:
-#       config:
-#         server-addr: 127.0.0.1:8848
-#         namespace: public
-#         group: DEFAULT_GROUP
-#         file-extension: yml
-#       discovery:
-#         server-addr: 127.0.0.1:8848
+#       server-addr: 127.0.0.1:8848
+#       username: nacos
+#       password: nacos

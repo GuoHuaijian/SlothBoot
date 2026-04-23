@@ -29,6 +29,7 @@
     <description>Sloth Boot Starter 模块聚合</description>
 
     <modules>
+        <module>sloth-boot-starter-ai</module>
         <module>sloth-boot-starter-web</module>
         <module>sloth-boot-starter-redis</module>
         <module>sloth-boot-starter-mq</module>

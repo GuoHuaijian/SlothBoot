@@ -1,0 +1,56 @@
+{
+  "properties": [
+    {
+      "name": "sloth.ai.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用 AI Starter。"
+    },
+    {
+      "name": "sloth.ai.model",
+      "type": "java.lang.String",
+      "defaultValue": "gpt-4o-mini",
+      "description": "默认聊天模型名称。"
+    },
+    {
+      "name": "sloth.ai.default-system-prompt",
+      "type": "java.lang.String",
+      "description": "默认系统提示词。"
+    },
+    {
+      "name": "sloth.ai.temperature",
+      "type": "java.lang.Double",
+      "defaultValue": 0.7,
+      "description": "默认温度参数。"
+    },
+    {
+      "name": "sloth.ai.top-p",
+      "type": "java.lang.Double",
+      "defaultValue": 1.0,
+      "description": "默认 topP 参数。"
+    },
+    {
+      "name": "sloth.ai.max-tokens",
+      "type": "java.lang.Integer",
+      "defaultValue": 2048,
+      "description": "默认最大输出 Token 数。"
+    },
+    {
+      "name": "spring.ai.model.chat",
+      "type": "java.lang.String",
+      "defaultValue": "openai",
+      "description": "Spring AI 使用的聊天模型类型。"
+    },
+    {
+      "name": "spring.ai.openai.base-url",
+      "type": "java.lang.String",
+      "defaultValue": "https://api.openai.com",
+      "description": "OpenAI 兼容服务基础地址。"
+    },
+    {
+      "name": "spring.ai.openai.api-key",
+      "type": "java.lang.String",
+      "description": "OpenAI 兼容服务 API Key。"
+    }
+  ]
+}

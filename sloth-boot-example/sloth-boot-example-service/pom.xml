@@ -18,6 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-starter-ai</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-web</artifactId>
             <version>${revision}</version>
         </dependency>

@@ -8,13 +8,14 @@
 <br/>
 
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.6-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2023.0.1-0A6CFF?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-0A6CFF?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
+[![Spring AI](https://img.shields.io/badge/Spring%20AI-1.0.0-FF6F00?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-ai)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square&logo=apache&logoColor=white)](./LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/your-org/sloth-boot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./github/workflows/ci.yml)
-[![Stars](https://img.shields.io/github/stars/your-org/sloth-boot?style=flat-square&logo=github&logoColor=white)](https://github.com/your-org/sloth-boot/stargazers)
-[![Issues](https://img.shields.io/github/issues/your-org/sloth-boot?style=flat-square&logo=github)](https://github.com/your-org/sloth-boot/issues)
+[![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/sloth-boot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./github/workflows/ci.yml)
+[![Stars](https://img.shields.io/github/stars/GuoHuaijian/sloth-boot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/sloth-boot/stargazers)
+[![Issues](https://img.shields.io/github/issues/GuoHuaijian/sloth-boot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/sloth-boot/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](./CHANGELOG.md)
 
@@ -66,7 +67,7 @@
 **🔧 覆盖高频场景**
 - Web / Redis / MQ / MyBatis / 线程池
 - 网关 / Feign / Sentinel / Seata
-- OSS / Excel / 短信 / 任务调度 / ES
+- OSS / Excel / 短信 / 任务调度 / ES / AI 集成
 
 </td>
 <td width="50%">
@@ -87,8 +88,9 @@
 | 层次 | 技术选型 |
 |------|---------|
 | **语言 & 运行时** | Java 21 · Maven 3.9+ |
-| **核心框架** | Spring Boot 3.2.6 · Spring Cloud 2023.0.1 |
-| **微服务生态** | Spring Cloud Alibaba 2023.0.1.0 · Nacos · Sentinel · Seata |
+| **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.0.0 |
+| **微服务生态** | Spring Cloud Alibaba 2025.0.0.0 · Nacos · Sentinel · Seata |
+| **AI 能力** | Spring AI 1.0.0 · OpenAI · 通义千问 · DeepSeek · Ollama |
 | **数据层** | MyBatis-Plus · MySQL · Elasticsearch |
 | **缓存 & 消息** | Redis · RocketMQ |
 | **任务 & 文件** | XXL-Job · MinIO · 阿里云 OSS |
@@ -111,6 +113,7 @@ sloth-boot/
 │
 ├── 🚀 sloth-boot-starter/           # 能力 Starter 层
 │   ├── sloth-boot-starter-web       # Web 基础 / 统一异常 / 统一返回 / 参数校验
+│   ├── sloth-boot-starter-ai        # Spring AI 集成 / ChatClient 封装 / OpenAI 模型接入
 │   ├── sloth-boot-starter-redis     # RedisTemplate / 缓存工具 / 分布式锁 / 限流
 │   ├── sloth-boot-starter-mq        # RocketMQ 生产消费封装
 │   ├── sloth-boot-starter-mybatis   # MyBatis-Plus 插件 / 自动填充 / TypeHandler
@@ -154,6 +157,7 @@ sloth-boot/
 
 | 模块 | 核心能力 | 状态 |
 |------|---------|------|
+| `starter-ai` | Spring AI ChatClient 封装、默认 Prompt 配置、OpenAI 模型接入 | ✅ 新增 |
 | `starter-web` | 全局异常处理、统一返回包装、参数校验增强、Jackson 配置 | ✅ 骨架完成 |
 | `starter-redis` | RedisTemplate 增强、缓存工具类、Redisson 分布式锁、滑动窗口限流 | ✅ 骨架完成 |
 | `starter-mq` | RocketMQ 生产者/消费者基础封装、消息重试、死信队列处理 | ✅ 骨架完成 |
@@ -229,6 +233,19 @@ sloth:
   web:
     unified-response: true        # 开启统一返回包装
     unified-exception: true       # 开启全局异常处理
+
+  ai:
+    enabled: false
+    model: gpt-4o-mini
+    default-system-prompt: "你是 Sloth Boot 内置 AI 助手"
+
+spring:
+  ai:
+    model:
+      chat: openai
+    openai:
+      base-url: https://api.openai.com
+      api-key: ${OPENAI_API_KEY:}
 
   redis:
     lock:
@@ -309,7 +326,5 @@ http://www.apache.org/licenses/LICENSE-2.0
 <div align="center">
 
 如果这个项目对你有帮助，欢迎点一个 ⭐ Star，这是对维护者最大的鼓励。
-
-**🦥 慢工出细活，但每一步都算数。**
 
 </div>

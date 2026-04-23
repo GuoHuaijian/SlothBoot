@@ -7,10 +7,11 @@
 这个示例工程主要用来说明以下几件事：
 
 - 如何引入 `starter-web`
+- 如何接入 `starter-ai`
 - 如何接入 `starter-redis`
 - 如何接入 `starter-mybatis`
 - 如何启用线程池、监控和接口文档
-- 如何组织 `application.yml`、`bootstrap.yml` 和日志配置
+- 如何组织 `application.yml`、`application-dev.yml` 和日志配置
 
 ## 运行前准备
 
@@ -29,6 +30,7 @@ mvn -pl sloth-boot-example/sloth-boot-example-service spring-boot:run
 ## 默认访问地址
 
 - 应用健康检查：`GET /health`
+- AI 对话示例：`GET /ai/chat?prompt=你好`
 - Actuator 健康检查：`GET /actuator/health`
 - 接口文档入口：`GET /doc.html`
 
@@ -40,7 +42,7 @@ mvn -pl sloth-boot-example/sloth-boot-example-service spring-boot:run
 - `application-dev.yml`
   - 放开发环境数据库和 Redis 配置
 - `bootstrap.yml`
-  - 提供 Nacos 配置中心接入模板，默认注释
+  - 提供 Spring Boot 3.5 / SCA 2025.x 下的 Nacos 迁移说明模板，不再作为实际加载入口
 - `logback-spring.xml`
   - 提供控制台、文件和生产环境 JSON 风格日志输出配置
 
