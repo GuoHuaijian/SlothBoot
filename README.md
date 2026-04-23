@@ -13,9 +13,9 @@
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-1.0.0-FF6F00?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-ai)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square&logo=apache&logoColor=white)](./LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/sloth-boot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./github/workflows/ci.yml)
-[![Stars](https://img.shields.io/github/stars/GuoHuaijian/sloth-boot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/sloth-boot/stargazers)
-[![Issues](https://img.shields.io/github/issues/GuoHuaijian/sloth-boot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/sloth-boot/issues)
+[![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/slothboot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./github/workflows/ci.yml)
+[![Stars](https://img.shields.io/github/stars/GuoHuaijian/slothboot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/slothboot/stargazers)
+[![Issues](https://img.shields.io/github/issues/GuoHuaijian/slothboot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/slothboot/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](./CHANGELOG.md)
 
