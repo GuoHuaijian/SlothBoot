@@ -1,0 +1,20 @@
+{
+  "properties": [
+    {
+      "name": "sloth.gateway.dynamic-route-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable dynamic gateway routes."
+    },
+    {
+      "name": "sloth.gateway.white-list",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "White list paths."
+    },
+    {
+      "name": "sloth.gateway.black-list",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Black list IPs."
+    }
+  ]
+}

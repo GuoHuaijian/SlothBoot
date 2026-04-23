@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2025 Sloth Boot
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sloth.boot</groupId>
+    <artifactId>sloth-boot</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>Sloth Boot</name>
+    <description>企业级 Spring Cloud Alibaba 微服务脚手架</description>
+    <url>https://github.com/sloth-boot/sloth-boot</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>sloth-boot</name>
+            <email>sloth-boot@example.com</email>
+            <organization>Sloth Boot</organization>
+            <organizationUrl>https://github.com/sloth-boot</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/sloth-boot/sloth-boot.git</connection>
+        <developerConnection>scm:git:https://github.com/sloth-boot/sloth-boot.git</developerConnection>
+        <url>https://github.com/sloth-boot/sloth-boot</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Spring Boot -->
+        <spring-boot.version>3.2.6</spring-boot.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
+
+        <!-- Database -->
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
+        <dynamic-datasource.version>4.3.0</dynamic-datasource.version>
+        <druid.version>1.2.21</druid.version>
+
+        <!-- Middleware -->
+        <redisson.version>3.27.0</redisson.version>
+        <rocketmq.version>2.3.0</rocketmq.version>
+        <seata.version>2.0.0</seata.version>
+
+        <!-- Tools -->
+        <knife4j.version>4.5.0</knife4j.version>
+        <xxl-job.version>2.4.1</xxl-job.version>
+        <easyexcel.version>3.3.4</easyexcel.version>
+        <hutool.version>5.8.26</hutool.version>
+        <guava.version>33.0.0-jre</guava.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <ttl.version>2.14.5</ttl.version>
+
+        <!-- Cloud Storage -->
+        <minio.version>8.5.7</minio.version>
+        <aliyun-oss.version>3.17.4</aliyun-oss.version>
+
+        <!-- Security -->
+        <sa-token.version>1.37.0</sa-token.version>
+        <ip2region.version>2.7.0</ip2region.version>
+        <mica-xss.version>3.1.6</mica-xss.version>
+
+        <!-- Plugins -->
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+        <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
+        <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
+    </properties>
+
+    <modules>
+        <!-- BOM 依赖管理 -->
+        <module>sloth-boot-dependencies</module>
+
+        <!-- 父 POM -->
+        <module>sloth-boot-parent</module>
+
+        <!-- Common 模块 -->
+        <module>sloth-boot-common</module>
+
+        <!-- Starter 模块 -->
+        <module>sloth-boot-starter</module>
+
+        <!-- 示例工程 -->
+        <module>sloth-boot-example</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Maven 编译插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                        <compilerArgs>
+                            <arg>-Xlint:unchecked</arg>
+                            <arg>-Xlint:deprecation</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+
+                <!-- Maven 源码插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Maven 文档插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <charset>UTF-8</charset>
+                        <encoding>UTF-8</encoding>
+                        <docencoding>UTF-8</docencoding>
+                        <additionalOptions>
+                            <additionalOption>-Xdoclint:none</additionalOption>
+                        </additionalOptions>
+                    </configuration>
+                </plugin>
+
+                <!-- Spring Boot 打包插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot-maven-plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                        <classifier>exec</classifier>
+                    </configuration>
+                </plugin>
+
+                <!-- Flatten Maven Plugin - 统一版本管理 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin.version}</version>
+                    <configuration>
+                        <flattenMode>oss</flattenMode>
+                        <updatePomFile>true</updatePomFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten-clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+                <build.profile.id>test</build.profile.id>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>staging</id>
+            <properties>
+                <build.profile.id>staging</build.profile.id>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <build.profile.id>prod</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
+</project>

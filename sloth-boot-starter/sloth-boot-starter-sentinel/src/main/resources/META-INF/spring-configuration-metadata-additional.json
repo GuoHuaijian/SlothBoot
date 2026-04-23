@@ -1,0 +1,22 @@
+{
+  "properties": [
+    {
+      "name": "sloth.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable Sentinel starter."
+    },
+    {
+      "name": "sloth.sentinel.datasource",
+      "type": "java.lang.String",
+      "defaultValue": "nacos",
+      "description": "Sentinel rule datasource type."
+    },
+    {
+      "name": "sloth.sentinel.nacos-group-id",
+      "type": "java.lang.String",
+      "defaultValue": "SENTINEL_GROUP",
+      "description": "Nacos group id for Sentinel rules."
+    }
+  ]
+}

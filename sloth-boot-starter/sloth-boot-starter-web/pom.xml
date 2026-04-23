@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sloth.boot</groupId>
+        <artifactId>sloth-boot-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>sloth-boot-starter-web</artifactId>
+    <name>Sloth Boot Starter Web</name>
+    <description>Sloth Boot Web Starter</description>
+
+    <dependencies>
+        <!-- 核心模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 日志模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-log</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 安全模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-security</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- Web 依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 验证依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- AOP 依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

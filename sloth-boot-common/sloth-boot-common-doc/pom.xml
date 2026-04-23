@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sloth.boot</groupId>
+        <artifactId>sloth-boot-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sloth-boot-common-doc</artifactId>
+    <name>Sloth Boot Common Doc</name>
+    <description>Sloth Boot 通用文档模块</description>
+
+    <dependencies>
+        <!-- 核心模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- Knife4j 文档 -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>

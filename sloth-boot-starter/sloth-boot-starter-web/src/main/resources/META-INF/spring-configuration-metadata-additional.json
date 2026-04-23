@@ -1,0 +1,48 @@
+{
+  "properties": [
+    {
+      "name": "sloth.web.response-wrapper",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to wrap controller responses with R."
+    },
+    {
+      "name": "sloth.web.xss-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable XSS filter for servlet requests."
+    },
+    {
+      "name": "sloth.web.xss-exclude-urls",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Request paths excluded from the XSS filter."
+    },
+    {
+      "name": "sloth.web.cors.allowed-origins",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Allowed origin patterns for CORS."
+    },
+    {
+      "name": "sloth.web.cors.allowed-methods",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed HTTP methods for CORS."
+    },
+    {
+      "name": "sloth.web.cors.allowed-headers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed HTTP headers for CORS."
+    },
+    {
+      "name": "sloth.web.cors.allow-credentials",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to allow credentials for CORS."
+    },
+    {
+      "name": "sloth.web.cors.max-age",
+      "type": "java.lang.Long",
+      "defaultValue": 3600,
+      "description": "Max age for CORS preflight cache."
+    }
+  ]
+}

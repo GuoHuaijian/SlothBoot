@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sloth.boot</groupId>
+        <artifactId>sloth-boot-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sloth-boot-common-security</artifactId>
+    <name>Sloth Boot Common Security</name>
+    <description>Sloth Boot 通用安全模块</description>
+
+    <dependencies>
+        <!-- 核心模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 加密相关 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+
+        <!-- Base64 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

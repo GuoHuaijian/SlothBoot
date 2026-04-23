@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "sloth.doc.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable API documentation."
+    },
+    {
+      "name": "sloth.doc.title",
+      "type": "java.lang.String",
+      "defaultValue": "Sloth Boot API",
+      "description": "API title."
+    },
+    {
+      "name": "sloth.doc.description",
+      "type": "java.lang.String",
+      "defaultValue": "Sloth Boot 接口文档",
+      "description": "API description."
+    },
+    {
+      "name": "sloth.doc.version",
+      "type": "java.lang.String",
+      "defaultValue": "1.0.0",
+      "description": "API version."
+    },
+    {
+      "name": "sloth.doc.contact-name",
+      "type": "java.lang.String",
+      "description": "Contact name."
+    },
+    {
+      "name": "sloth.doc.contact-email",
+      "type": "java.lang.String",
+      "description": "Contact email."
+    },
+    {
+      "name": "sloth.doc.contact-url",
+      "type": "java.lang.String",
+      "description": "Contact url."
+    },
+    {
+      "name": "sloth.doc.license",
+      "type": "java.lang.String",
+      "defaultValue": "Apache 2.0",
+      "description": "License name."
+    }
+  ]
+}

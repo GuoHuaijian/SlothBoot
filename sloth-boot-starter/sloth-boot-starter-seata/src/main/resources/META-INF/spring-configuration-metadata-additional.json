@@ -1,0 +1,22 @@
+{
+  "properties": [
+    {
+      "name": "sloth.seata.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable Seata starter."
+    },
+    {
+      "name": "sloth.seata.tx-service-group",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.application.name}-tx-group",
+      "description": "Seata transaction service group."
+    },
+    {
+      "name": "sloth.seata.mode",
+      "type": "java.lang.String",
+      "defaultValue": "AT",
+      "description": "Seata transaction mode."
+    }
+  ]
+}

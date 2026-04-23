@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sloth.boot</groupId>
+        <artifactId>sloth-boot-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sloth-boot-common-test</artifactId>
+    <name>Sloth Boot Common Test</name>
+    <description>Sloth Boot 通用测试模块</description>
+
+    <dependencies>
+        <!-- 核心模块 -->
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Testcontainers（可选） -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>

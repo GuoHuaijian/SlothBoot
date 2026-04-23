@@ -1,0 +1,21 @@
+{
+  "properties": [
+    {
+      "name": "sloth.es.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable elasticsearch starter."
+    },
+    {
+      "name": "sloth.es.default-index",
+      "type": "java.lang.String",
+      "description": "Default elasticsearch index."
+    },
+    {
+      "name": "sloth.es.timeout",
+      "type": "java.lang.Long",
+      "defaultValue": 5,
+      "description": "Default timeout in seconds."
+    }
+  ]
+}

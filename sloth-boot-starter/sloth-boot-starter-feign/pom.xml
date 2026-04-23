@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sloth.boot</groupId>
+        <artifactId>sloth-boot-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>sloth-boot-starter-feign</artifactId>
+    <name>Sloth Boot Starter Feign</name>
+    <description>Sloth Boot Feign Starter</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

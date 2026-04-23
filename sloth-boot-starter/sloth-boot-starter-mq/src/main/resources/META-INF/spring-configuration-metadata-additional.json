@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "sloth.mq.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable MQ starter auto configuration."
+    },
+    {
+      "name": "sloth.mq.idempotent-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable consumer idempotent protection."
+    },
+    {
+      "name": "sloth.mq.max-retry",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "Maximum retry times for message consumption."
+    },
+    {
+      "name": "sloth.mq.transaction-producer-group",
+      "type": "java.lang.String",
+      "defaultValue": "sloth-tx-producer-group",
+      "description": "Default transaction producer group."
+    },
+    {
+      "name": "sloth.mq.consume-idempotent-key-prefix",
+      "type": "java.lang.String",
+      "defaultValue": "sloth:mq:consume:",
+      "description": "Redis key prefix for consumer idempotence."
+    }
+  ]
+}

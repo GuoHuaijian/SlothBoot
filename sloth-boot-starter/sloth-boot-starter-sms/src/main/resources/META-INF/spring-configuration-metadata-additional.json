@@ -1,0 +1,37 @@
+{
+  "properties": [
+    {
+      "name": "sloth.sms.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable sms starter."
+    },
+    {
+      "name": "sloth.sms.type",
+      "type": "java.lang.String",
+      "defaultValue": "aliyun",
+      "description": "SMS provider type."
+    },
+    {
+      "name": "sloth.sms.access-key-id",
+      "type": "java.lang.String",
+      "description": "Access key id."
+    },
+    {
+      "name": "sloth.sms.access-key-secret",
+      "type": "java.lang.String",
+      "description": "Access key secret."
+    },
+    {
+      "name": "sloth.sms.sign-name",
+      "type": "java.lang.String",
+      "description": "SMS sign name."
+    },
+    {
+      "name": "sloth.sms.region-id",
+      "type": "java.lang.String",
+      "defaultValue": "cn-hangzhou",
+      "description": "SMS region id."
+    }
+  ]
+}

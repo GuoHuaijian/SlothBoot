@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "sloth.oss.type",
+      "type": "java.lang.String",
+      "defaultValue": "minio"
+    }
+  ]
+}

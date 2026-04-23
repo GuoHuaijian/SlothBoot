@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "sloth.redis.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable Redis starter auto configuration."
+    },
+    {
+      "name": "sloth.redis.key-prefix",
+      "type": "java.lang.String",
+      "defaultValue": "sloth:",
+      "description": "Unified business key prefix."
+    },
+    {
+      "name": "sloth.redis.lock-wait-time",
+      "type": "java.lang.Long",
+      "defaultValue": 3,
+      "description": "Default lock wait time in seconds."
+    },
+    {
+      "name": "sloth.redis.lock-lease-time",
+      "type": "java.lang.Long",
+      "defaultValue": 30,
+      "description": "Default lock lease time in seconds."
+    },
+    {
+      "name": "sloth.redis.enable-type-info",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to include type info in JSON serialization."
+    },
+    {
+      "name": "sloth.redis.null-value-expire-seconds",
+      "type": "java.lang.Long",
+      "defaultValue": 60,
+      "description": "Expiration time for cached null values."
+    }
+  ]
+}

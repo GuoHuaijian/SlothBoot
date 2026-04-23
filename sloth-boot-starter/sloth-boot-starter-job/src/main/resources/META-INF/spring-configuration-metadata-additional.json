@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "sloth.job.port",
+      "type": "java.lang.Integer",
+      "defaultValue": 9999
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+# 服务基础配置
+server:
+  port: 8080
+
+# Spring 基础配置
+spring:
+  application:
+    name: sloth-example
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/sloth_boot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 5s
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# MyBatis-Plus 配置示例
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Actuator 暴露配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,threadPools,appInfo
+  endpoint:
+    health:
+      show-details: always
+
+# Sloth Boot 自定义配置
+sloth:
+  # Web 组件配置
+  web:
+    enabled: true
+    response-wrapper: true
+    xss-enabled: true
+    xss-exclude-urls:
+      - /actuator/**
+    cors:
+      allowed-origins:
+        - "*"
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      allow-credentials: true
+      max-age: 3600
+
+  # Redis 能力配置
+  redis:
+    enabled: true
+    key-prefix: "example:"
+    lock-wait-time: 3
+    lock-lease-time: 30
+
+  # MyBatis 能力配置
+  mybatis:
+    enabled: true
+    tenant-enabled: false
+    tenant-column: tenant_id
+    tenant-ignore-tables:
+      - sys_dict
+    slow-sql-threshold: 1000
+
+  # 线程池配置
+  thread-pool:
+    enabled: true
+    dynamic: true
+    pools:
+      default:
+        core-size: 8
+        max-size: 32
+        queue-capacity: 1024
+        keep-alive-time: 60
+        thread-name-prefix: sloth-async-
+        rejected-policy: CALLER_RUNS
+      scheduled:
+        core-size: 4
+        max-size: 8
+        queue-capacity: 256
+        keep-alive-time: 60
+        thread-name-prefix: sloth-scheduled-
+        rejected-policy: CALLER_RUNS
+
+  # 监控配置
+  monitor:
+    enabled: true
+    slow-api-enabled: true
+    slow-api-threshold: 1000
+    alarm:
+      enabled: false
+      type: dingtalk
+      webhook: ""
+
+  # 文档配置
+  doc:
+    enabled: true
+    title: "示例服务 API"
+    description: "Sloth Boot 示例服务接口文档"
+    version: "1.0.0"
+    contact-name: "sloth-boot"
+    contact-email: "sloth-boot@example.com"
+    base-packages:
+      - com.sloth.boot.example.controller
+
+  # 日志配置
+  log:
+    enabled: true
+    print-request-log: true
+    print-response-log: false
+    max-body-length: 2048
+    exclude-urls:
+      - /actuator/**
+
+  # 可选能力示例
+  sentinel:
+    enabled: false
+  seata:
+    enabled: false
+  sms:
+    enabled: false
+    type: aliyun
+    access-key-id: ""
+    access-key-secret: ""
+    sign-name: ""
+    region-id: cn-hangzhou

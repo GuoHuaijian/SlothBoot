@@ -1,0 +1,22 @@
+{
+  "properties": [
+    {
+      "name": "sloth.idempotent.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable idempotent starter."
+    },
+    {
+      "name": "sloth.idempotent.timeout",
+      "type": "java.lang.Integer",
+      "defaultValue": 10,
+      "description": "Default idempotent timeout in seconds."
+    },
+    {
+      "name": "sloth.idempotent.key-prefix",
+      "type": "java.lang.String",
+      "defaultValue": "idempotent:",
+      "description": "Key prefix for idempotent data."
+    }
+  ]
+}

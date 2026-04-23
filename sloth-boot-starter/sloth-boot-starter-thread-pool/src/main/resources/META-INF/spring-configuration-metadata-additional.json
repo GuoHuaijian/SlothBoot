@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "sloth.thread-pool.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable thread pool starter."
+    },
+    {
+      "name": "sloth.thread-pool.dynamic",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether dynamic thread pool config is enabled."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/sloth_boot_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 1
+
+logging:
+  level:
+    root: info
+    com.sloth.boot: debug

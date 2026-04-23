@@ -1,0 +1,32 @@
+{
+  "properties": [
+    {
+      "name": "sloth.mybatis.tenant-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable tenant line interceptor."
+    },
+    {
+      "name": "sloth.mybatis.tenant-column",
+      "type": "java.lang.String",
+      "defaultValue": "tenant_id",
+      "description": "Tenant column name."
+    },
+    {
+      "name": "sloth.mybatis.tenant-ignore-tables",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Tables ignored by tenant line interceptor."
+    },
+    {
+      "name": "sloth.mybatis.slow-sql-threshold",
+      "type": "java.lang.Long",
+      "defaultValue": 1000,
+      "description": "Slow SQL threshold in milliseconds."
+    },
+    {
+      "name": "sloth.mybatis.encrypt-key",
+      "type": "java.lang.String",
+      "description": "AES key used by EncryptTypeHandler."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Maven
+target/
+.flattened-pom.xml
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Runtime
+*.pid
+*.seed
+*.out
+
+# Test
+.surefire-*
+coverage/

@@ -1,0 +1,44 @@
+{
+  "properties": [
+    {
+      "name": "sloth.monitor.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable monitor starter."
+    },
+    {
+      "name": "sloth.monitor.slow-api-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable slow API monitoring."
+    },
+    {
+      "name": "sloth.monitor.slow-api-threshold",
+      "type": "java.lang.Long",
+      "defaultValue": 3000,
+      "description": "Slow API threshold in milliseconds."
+    },
+    {
+      "name": "sloth.monitor.alarm.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable alarm service."
+    },
+    {
+      "name": "sloth.monitor.alarm.type",
+      "type": "java.lang.String",
+      "defaultValue": "dingtalk",
+      "description": "Alarm type: dingtalk / wechat / feishu."
+    },
+    {
+      "name": "sloth.monitor.alarm.webhook",
+      "type": "java.lang.String",
+      "description": "Webhook address."
+    },
+    {
+      "name": "sloth.monitor.alarm.secret",
+      "type": "java.lang.String",
+      "description": "Webhook secret."
+    }
+  ]
+}

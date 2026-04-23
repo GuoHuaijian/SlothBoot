@@ -1,0 +1,11 @@
+# Nacos 配置示例，默认注释，开发环境可先直连本地配置
+# spring:
+#   cloud:
+#     nacos:
+#       config:
+#         server-addr: 127.0.0.1:8848
+#         namespace: public
+#         group: DEFAULT_GROUP
+#         file-extension: yml
+#       discovery:
+#         server-addr: 127.0.0.1:8848
