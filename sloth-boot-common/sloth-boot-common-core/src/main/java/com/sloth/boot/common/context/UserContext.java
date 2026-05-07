@@ -1,6 +1,7 @@
 package com.sloth.boot.common.context;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,9 +22,9 @@ public class UserContext implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 使用 TransmittableThreadLocal 存储用户信息
+     * 使用 TransmittableThreadLocal 存储用户信息，支持异步线程上下文传递
      */
-    private static final ThreadLocal<UserInfo> USER_THREAD_LOCAL = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<UserInfo> USER_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
     /**
      * 用户信息

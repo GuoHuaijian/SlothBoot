@@ -87,12 +87,13 @@ public class GatewayAutoConfiguration {
     }
 
     /**
-     * 注册 Sentinel 降级处理器。
+     * 注册 Sentinel 降级处理器（仅当 Sentinel 在 classpath 上时生效）。
      *
      * @return 降级处理器
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnClass(name = "com.alibaba.csp.sentinel.SphU")
     public SentinelFallbackHandler sentinelFallbackHandler() {
         return new SentinelFallbackHandler();
     }

@@ -28,9 +28,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sloth.boot</groupId>
-            <artifactId>sloth-boot-starter-redis</artifactId>
-            <version>${revision}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
             <optional>true</optional>
         </dependency>
 

@@ -23,7 +23,7 @@
 
     <name>Sloth Boot</name>
     <description>企业级 Spring Cloud Alibaba 微服务脚手架</description>
-    <url>https://github.com/sloth-boot/sloth-boot</url>
+    <url>https://github.com/GuoHuaijian/SlothBoot</url>
 
     <licenses>
         <license>
@@ -36,16 +36,16 @@
     <developers>
         <developer>
             <name>sloth-boot</name>
-            <email>sloth-boot@example.com</email>
+            <email>564559079@qq.com</email>
             <organization>Sloth Boot</organization>
-            <organizationUrl>https://github.com/sloth-boot</organizationUrl>
+            <organizationUrl>https://github.com/GuoHuaijian</organizationUrl>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/sloth-boot/sloth-boot.git</connection>
-        <developerConnection>scm:git:https://github.com/sloth-boot/sloth-boot.git</developerConnection>
-        <url>https://github.com/sloth-boot/sloth-boot</url>
+        <connection>scm:git:https://github.com/GuoHuaijian/SlothBoot.git</connection>
+        <developerConnection>scm:git:https://github.com/GuoHuaijian/SlothBoot.git</developerConnection>
+        <url>https://github.com/GuoHuaijian/SlothBoot</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -92,6 +92,9 @@
         <bouncycastle.version>1.70</bouncycastle.version>
         <jbcrypt.version>0.4</jbcrypt.version>
 
+        <!-- Template Engine -->
+        <velocity-engine.version>2.4.1</velocity-engine.version>
+
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
@@ -100,6 +103,9 @@
         <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
         <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
         <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
+
+        <!-- GraalVM Native Image -->
+        <native-maven-plugin.version>0.10.4</native-maven-plugin.version>
     </properties>
 
     <modules>
@@ -114,6 +120,9 @@
 
         <!-- Starter 模块 -->
         <module>sloth-boot-starter</module>
+
+        <!-- 代码生成器 -->
+        <module>sloth-boot-generator</module>
 
         <!-- 示例工程 -->
         <module>sloth-boot-example</module>
@@ -226,6 +235,17 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!-- GraalVM Native Image Plugin -->
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native-maven-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <mainClass>com.sloth.boot.example.Application</mainClass>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

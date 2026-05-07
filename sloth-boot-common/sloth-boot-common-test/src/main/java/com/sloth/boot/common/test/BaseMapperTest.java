@@ -1,7 +1,7 @@
 package com.sloth.boot.common.test;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.sloth.boot.common.base.BaseEntity;
+import com.sloth.boot.starter.mybatis.core.BaseEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,0 +1,71 @@
+# Sloth Boot 示例服务 Docker Compose
+# 一键启动: docker-compose up -d
+# 启动后访问:
+#   - 健康检查: http://localhost:8080/actuator/health
+#   - API 文档: http://localhost:8080/doc.html
+
+version: '3.8'
+
+services:
+  # ==================== 基础设施 ====================
+
+  mysql:
+    image: mysql:8.0
+    container_name: sloth-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sloth_boot
+      MYSQL_CHARSET: utf8mb4
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docs/sql:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sloth-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass ""
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== 应用服务 ====================
+
+  sloth-example:
+    build:
+      context: .
+      dockerfile: sloth-boot-example/sloth-boot-example-service/Dockerfile
+    container_name: sloth-example
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      MYSQL_URL: jdbc:mysql://mysql:3306/sloth_boot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-data:

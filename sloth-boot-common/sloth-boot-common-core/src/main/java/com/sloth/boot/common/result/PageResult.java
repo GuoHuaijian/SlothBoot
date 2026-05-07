@@ -69,17 +69,6 @@ public class PageResult<T> implements Serializable {
     }
 
     /**
-     * 从 MyBatis-Plus IPage 转换
-     *
-     * @param page MyBatis-Plus 分页对象
-     * @param <T>  数据类型
-     * @return 分页结果
-     */
-    public static <T> PageResult<T> of(com.baomidou.mybatisplus.extension.plugins.pagination.Page<T> page) {
-        return of(page.getRecords(), page.getTotal(), (int) page.getCurrent(), (int) page.getSize());
-    }
-
-    /**
      * 判断是否成功
      *
      * @return 是否成功

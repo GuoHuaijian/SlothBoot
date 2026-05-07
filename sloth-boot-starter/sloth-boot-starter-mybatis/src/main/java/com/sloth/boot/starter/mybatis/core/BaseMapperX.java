@@ -28,7 +28,7 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
         BaseQuery actualQuery = query == null ? new BaseQuery() : query;
         Page<T> page = new Page<>(actualQuery.getPageNum(), actualQuery.getPageSize());
         Page<T> result = this.selectPage(page, wrapper);
-        return PageResult.of(result);
+        return toPageResult(result);
     }
 
     /**
@@ -45,7 +45,9 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
     }
 
     /**
-     * 批量插入。
+     * 批量插入（逐条插入，适用于小数据量场景）。
+     * <p>
+     * 大数据量请使用 {@code InsertBatchSomeColumn} 注入器实现真批量。
      *
      * @param list 实体集合
      * @return 影响行数
@@ -59,5 +61,16 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
             rows += this.insert(entity);
         }
         return rows;
+    }
+
+    /**
+     * 将 MyBatis-Plus 分页对象转换为 PageResult
+     *
+     * @param page MyBatis-Plus 分页对象
+     * @param <E>  数据类型
+     * @return PageResult
+     */
+    static <E> PageResult<E> toPageResult(Page<E> page) {
+        return PageResult.of(page.getRecords(), page.getTotal(), (int) page.getCurrent(), (int) page.getSize());
     }
 }

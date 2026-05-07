@@ -59,9 +59,9 @@ public final class HeaderConstant {
     public static final String INNER_CALL = "X-Inner-Call";
 
     /**
-     * 内部调用令牌
+     * 内部调用令牌（通过 sloth.web.inner-call-token 配置，不应硬编码在源码中）
      */
-    public static final String INNER_CALL_TOKEN = "sloth-boot-inner-call-secret";
+    public static final String INNER_CALL_TOKEN_HEADER = "X-Inner-Call-Token";
 
     // ==================== 客户端信息 ====================
     /**

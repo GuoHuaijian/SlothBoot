@@ -46,5 +46,6 @@
         <module>sloth-boot-starter-es</module>
         <module>sloth-boot-starter-sms</module>
         <module>sloth-boot-starter-idempotent</module>
+        <module>sloth-boot-starter-auth</module>
     </modules>
 </project>

@@ -1,0 +1,180 @@
+{
+  "properties": [
+    {
+      "name": "sloth.web.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Web 组件（全局异常处理、统一返回包装等）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.web.response-wrapper",
+      "type": "java.lang.Boolean",
+      "description": "是否启用统一响应包装（自动将 Controller 返回值包装为 R<T>）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.web.xss-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 XSS 过滤。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.web.xss-exclude-urls",
+      "type": "java.util.List<java.lang.String>",
+      "description": "XSS 过滤排除的 URL 列表（支持 Ant 风格）。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.web.cors.allowed-origins",
+      "type": "java.util.List<java.lang.String>",
+      "description": "CORS 允许的来源列表。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.web.cors.allow-credentials",
+      "type": "java.lang.Boolean",
+      "description": "是否允许携带凭证。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.auth.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Sa-Token 认证授权。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.auth.token-name",
+      "type": "java.lang.String",
+      "description": "Token 名称（请求头中的 key）。",
+      "defaultValue": "Authorization"
+    },
+    {
+      "name": "sloth.auth.token-timeout",
+      "type": "java.lang.Long",
+      "description": "Token 有效期（秒）。",
+      "defaultValue": 7200
+    },
+    {
+      "name": "sloth.auth.white-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "白名单路径（不需要认证）。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Redis 增强（缓存工具、分布式锁、限流等）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.redis.key-prefix",
+      "type": "java.lang.String",
+      "description": "Redis Key 全局前缀。",
+      "defaultValue": ""
+    },
+    {
+      "name": "sloth.mybatis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 MyBatis-Plus 增强（自动填充、慢 SQL、数据权限等）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.mybatis.tenant-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用多租户拦截。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.mybatis.slow-sql-threshold",
+      "type": "java.lang.Long",
+      "description": "慢 SQL 阈值（毫秒）。",
+      "defaultValue": 1000
+    },
+    {
+      "name": "sloth.thread-pool.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用线程池 starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.thread-pool.virtual-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Java 21 虚拟线程。启用后注册基于虚拟线程的 Executor。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.ai.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 AI 能力。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.ai.model",
+      "type": "java.lang.String",
+      "description": "AI 模型名称（如 gpt-4o-mini、deepseek-chat）。",
+      "defaultValue": "gpt-4o-mini"
+    },
+    {
+      "name": "sloth.ai.temperature",
+      "type": "java.lang.Double",
+      "description": "AI 生成温度（0.0-2.0）。",
+      "defaultValue": 0.7
+    },
+    {
+      "name": "sloth.monitor.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用监控 starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.monitor.slow-api-threshold",
+      "type": "java.lang.Long",
+      "description": "慢 API 阈值（毫秒）。",
+      "defaultValue": 1000
+    },
+    {
+      "name": "sloth.doc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 API 文档（Knife4j/OpenAPI 3）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用请求日志。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.print-request-log",
+      "type": "java.lang.Boolean",
+      "description": "是否打印请求日志。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.print-response-log",
+      "type": "java.lang.Boolean",
+      "description": "是否打印响应日志。",
+      "defaultValue": false
+    }
+  ],
+  "hints": [
+    {
+      "name": "sloth.ai.model",
+      "values": [
+        { "value": "gpt-4o-mini", "description": "OpenAI GPT-4o Mini" },
+        { "value": "gpt-4o", "description": "OpenAI GPT-4o" },
+        { "value": "deepseek-chat", "description": "DeepSeek Chat" },
+        { "value": "qwen-turbo", "description": "通义千问 Turbo" }
+      ]
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.rejected-policy",
+      "values": [
+        { "value": "CALLER_RUNS", "description": "由调用线程执行" },
+        { "value": "ABORT", "description": "抛出异常" },
+        { "value": "DISCARD", "description": "静默丢弃" },
+        { "value": "DISCARD_OLDEST", "description": "丢弃最旧任务" }
+      ]
+    }
+  ]
+}

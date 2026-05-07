@@ -1,15 +1,18 @@
 # 服务基础配置
 server:
   port: 8080
+  shutdown: graceful
 
 # Spring 基础配置
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   application:
     name: sloth-example
   profiles:
     active: dev
   main:
-    allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: false
   servlet:
     multipart:
       max-file-size: 20MB
@@ -61,9 +64,11 @@ sloth:
     xss-enabled: true
     xss-exclude-urls:
       - /actuator/**
+      - /auth/login
     cors:
       allowed-origins:
-        - "*"
+        - "http://localhost:3000"
+        - "http://localhost:5173"
       allowed-methods:
         - GET
         - POST
@@ -137,7 +142,7 @@ sloth:
     description: "Sloth Boot 示例服务接口文档"
     version: "1.0.0"
     contact-name: "sloth-boot"
-    contact-email: "sloth-boot@example.com"
+    contact-email: "564559079@qq.com"
     base-packages:
       - com.sloth.boot.example.controller
 
@@ -162,3 +167,16 @@ sloth:
     access-key-secret: ""
     sign-name: ""
     region-id: cn-hangzhou
+
+  # 认证授权配置
+  auth:
+    enabled: true
+    token-name: Authorization
+    token-timeout: 7200
+    white-list:
+      - /health
+      - /auth/login
+      - /doc.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /actuator/**

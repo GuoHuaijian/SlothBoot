@@ -5,6 +5,7 @@ import com.sloth.boot.starter.ai.support.AiErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Flux;
 
 /**
  * 基于 Spring AI ChatClient 的统一对话客户端。
@@ -37,6 +38,28 @@ public class SpringAiChatClient implements AiChatClient {
                 .content();
         }
         return chat(userPrompt);
+    }
+
+    @Override
+    public Flux<String> chatStream(String userPrompt) {
+        validatePrompt(userPrompt);
+        return chatClient.prompt()
+                .user(userPrompt)
+                .stream()
+                .content();
+    }
+
+    @Override
+    public Flux<String> chatStream(String systemPrompt, String userPrompt) {
+        validatePrompt(userPrompt);
+        if (StringUtils.hasText(systemPrompt)) {
+            return chatClient.prompt()
+                    .system(systemPrompt)
+                    .user(userPrompt)
+                    .stream()
+                    .content();
+        }
+        return chatStream(userPrompt);
     }
 
     /**

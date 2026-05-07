@@ -7,9 +7,7 @@ import com.sloth.boot.starter.redis.limiter.RateLimiterAspect;
 import com.sloth.boot.starter.redis.lock.DistributedLock;
 import com.sloth.boot.starter.redis.lock.DistributedLockAspect;
 import com.sloth.boot.starter.redis.lock.RedissonDistributedLock;
-import com.sloth.boot.starter.redis.monitor.RedisHealthIndicator;
 import org.redisson.api.RedissonClient;
-import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -158,18 +156,5 @@ public class RedisAutoConfiguration {
     @ConditionalOnBean(RedissonClient.class)
     public RedisDelayQueue redisDelayQueue(RedissonClient redissonClient) {
         return new RedisDelayQueue(redissonClient);
-    }
-
-    /**
-     * 注册 Redis 健康检查。
-     *
-     * @param redisConnectionFactory Redis 连接工厂
-     * @return 健康检查器
-     */
-    @Bean
-    @ConditionalOnMissingBean(name = "slothRedisHealthIndicator")
-    @ConditionalOnClass(HealthIndicator.class)
-    public RedisHealthIndicator slothRedisHealthIndicator(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisHealthIndicator(redisConnectionFactory);
     }
 }

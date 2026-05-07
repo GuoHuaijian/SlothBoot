@@ -1,6 +1,7 @@
 package com.sloth.boot.common.context;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,9 +19,9 @@ public class TraceContext implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 使用 TransmittableThreadLocal 存储追踪信息
+     * 使用 TransmittableThreadLocal 存储追踪信息，支持异步线程上下文传递
      */
-    private static final ThreadLocal<TraceInfo> TRACE_THREAD_LOCAL = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<TraceInfo> TRACE_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
     /**
      * 追踪信息

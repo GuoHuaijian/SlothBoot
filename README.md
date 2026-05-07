@@ -16,12 +16,12 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/SlothBoot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./.github/workflows/ci.yml)
 [![Stars](https://img.shields.io/github/stars/GuoHuaijian/SlothBoot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/SlothBoot/stargazers)
 [![Issues](https://img.shields.io/github/issues/GuoHuaijian/SlothBoot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/SlothBoot/issues)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./docs/CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](./CHANGELOG.md)
 
 <br/>
 
-[📖 快速开始](#-快速开始) · [🧩 模块导航](#-模块导航) · [🗺 Roadmap](#-roadmap) · [🤝 参与贡献](./CONTRIBUTING.md) · [📋 更新日志](./CHANGELOG.md)
+[📖 快速开始](#-快速开始) · [🧩 模块导航](#-模块导航) · [🏗 架构文档](./docs/architecture.md) · [🗺 Roadmap](#-roadmap) · [🤝 参与贡献](./docs/CONTRIBUTING.md) · [📋 更新日志](./CHANGELOG.md)
 
 </div>
 
@@ -155,25 +155,58 @@ sloth-boot/
 
 ### Starter 能力层
 
-| 模块 | 核心能力 | 状态 |
-|------|---------|------|
-| `starter-ai` | Spring AI ChatClient 封装、默认 Prompt 配置、OpenAI 模型接入 | ✅ 新增 |
-| `starter-web` | 全局异常处理、统一返回包装、参数校验增强、Jackson 配置 | ✅ 骨架完成 |
-| `starter-redis` | RedisTemplate 增强、缓存工具类、Redisson 分布式锁、滑动窗口限流 | ✅ 骨架完成 |
-| `starter-mq` | RocketMQ 生产者/消费者基础封装、消息重试、死信队列处理 | ✅ 骨架完成 |
-| `starter-mybatis` | MyBatis-Plus 配置、逻辑删除、自动填充、枚举 TypeHandler | ✅ 骨架完成 |
-| `starter-thread-pool` | 动态线程池、TTL 上下文透传、Actuator 监控端点 | ✅ 骨架完成 |
-| `starter-sentinel` | Sentinel 规则配置、Nacos 动态数据源、降级处理 | ✅ 骨架完成 |
-| `starter-monitor` | 自定义健康指标、告警通知、Actuator 端点增强 | ✅ 骨架完成 |
-| `starter-feign` | Feign 请求头透传、统一错误解码、Fallback 基类 | ✅ 骨架完成 |
-| `starter-gateway` | 全局过滤器、鉴权、WebFlux 异常处理、动态路由 | ✅ 骨架完成 |
-| `starter-oss` | 统一 OSS 门面，支持本地 / MinIO / 阿里云 OSS | ✅ 骨架完成 |
-| `starter-excel` | EasyExcel 封装，支持导入校验、流式导出、HTTP 直接响应 | ✅ 骨架完成 |
-| `starter-job` | XXL-Job 自动注册、任务基类、分片处理模板 | ✅ 骨架完成 |
-| `starter-seata` | Seata AT 模式自动配置，支持 Nacos 注册 | ✅ 骨架完成 |
-| `starter-es` | Elasticsearch 索引管理、CRUD 封装、聚合查询工具 | ✅ 骨架完成 |
-| `starter-sms` | 统一短信门面，支持阿里云 / 腾讯云，模板抽象 | ✅ 骨架完成 |
-| `starter-idempotent` | `@Idempotent` 注解驱动，Token 模式 + Redis 去重 | ✅ 骨架完成 |
+每个 starter 均有独立 README，点击模块名查看详细文档（配置项、使用示例、FAQ）。
+
+| 模块 | 核心能力 | 文档 |
+|------|---------|:----:|
+| [`starter-ai`](./sloth-boot-starter/sloth-boot-starter-ai/README.md) | Spring AI 多模型接入、流式响应（SSE）、Function Calling | ✅ 新增 |
+| [`starter-web`](./sloth-boot-starter/sloth-boot-starter-web/README.md) | 全局异常处理、统一返回包装、参数校验、XSS 过滤 | ✅ |
+| [`starter-redis`](./sloth-boot-starter/sloth-boot-starter-redis/README.md) | 缓存工具、分布式锁、滑动窗口限流、幂等、延迟队列 | ✅ |
+| [`starter-mybatis`](./sloth-boot-starter/sloth-boot-starter-mybatis/README.md) | MyBatis-Plus 增强、自动填充、数据权限、慢 SQL | ✅ |
+| [`starter-thread-pool`](./sloth-boot-starter/sloth-boot-starter-thread-pool/README.md) | 动态线程池、TTL 上下文透传、虚拟线程、Actuator 监控 | ✅ |
+| [`starter-auth`](./sloth-boot-starter/sloth-boot-starter-auth/README.md) | Sa-Token 认证授权、登录/登出、权限注解、UserContext 集成 | ✅ 新增 |
+| [`starter-gateway`](./sloth-boot-starter/sloth-boot-starter-gateway/README.md) | 全局过滤器、鉴权、动态路由、WebFlux 异常处理 | ✅ |
+| [`starter-monitor`](./sloth-boot-starter/sloth-boot-starter-monitor/README.md) | 健康检查、钉钉/微信告警、JVM 指标、Micrometer Tracing | ✅ |
+| [`starter-feign`](./sloth-boot-starter/sloth-boot-starter-feign/README.md) | 请求头透传、统一错误解码、Fallback 模板 | ✅ |
+| [`starter-mq`](./sloth-boot-starter/sloth-boot-starter-mq/README.md) | RocketMQ 生产消费封装、消息重试、幂等消费 | ✅ |
+| [`starter-oss`](./sloth-boot-starter/sloth-boot-starter-oss/README.md) | 统一 OSS 门面（本地 / MinIO / 阿里云） | ✅ |
+| [`starter-excel`](./sloth-boot-starter/sloth-boot-starter-excel/README.md) | EasyExcel 封装、导入校验、流式导出 | ✅ |
+| [`starter-job`](./sloth-boot-starter/sloth-boot-starter-job/README.md) | XXL-Job 自动注册、任务基类、分片处理 | ✅ |
+| [`starter-sentinel`](./sloth-boot-starter/sloth-boot-starter-sentinel/README.md) | Sentinel 限流降级、Nacos 动态规则源 | ✅ |
+| [`starter-seata`](./sloth-boot-starter/sloth-boot-starter-seata/README.md) | Seata AT 模式分布式事务 | ✅ |
+| [`starter-es`](./sloth-boot-starter/sloth-boot-starter-es/README.md) | Elasticsearch 索引管理、CRUD、聚合查询 | ✅ |
+| [`starter-sms`](./sloth-boot-starter/sloth-boot-starter-sms/README.md) | 统一短信门面（阿里云 / 腾讯云） | ✅ |
+| [`starter-idempotent`](./sloth-boot-starter/sloth-boot-starter-idempotent/README.md) | `@Idempotent` 注解驱动，Token 模式 + Redis 去重 | ✅ |
+| [`generator`](./sloth-boot-generator/README.md) | MyBatis-Plus 代码生成器，一键生成 CRUD 全套代码 | ✅ 新增 |
+
+---
+
+## 🏗 架构概览
+
+```text
+                           ┌─────────────────────────────────────┐
+                           │           sloth-boot-example        │
+                           │         (可运行示例工程)             │
+                           └──────────────────┬──────────────────┘
+                                              │
+              ┌───────────────────────────────┼───────────────────────────────┐
+              │                               │                               │
+    ┌─────────▼─────────┐         ┌───────────▼──────────┐        ┌──────────▼──────────┐
+    │   Starter 能力层   │         │   Common 基础层       │        │   Generator 工具层   │
+    │                    │         │                      │        │                     │
+    │  auth (Sa-Token)   │         │  core (R/异常/上下文) │        │  代码生成器          │
+    │  web (异常/返回)    │         │  log (日志/追踪)      │        │  (MyBatis-Plus)      │
+    │  redis (缓存/锁)    │         │  security (加密/XSS)  │        │                     │
+    │  mybatis (ORM)     │         │  doc (Knife4j)       │        └─────────────────────┘
+    │  ai (Spring AI)    │         │  test (测试基类)      │
+    │  mq / excel / ...  │         └──────────────────────┘
+    │  monitor (监控)     │
+    │  gateway (网关)     │
+    └─────────────────────┘
+
+    自动装配: @AutoConfiguration + AutoConfiguration.imports + @ConditionalOnMissingBean
+    配置治理: 统一 sloth.* 命名空间 + 配置元数据 (IDE 自动补全)
+```
 
 ---
 
@@ -198,13 +231,7 @@ cd sloth-boot
 ### 2. 构建全量模块
 
 ```bash
-mvn clean verify -DskipTests
-```
-
-本仓库已使用 JDK 21 和 Maven 3.8.1 完成全量验证：
-
-```bash
-mvn -B clean verify -DskipTests
+mvn clean verify
 ```
 
 ### 3. 启动示例工程
@@ -227,6 +254,21 @@ curl http://localhost:8080/actuator/health
 open http://localhost:8080/doc.html
 ```
 
+### 5. Docker 一键启动（推荐）
+
+```bash
+# 一键启动 MySQL + Redis + 示例服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f sloth-example
+```
+
+启动后访问：
+- 健康检查: http://localhost:8080/actuator/health
+- API 文档: http://localhost:8080/doc.html
+- AI 对话: http://localhost:8080/ai/chat?prompt=你好
+
 > 💡 **推荐阅读顺序：**  
 > `common-core` → `starter-web` → `starter-redis` → `starter-mybatis` → `example-service`
 
@@ -244,6 +286,21 @@ sloth:
     enabled: false
     model: gpt-4o-mini
     default-system-prompt: "你是 Sloth Boot 内置 AI 助手"
+    
+  redis:
+      lock:
+          prefix: "sloth:lock:"       # 分布式锁 Key 前缀
+          expire: 30                  # 默认锁超时（秒）
+
+  thread-pool:
+      enabled: true
+      core-size: 8
+      max-size: 32
+      queue-capacity: 500
+
+  idempotent:
+      enabled: true
+      expire: 60                    # Token 有效期（秒）
 
 spring:
   ai:
@@ -252,21 +309,6 @@ spring:
     openai:
       base-url: https://api.openai.com
       api-key: ${OPENAI_API_KEY:}
-
-  redis:
-    lock:
-      prefix: "sloth:lock:"       # 分布式锁 Key 前缀
-      expire: 30                  # 默认锁超时（秒）
-
-  thread-pool:
-    enabled: true
-    core-size: 8
-    max-size: 32
-    queue-capacity: 500
-
-  idempotent:
-    enabled: true
-    expire: 60                    # Token 有效期（秒）
 ```
 
 > 所有模块统一使用 `sloth.*` 前缀，避免配置散落在多个命名空间。  
@@ -277,23 +319,23 @@ spring:
 ## 🗺 Roadmap
 
 ```text
-Phase 1 — 骨架完成               ████████████████████  100% ✅
-Phase 2 — 编译修复与验证          ████████████████████  100% ✅
-Phase 3 — 文档 & 单测补全         ██░░░░░░░░░░░░░░░░░░   10% 📋
-Phase 4 — Release 流程与版本策略   ░░░░░░░░░░░░░░░░░░░░    0% 🏷
-Phase 5 — 架构图 & 可视化文档      ░░░░░░░░░░░░░░░░░░░░    0% 🎨
+Phase 1 — 骨架搭建               ████████████████████  100% ✅
+Phase 2 — 代码质量与测试          ████████████████████  100% ✅
+Phase 3 — 核心能力建设            ████████████████████  100% ✅
+Phase 4 — 现代化特性              ████████████████████  100% ✅
+Phase 5 — 开源运营与发布          ██████████████░░░░░░   70% 📋
 ```
 
-- [x] 完成基础多模块 Maven 结构
-- [x] 完成 `common` 基础层骨架
-- [x] 完成主干 `starter` 模块骨架
-- [x] 完成示例工程与基础仓库文档
-- [x] 完成 GitHub 协作模板和基础 CI
-- [x] 完成一轮 `mvn clean verify -DskipTests` 编译修复
-- [ ] 补充 `docs/` 模块级别文档目录
-- [ ] 增加单元测试与集成测试覆盖
-- [ ] 建立 Release 版本策略与 Changelog 自动生成
-- [ ] 补充架构图、模块依赖图与接入示意图
+- [x] 完成 31 个模块骨架搭建与编译修复
+- [x] 53 个单元测试覆盖核心模块
+- [x] 新增 starter-auth（Sa-Token 认证授权）
+- [x] 新增 sloth-boot-generator（代码生成器）
+- [x] AI 流式响应、虚拟线程、GraalVM Native Image 支持
+- [x] i18n 国际化 + 配置元数据（IDE 自动补全）
+- [x] Docker 支持（Dockerfile + docker-compose.yml）
+- [x] CHANGELOG + 架构图 + 竞品对比
+- [ ] Maven Central 发布
+- [ ] 在线文档站（VitePress）
 
 ---
 
@@ -311,17 +353,17 @@ git push origin feat/your-feature
 
 请在贡献前阅读：
 
-- [🤝 CONTRIBUTING.md](./CONTRIBUTING.md) — 贡献指南
-- [📜 CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) — 行为准则
-- [🔒 SECURITY.md](./SECURITY.md) — 安全漏洞报告
-- [💬 SUPPORT.md](./SUPPORT.md) — 获取帮助
+- [🤝 CONTRIBUTING.md](./docs/CONTRIBUTING.md) — 贡献指南
+- [📜 CODE_OF_CONDUCT.md](./docs/CODE_OF_CONDUCT.md) — 行为准则
+- [🔒 SECURITY.md](./docs/SECURITY.md) — 安全漏洞报告
+- [💬 SUPPORT.md](./docs/SUPPORT.md) — 获取帮助
 
 ---
 
 ## 📄 License
 
 ```
-Copyright 2024 Sloth Boot Contributors
+Copyright 2025 Sloth Boot Contributors
 
 Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0

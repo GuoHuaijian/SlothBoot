@@ -22,6 +22,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -77,6 +79,21 @@ public class ThreadPoolAutoConfiguration {
         VisibleThreadPoolExecutor executor = buildExecutor("default", poolConfig);
         threadPoolRegistry.register("default", executor);
         return executor;
+    }
+
+    /**
+     * 注册虚拟线程执行器（Java 21+）。
+     * <p>
+     * 仅当 {@code sloth.thread-pool.virtual-enabled=true} 且 JVM 支持虚拟线程时生效。
+     * 虚拟线程适用于 I/O 密集型任务，不适合 CPU 密集型任务。
+     *
+     * @return 虚拟线程执行器
+     */
+    @Bean(name = "slothVirtualThreadExecutor")
+    @ConditionalOnMissingBean(name = "slothVirtualThreadExecutor")
+    @ConditionalOnProperty(prefix = "sloth.thread-pool", name = "virtual-enabled", havingValue = "true")
+    public ExecutorService slothVirtualThreadExecutor() {
+        return Executors.newVirtualThreadPerTaskExecutor();
     }
 
     /**

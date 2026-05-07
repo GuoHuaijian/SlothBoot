@@ -91,6 +91,18 @@
 
             <dependency>
                 <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${velocity-engine.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
                 <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
                 <version>${dynamic-datasource.version}</version>
             </dependency>
@@ -364,6 +376,18 @@
             <dependency>
                 <groupId>com.sloth.boot</groupId>
                 <artifactId>sloth-boot-starter-idempotent</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sloth.boot</groupId>
+                <artifactId>sloth-boot-starter-auth</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sloth.boot</groupId>
+                <artifactId>sloth-boot-generator</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

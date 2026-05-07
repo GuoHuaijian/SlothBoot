@@ -1,6 +1,8 @@
 # Maven
 target/
 .flattened-pom.xml
+.m2/
+dependency-reduced-pom.xml
 
 # IDE
 .idea/
@@ -26,3 +28,12 @@ logs/
 # Test
 .surefire-*
 coverage/
+
+# Environment
+.env
+.env.*
+
+# Binaries
+*.jar
+*.class
+*.hprof

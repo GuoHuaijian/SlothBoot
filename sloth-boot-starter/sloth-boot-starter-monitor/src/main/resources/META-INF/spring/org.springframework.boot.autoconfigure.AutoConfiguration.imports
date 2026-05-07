@@ -1,1 +1,2 @@
 com.sloth.boot.starter.monitor.config.MonitorAutoConfiguration
+com.sloth.boot.starter.monitor.config.TracingAutoConfiguration
