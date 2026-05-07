@@ -30,13 +30,15 @@ public class SentinelBlockExceptionHandler implements BlockExceptionHandler {
     /**
      * 处理 Sentinel Block 异常。
      *
-     * @param request   请求
-     * @param response  响应
-     * @param exception 异常
+     * @param request      请求
+     * @param response     响应
+     * @param resourceName 资源名称
+     * @param exception    异常
      * @throws Exception 响应异常
      */
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, BlockException exception) throws Exception {
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+                       String resourceName, BlockException exception) throws Exception {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(JsonUtil.toJson(globalBlockHandler.handle(exception)));

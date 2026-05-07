@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.sentinel.config;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.WebCallbackManager;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.sloth.boot.starter.sentinel.datasource.NacosDataSourceConfig;
@@ -50,9 +49,7 @@ public class SentinelAutoConfiguration {
     @ConditionalOnClass(BlockExceptionHandler.class)
     @ConditionalOnMissingBean
     public SentinelBlockExceptionHandler sentinelBlockExceptionHandler(GlobalBlockHandler globalBlockHandler) {
-        SentinelBlockExceptionHandler handler = new SentinelBlockExceptionHandler(globalBlockHandler);
-        WebCallbackManager.setBlockHandler(handler);
-        return handler;
+        return new SentinelBlockExceptionHandler(globalBlockHandler);
     }
 
     /**

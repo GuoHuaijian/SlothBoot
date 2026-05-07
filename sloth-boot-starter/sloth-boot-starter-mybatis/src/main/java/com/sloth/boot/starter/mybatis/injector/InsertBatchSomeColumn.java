@@ -37,7 +37,7 @@ public class InsertBatchSomeColumn extends AbstractMethod {
                 + "<foreach collection=\"list\" item=\"item\" separator=\",\">" + valueSql + "</foreach>"
                 + "</script>";
         return this.addInsertMappedStatement(mapperClass, modelClass, this.methodName,
-                this.createSqlSource(this.configuration, sql, modelClass), null, tableInfo);
+                this.createSqlSource(this.configuration, sql, modelClass), null, null, null);
     }
 
     private String prepareFieldSql(TableInfo tableInfo) {

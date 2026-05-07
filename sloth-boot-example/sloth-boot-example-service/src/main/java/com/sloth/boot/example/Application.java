@@ -12,7 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = Application.BASE_PACKAGE)
 public class Application {
 
-    private static final String BASE_PACKAGE = "com.sloth.boot";
+    /**
+     * Spring Boot 扫描基础包。
+     */
+    public static final String BASE_PACKAGE = "com.sloth.boot";
 
     /**
      * 应用入口。

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.mybatis.core;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -86,7 +87,9 @@ public class LambdaQueryWrapperX<T> extends LambdaQueryWrapper<T> {
 
     @SafeVarargs
     public final LambdaQueryWrapperX<T> orderByDesc(SFunction<T, ?>... columns) {
-        super.orderByDesc(columns);
+        if (columns != null && columns.length > 0) {
+            super.orderByDesc(Arrays.asList(columns));
+        }
         return this;
     }
 }

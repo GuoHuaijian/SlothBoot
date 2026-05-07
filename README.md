@@ -10,12 +10,12 @@
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-0A6CFF?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
-[![Spring AI](https://img.shields.io/badge/Spring%20AI-1.0.0-FF6F00?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-ai)
-[![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+[![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.4-FF6F00?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-ai)
+[![Maven](https://img.shields.io/badge/Maven-3.8.1+-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square&logo=apache&logoColor=white)](./LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/slothboot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./github/workflows/ci.yml)
-[![Stars](https://img.shields.io/github/stars/GuoHuaijian/slothboot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/slothboot/stargazers)
-[![Issues](https://img.shields.io/github/issues/GuoHuaijian/slothboot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/slothboot/issues)
+[![Build](https://img.shields.io/github/actions/workflow/status/GuoHuaijian/SlothBoot/ci.yml?style=flat-square&logo=githubactions&logoColor=white&label=CI)](./.github/workflows/ci.yml)
+[![Stars](https://img.shields.io/github/stars/GuoHuaijian/SlothBoot?style=flat-square&logo=github&logoColor=white)](https://github.com/GuoHuaijian/SlothBoot/stargazers)
+[![Issues](https://img.shields.io/github/issues/GuoHuaijian/SlothBoot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/SlothBoot/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](./CHANGELOG.md)
 
@@ -87,10 +87,10 @@
 
 | 层次 | 技术选型 |
 |------|---------|
-| **语言 & 运行时** | Java 21 · Maven 3.9+ |
+| **语言 & 运行时** | Java 21 · Maven 3.8.1+ |
 | **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.0.0 |
 | **微服务生态** | Spring Cloud Alibaba 2025.0.0.0 · Nacos · Sentinel · Seata |
-| **AI 能力** | Spring AI 1.0.0 · OpenAI · 通义千问 · DeepSeek · Ollama |
+| **AI 能力** | Spring AI 1.1.4 · OpenAI · 通义千问 · DeepSeek · Ollama |
 | **数据层** | MyBatis-Plus · MySQL · Elasticsearch |
 | **缓存 & 消息** | Redis · RocketMQ |
 | **任务 & 文件** | XXL-Job · MinIO · 阿里云 OSS |
@@ -184,21 +184,27 @@ sloth-boot/
 | 工具 | 版本要求 |
 |------|---------|
 | JDK | 21+ |
-| Maven | 3.9+ |
+| Maven | 3.8.1+ |
 | MySQL | 8.0+（示例工程需要） |
 | Redis | 6.0+（示例工程需要） |
 
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/your-org/sloth-boot.git
+git clone https://github.com/GuoHuaijian/SlothBoot.git
 cd sloth-boot
 ```
 
 ### 2. 构建全量模块
 
 ```bash
-mvn clean install -DskipTests
+mvn clean verify -DskipTests
+```
+
+本仓库已使用 JDK 21 和 Maven 3.8.1 完成全量验证：
+
+```bash
+mvn -B clean verify -DskipTests
 ```
 
 ### 3. 启动示例工程
@@ -272,8 +278,8 @@ spring:
 
 ```text
 Phase 1 — 骨架完成               ████████████████████  100% ✅
-Phase 2 — 编译修复与验证          ████░░░░░░░░░░░░░░░░   20% 🔧
-Phase 3 — 文档 & 单测补全         ░░░░░░░░░░░░░░░░░░░░    0% 📋
+Phase 2 — 编译修复与验证          ████████████████████  100% ✅
+Phase 3 — 文档 & 单测补全         ██░░░░░░░░░░░░░░░░░░   10% 📋
 Phase 4 — Release 流程与版本策略   ░░░░░░░░░░░░░░░░░░░░    0% 🏷
 Phase 5 — 架构图 & 可视化文档      ░░░░░░░░░░░░░░░░░░░░    0% 🎨
 ```
@@ -283,7 +289,7 @@ Phase 5 — 架构图 & 可视化文档      ░░░░░░░░░░░�
 - [x] 完成主干 `starter` 模块骨架
 - [x] 完成示例工程与基础仓库文档
 - [x] 完成 GitHub 协作模板和基础 CI
-- [ ] 完成一轮 `mvn clean verify` 编译修复
+- [x] 完成一轮 `mvn clean verify -DskipTests` 编译修复
 - [ ] 补充 `docs/` 模块级别文档目录
 - [ ] 增加单元测试与集成测试覆盖
 - [ ] 建立 Release 版本策略与 Changelog 自动生成

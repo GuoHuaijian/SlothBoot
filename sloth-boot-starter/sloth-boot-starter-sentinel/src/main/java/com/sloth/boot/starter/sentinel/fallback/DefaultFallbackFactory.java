@@ -37,10 +37,10 @@ public abstract class DefaultFallbackFactory<T> implements FallbackFactory<T> {
     /**
      * 构造默认失败响应。
      *
-     * @param <R> 响应泛型
+     * @param <D> 响应数据类型
      * @return 默认失败响应
      */
-    protected <R> com.sloth.boot.common.result.R<R> defaultFailure() {
+    protected <D> R<D> defaultFailure() {
         return R.fail("服务暂不可用");
     }
 }

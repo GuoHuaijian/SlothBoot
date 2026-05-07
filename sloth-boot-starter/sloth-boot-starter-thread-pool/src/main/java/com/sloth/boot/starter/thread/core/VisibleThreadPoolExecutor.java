@@ -9,6 +9,7 @@ import org.slf4j.MDC;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -165,20 +166,20 @@ public class VisibleThreadPoolExecutor extends ThreadPoolExecutor {
      * @return 线程池运行状态
      */
     public Map<String, Object> snapshot() {
-        return Map.of(
-                "poolName", poolName,
-                "corePoolSize", getCorePoolSize(),
-                "maximumPoolSize", getMaximumPoolSize(),
-                "poolSize", getPoolSize(),
-                "activeCount", getActiveCount(),
-                "completedTaskCount", getCompletedTaskCount(),
-                "taskCount", getTaskCount(),
-                "queueSize", getQueueSize(),
-                "queueRemainingCapacity", getQueueRemainingCapacity(),
-                "rejectedCount", rejectedCount.get(),
-                "maxCostTime", maxCostTime.get(),
-                "avgCostTime", getAvgCostTime()
-        );
+        Map<String, Object> snapshot = new LinkedHashMap<>(16);
+        snapshot.put("poolName", poolName);
+        snapshot.put("corePoolSize", getCorePoolSize());
+        snapshot.put("maximumPoolSize", getMaximumPoolSize());
+        snapshot.put("poolSize", getPoolSize());
+        snapshot.put("activeCount", getActiveCount());
+        snapshot.put("completedTaskCount", getCompletedTaskCount());
+        snapshot.put("taskCount", getTaskCount());
+        snapshot.put("queueSize", getQueueSize());
+        snapshot.put("queueRemainingCapacity", getQueueRemainingCapacity());
+        snapshot.put("rejectedCount", rejectedCount.get());
+        snapshot.put("maxCostTime", maxCostTime.get());
+        snapshot.put("avgCostTime", getAvgCostTime());
+        return snapshot;
     }
 
     private Runnable wrap(Runnable runnable) {
