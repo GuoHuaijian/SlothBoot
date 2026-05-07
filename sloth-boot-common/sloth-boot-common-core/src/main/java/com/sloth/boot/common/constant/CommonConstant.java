@@ -36,6 +36,22 @@ public final class CommonConstant {
      */
     public static final String GBK = "GBK";
 
+    // ==================== Date/time formats ====================
+    /**
+     * Default date format.
+     */
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+    /**
+     * Default time format.
+     */
+    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
+
+    /**
+     * Default date-time format.
+     */
+    public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     // ==================== 分隔符 ====================
     /**
      * 斜杠

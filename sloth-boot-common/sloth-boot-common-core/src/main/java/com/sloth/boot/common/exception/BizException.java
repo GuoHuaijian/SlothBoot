@@ -53,7 +53,7 @@ public class BizException extends BaseException {
      * @return 业务异常
      */
     public static BizException of(int code, String message) {
-        return new BizException(new GlobalErrorCode(code, message));
+        return new BizException(new SimpleErrorCode(code, message));
     }
 
     /**

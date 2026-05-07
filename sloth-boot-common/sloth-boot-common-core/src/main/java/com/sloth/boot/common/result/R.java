@@ -3,6 +3,7 @@ package com.sloth.boot.common.result;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sloth.boot.common.constant.CommonConstant;
 import com.sloth.boot.common.context.TraceContext;
+import com.sloth.boot.common.exception.ErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;

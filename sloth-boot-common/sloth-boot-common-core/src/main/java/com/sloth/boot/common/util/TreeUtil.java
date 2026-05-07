@@ -68,12 +68,20 @@ public class TreeUtil {
         }
 
         for (T node : tree) {
-            flatList.add(node);
-            if (CollUtil.isNotEmpty(node.getChildren())) {
-                flatList.addAll(flattenTree(node.getChildren()));
-            }
+            appendNode(flatList, node);
         }
 
         return flatList;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends TreeNode> void appendNode(List<T> flatList, TreeNode node) {
+        flatList.add((T) node);
+        if (CollUtil.isEmpty(node.getChildren())) {
+            return;
+        }
+        for (TreeNode child : node.getChildren()) {
+            appendNode(flatList, child);
+        }
     }
 }

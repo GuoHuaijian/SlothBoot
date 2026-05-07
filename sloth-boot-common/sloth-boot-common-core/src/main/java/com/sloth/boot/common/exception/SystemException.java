@@ -53,7 +53,7 @@ public class SystemException extends BaseException {
      * @return 系统异常
      */
     public static SystemException of(int code, String message) {
-        return new SystemException(new GlobalErrorCode(code, message));
+        return new SystemException(new SimpleErrorCode(code, message));
     }
 
     /**

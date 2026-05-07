@@ -8,6 +8,7 @@
         <groupId>com.sloth.boot</groupId>
         <artifactId>sloth-boot-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>sloth-boot-starter-web</artifactId>

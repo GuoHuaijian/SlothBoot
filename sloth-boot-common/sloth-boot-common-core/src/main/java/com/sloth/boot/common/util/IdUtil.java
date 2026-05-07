@@ -13,7 +13,7 @@ public class IdUtil {
     /**
      * 雪花算法实例
      */
-    private static final Snowflake SNOWFLAKE = IdUtil.getSnowflake(1, 1);
+    private static final Snowflake SNOWFLAKE = cn.hutool.core.util.IdUtil.getSnowflake(1, 1);
 
     /**
      * 生成雪花 ID
@@ -39,7 +39,7 @@ public class IdUtil {
      * @return UUID 字符串
      */
     public static String fastSimpleUUID() {
-        return IdUtil.fastSimpleUUID();
+        return cn.hutool.core.util.IdUtil.fastSimpleUUID();
     }
 
     /**
@@ -48,7 +48,7 @@ public class IdUtil {
      * @return Nano ID 字符串
      */
     public static String nanoId() {
-        return IdUtil.nanoId();
+        return cn.hutool.core.util.IdUtil.nanoId();
     }
 
     /**
@@ -58,6 +58,6 @@ public class IdUtil {
      * @return Nano ID 字符串
      */
     public static String nanoId(int size) {
-        return IdUtil.nanoId(size);
+        return cn.hutool.core.util.IdUtil.nanoId(size);
     }
 }

@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.redis.lock;
 
 import cn.hutool.core.util.StrUtil;
-import com.sloth.boot.common.annotation.DistributedLock;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.starter.redis.config.RedisProperties;
@@ -29,13 +28,14 @@ public class DistributedLockAspect {
     /**
      * 执行分布式锁切面逻辑。
      *
-     * @param joinPoint       切点
+     * @param joinPoint                 切点
      * @param distributedLockAnnotation 分布式锁注解
      * @return 方法执行结果
      * @throws Throwable 执行异常
      */
     @Around("@annotation(distributedLockAnnotation)")
-    public Object around(ProceedingJoinPoint joinPoint, DistributedLock distributedLockAnnotation) throws Throwable {
+    public Object around(ProceedingJoinPoint joinPoint,
+                         com.sloth.boot.common.annotation.DistributedLock distributedLockAnnotation) throws Throwable {
         String defaultKey = joinPoint.getSignature().toShortString();
         String key = SpelExpressionSupport.parse(joinPoint, distributedLockAnnotation.key(), defaultKey);
         if (StrUtil.isBlank(key)) {

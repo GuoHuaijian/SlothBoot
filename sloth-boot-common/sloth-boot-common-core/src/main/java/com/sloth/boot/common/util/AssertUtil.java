@@ -33,7 +33,7 @@ public class AssertUtil {
      */
     public static void notNull(Object obj, String msg) {
         if (obj == null) {
-            throw new BizException(msg);
+            throw BizException.of(msg);
         }
     }
 
@@ -45,7 +45,7 @@ public class AssertUtil {
      */
     public static void notEmpty(String str, String msg) {
         if (str == null || str.trim().isEmpty()) {
-            throw new BizException(msg);
+            throw BizException.of(msg);
         }
     }
 
@@ -57,7 +57,7 @@ public class AssertUtil {
      */
     public static void notEmpty(Collection<?> coll, String msg) {
         if (coll == null || coll.isEmpty()) {
-            throw new BizException(msg);
+            throw BizException.of(msg);
         }
     }
 
@@ -69,7 +69,7 @@ public class AssertUtil {
      */
     public static void isTrue(boolean condition, String msg) {
         if (!condition) {
-            throw new BizException(msg);
+            throw BizException.of(msg);
         }
     }
 
@@ -82,7 +82,7 @@ public class AssertUtil {
      */
     public static void equals(Object a, Object b, String msg) {
         if (a == null ? b != null : !a.equals(b)) {
-            throw new BizException(msg);
+            throw BizException.of(msg);
         }
     }
 }
