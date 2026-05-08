@@ -26,6 +26,6 @@ public final class ExcelResponseWrapper {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename*=utf-8''"
-                + URLEncoder.encode(fileName + ".xlsx", StandardCharsets.UTF_8));
+            + URLEncoder.encode(fileName + ".xlsx", StandardCharsets.UTF_8));
     }
 }

@@ -49,11 +49,11 @@ public class OkHttpConfig {
     @ConditionalOnMissingBean
     public OkHttpClient okHttpClient(ConnectionPool connectionPool, FeignProperties feignProperties) {
         return new OkHttpClient.Builder()
-                .connectionPool(connectionPool)
-                .connectTimeout(feignProperties.getConnectTimeout(), TimeUnit.SECONDS)
-                .readTimeout(feignProperties.getReadTimeout(), TimeUnit.SECONDS)
-                .writeTimeout(feignProperties.getWriteTimeout(), TimeUnit.SECONDS)
-                .retryOnConnectionFailure(true)
-                .build();
+            .connectionPool(connectionPool)
+            .connectTimeout(feignProperties.getConnectTimeout(), TimeUnit.SECONDS)
+            .readTimeout(feignProperties.getReadTimeout(), TimeUnit.SECONDS)
+            .writeTimeout(feignProperties.getWriteTimeout(), TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .build();
     }
 }

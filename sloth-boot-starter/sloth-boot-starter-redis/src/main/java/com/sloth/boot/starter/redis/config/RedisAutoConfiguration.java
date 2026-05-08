@@ -1,17 +1,17 @@
 package com.sloth.boot.starter.redis.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sloth.boot.starter.redis.bloom.RedisBloomFilter;
 import com.sloth.boot.starter.redis.cache.MultiLevelCacheManager;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
 import com.sloth.boot.starter.redis.delay.RedisDelayQueue;
 import com.sloth.boot.starter.redis.id.RedisIdGenerator;
 import com.sloth.boot.starter.redis.idempotent.IdempotentAspect;
 import com.sloth.boot.starter.redis.limiter.RateLimiterAspect;
-import com.sloth.boot.starter.redis.lock.DistributedLock;
-import com.sloth.boot.starter.redis.lock.DistributedLockAspect;
-import com.sloth.boot.starter.redis.lock.DistributedReadWriteLock;
-import com.sloth.boot.starter.redis.lock.RedissonDistributedLock;
-import com.sloth.boot.starter.redis.lock.RedissonReadWriteLock;
+import com.sloth.boot.starter.redis.lock.*;
+import com.sloth.boot.starter.redis.pubsub.RedisPubSubTemplate;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,7 +28,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scripting.support.ResourceScriptSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Redis 自动配置。
@@ -46,16 +45,15 @@ public class RedisAutoConfiguration {
     /**
      * 注册 RedisTemplate。
      *
-     * @param redisConnectionFactory            Redis 连接工厂
+     * @param redisConnectionFactory             Redis 连接工厂
      * @param genericJackson2JsonRedisSerializer JSON 序列化器
      * @return RedisTemplate
      */
     @Bean
     @Primary
     @ConditionalOnMissingBean(name = "slothRedisTemplate")
-    public RedisTemplate<String, Object> slothRedisTemplate(
-            RedisConnectionFactory redisConnectionFactory,
-            GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer) {
+    public RedisTemplate<String, Object> slothRedisTemplate(RedisConnectionFactory redisConnectionFactory,
+                                                            GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
@@ -115,7 +113,8 @@ public class RedisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(DistributedLock.class)
-    public DistributedLockAspect distributedLockAspect(DistributedLock distributedLock, RedisProperties redisProperties) {
+    public DistributedLockAspect distributedLockAspect(DistributedLock distributedLock,
+                                                       RedisProperties redisProperties) {
         return new DistributedLockAspect(distributedLock, redisProperties);
     }
 
@@ -128,12 +127,10 @@ public class RedisAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public RateLimiterAspect rateLimiterAspect(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties) {
-        return new RateLimiterAspect(
-                stringRedisTemplate,
-                redisProperties,
-                new ResourceScriptSource(new ClassPathResource("scripts/rate_limiter.lua"))
-        );
+    public RateLimiterAspect rateLimiterAspect(StringRedisTemplate stringRedisTemplate,
+                                               RedisProperties redisProperties) {
+        return new RateLimiterAspect(stringRedisTemplate, redisProperties,
+            new ResourceScriptSource(new ClassPathResource("scripts/rate_limiter.lua")));
     }
 
     /**
@@ -175,7 +172,8 @@ public class RedisAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "sloth.redis.id-generator", name = "enabled", havingValue = "true", matchIfMissing = true)
     public RedisIdGenerator redisIdGenerator(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties) {
-        return new RedisIdGenerator(stringRedisTemplate, redisProperties);
+        return new RedisIdGenerator(stringRedisTemplate, redisProperties,
+            new ResourceScriptSource(new ClassPathResource("scripts/id_generator.lua")));
     }
 
     /**
@@ -203,8 +201,40 @@ public class RedisAutoConfiguration {
     @ConditionalOnProperty(prefix = "sloth.redis.multi-cache", name = "enabled", havingValue = "true")
     @ConditionalOnClass(name = "com.github.benmanes.caffeine.cache.Caffeine")
     public MultiLevelCacheManager multiLevelCacheManager(
-            @Qualifier("slothRedisTemplate") RedisTemplate<String, Object> redisTemplate,
-            RedisProperties redisProperties) {
+        @Qualifier("slothRedisTemplate") RedisTemplate<String, Object> redisTemplate, RedisProperties redisProperties) {
         return new MultiLevelCacheManager(redisTemplate, redisProperties);
+    }
+
+    /**
+     * 注册 Redis 布隆过滤器。
+     *
+     * @param redissonClient  Redisson 客户端
+     * @param redisProperties Redis 配置
+     * @return Redis 布隆过滤器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(RedissonClient.class)
+    @ConditionalOnProperty(prefix = "sloth.redis.bloom", name = "enabled", havingValue = "true")
+    public RedisBloomFilter<?> redisBloomFilter(RedissonClient redissonClient, RedisProperties redisProperties) {
+        RedisProperties.BloomFilter config = redisProperties.getBloomFilter();
+        return new RedisBloomFilter<>(redissonClient, config.getExpectedInsertions(),
+            config.getFalsePositiveProbability());
+    }
+
+    /**
+     * 注册 Redis Pub/Sub 消息模板。
+     *
+     * @param stringRedisTemplate StringRedisTemplate
+     * @param objectMapper        JSON 序列化器
+     * @param connectionFactory   Redis 连接工厂
+     * @return Redis Pub/Sub 消息模板
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.redis.pubsub", name = "enabled", havingValue = "true")
+    public RedisPubSubTemplate redisPubSubTemplate(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper,
+                                                   RedisConnectionFactory connectionFactory) {
+        return new RedisPubSubTemplate(stringRedisTemplate, objectMapper, connectionFactory);
     }
 }

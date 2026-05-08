@@ -27,12 +27,12 @@ public class RequestLogGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         long startTime = System.currentTimeMillis();
         return chain.filter(exchange)
-                .doFinally(signalType -> log.info("Gateway request, method={}, path={}, query={}, clientIp={}, cost={}ms",
-                        exchange.getRequest().getMethod(),
-                        exchange.getRequest().getPath().value(),
-                        exchange.getRequest().getURI().getQuery(),
-                        exchange.getRequest().getRemoteAddress(),
-                        System.currentTimeMillis() - startTime));
+            .doFinally(signalType -> log.info("Gateway request, method={}, path={}, query={}, clientIp={}, cost={}ms",
+                exchange.getRequest().getMethod(),
+                exchange.getRequest().getPath().value(),
+                exchange.getRequest().getURI().getQuery(),
+                exchange.getRequest().getRemoteAddress(),
+                System.currentTimeMillis() - startTime));
     }
 
     @Override

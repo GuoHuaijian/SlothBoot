@@ -20,6 +20,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Docker 支持（Dockerfile + docker-compose.yml）
 - 示例控制器：Redis 缓存/分布式锁/限流/幂等、Sa-Token 认证、Excel 导入导出
 - DataScopeInterceptor 真正的 WHERE 子句注入（支持 dept/dept_and_below/self 三种数据范围）
+- Spotless/Checkstyle/SpotBugs 静态分析工具链
+- Redis Bloom 过滤器支持（starter-redis）
+- Redis Pub/Sub 模板（starter-redis）
+- Gzip 响应压缩（starter-web）
+- PermissionService RBAC SPI（starter-auth）
+- Token 黑名单服务（starter-auth）
+- AI 结构化输出支持（starter-ai）
+- AI Function Calling 注册器（starter-ai）
+- 死信队列处理器（starter-mq）
+- 预签名 URL 生成（starter-oss）
+- 动态线程池重配置（starter-thread-pool）
+- Gateway 重试过滤器（starter-gateway）
+- 可配置的监控告警阈值（starter-monitor）
+- 错误码注册表（ErrorRegistry）
+- 配置参考文档（`docs/configuration-reference.md`）
+- 19 个关键包的 `package-info.java`
+- 全模块 Javadoc 改进
+- 7 个 AutoConfiguration 条件装配测试（mybatis、auth、thread-pool、feign、monitor、log、security）
 
 ### Fixed
 - `UserContext` 和 `TraceContext` 改为 `TransmittableThreadLocal`，修复异步上下文丢失
@@ -32,12 +50,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - POM SCM URL 和开发者信息更新为真实 GitHub 地址
 - CORS 配置修正（credentials=true 时不能用 `*`）
 - `.gitignore` 添加 `.m2/`、`*.jar`、`.env` 等条目
+- RateLimiterAspect RedisScript 性能问题（原先每次请求重建）
+- MybatisPlusAutoConfiguration 硬编码 DbType.MYSQL（改为自动检测）
+- RedisIdGenerator 线程安全问题（原子 INCR+EXPIRE Lua 脚本）
+- WebAutoConfiguration 异常吞没问题
+- RedissonDistributedLock 解锁安全性
 
 ### Changed
 - CI 流水线移除 `-DskipTests`，运行完整测试
 - 示例服务 `allow-bean-definition-overriding` 改为 `false`
 - 移除废弃的 `bootstrap.yml`，使用 `spring.config.import` 方式
 - 示例服务添加优雅停机配置（`server.shutdown=graceful`）
+- 消除 14 个重复文件（11 个 Jackson 序列化器 + 3 个 Feign 异常类）
+- CI 流水线新增 Checkstyle、SpotBugs、Spotless 检查
 
 ## [1.0.0-SNAPSHOT] - 2026-04-23
 

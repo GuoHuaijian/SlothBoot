@@ -46,8 +46,8 @@ public class BusinessMetrics {
     /**
      * 递增计数器（带标签）。
      *
-     * @param name   指标名称
-     * @param tags   标签键值对（key1, value1, key2, value2, ...）
+     * @param name 指标名称
+     * @param tags 标签键值对（key1, value1, key2, value2, ...）
      */
     public void increment(String name, String... tags) {
         Counter.builder(name).tags(tags).register(meterRegistry).increment();

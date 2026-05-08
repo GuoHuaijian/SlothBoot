@@ -4,7 +4,6 @@ import com.sloth.boot.starter.thread.async.AsyncExceptionHandler;
 import com.sloth.boot.starter.thread.core.ThreadPoolManager;
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
-import com.sloth.boot.starter.thread.monitor.ThreadPoolAlarmTask;
 import com.sloth.boot.starter.thread.decorator.TtlTaskDecorator;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolEndpoint;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolMetrics;
@@ -22,14 +21,7 @@ import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -145,9 +137,9 @@ public class ThreadPoolAutoConfiguration {
                                                                    ThreadPoolRegistry threadPoolRegistry) {
         ThreadPoolProperties.PoolConfig poolConfig = properties.getPools().getOrDefault("scheduled", new ThreadPoolProperties.PoolConfig());
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
-                poolConfig.getCoreSize(),
-                buildThreadFactory(poolConfig.getThreadNamePrefix()),
-                new LogRejectedExecutionHandler("scheduled", true)
+            poolConfig.getCoreSize(),
+            buildThreadFactory(poolConfig.getThreadNamePrefix()),
+            new LogRejectedExecutionHandler("scheduled", true)
         );
         executor.setKeepAliveTime(poolConfig.getKeepAliveTime(), TimeUnit.SECONDS);
         executor.setRemoveOnCancelPolicy(true);
@@ -177,30 +169,31 @@ public class ThreadPoolAutoConfiguration {
     @Bean
     @ConditionalOnClass(Endpoint.class)
     @ConditionalOnMissingBean
-    public ThreadPoolEndpoint threadPoolEndpoint(ThreadPoolRegistry threadPoolRegistry) {
-        return new ThreadPoolEndpoint(threadPoolRegistry);
+    public ThreadPoolEndpoint threadPoolEndpoint(ThreadPoolRegistry threadPoolRegistry,
+                                                 ThreadPoolManager threadPoolManager) {
+        return new ThreadPoolEndpoint(threadPoolRegistry, threadPoolManager);
     }
 
     private VisibleThreadPoolExecutor buildExecutor(String poolName, ThreadPoolProperties.PoolConfig poolConfig) {
         BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(poolConfig.getQueueCapacity());
         LogRejectedExecutionHandler rejectedHandler = new LogRejectedExecutionHandler(
-                poolName,
-                "CALLER_RUNS".equalsIgnoreCase(poolConfig.getRejectedPolicy())
+            poolName,
+            "CALLER_RUNS".equalsIgnoreCase(poolConfig.getRejectedPolicy())
         );
         return new VisibleThreadPoolExecutor(
-                poolName,
-                poolConfig.getCoreSize(),
-                poolConfig.getMaxSize(),
-                poolConfig.getKeepAliveTime(),
-                TimeUnit.SECONDS,
-                queue,
-                buildThreadFactory(poolConfig.getThreadNamePrefix()),
-                (runnable, executor) -> {
-                    if (executor instanceof VisibleThreadPoolExecutor visibleThreadPoolExecutor) {
-                        visibleThreadPoolExecutor.incrementRejectedCount();
-                    }
-                    rejectedHandler.rejectedExecution(runnable, executor);
+            poolName,
+            poolConfig.getCoreSize(),
+            poolConfig.getMaxSize(),
+            poolConfig.getKeepAliveTime(),
+            TimeUnit.SECONDS,
+            queue,
+            buildThreadFactory(poolConfig.getThreadNamePrefix()),
+            (runnable, executor) -> {
+                if (executor instanceof VisibleThreadPoolExecutor visibleThreadPoolExecutor) {
+                    visibleThreadPoolExecutor.incrementRejectedCount();
                 }
+                rejectedHandler.rejectedExecution(runnable, executor);
+            }
         );
     }
 

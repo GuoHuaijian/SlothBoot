@@ -45,8 +45,8 @@ public class ThreadPoolAlarmEvent extends BaseEvent {
     private final long completedTaskCount;
 
     public ThreadPoolAlarmEvent(Object source, String poolName, int activeCount,
-                                  int queueSize, int queueCapacity, double usagePercent,
-                                  long completedTaskCount) {
+                                int queueSize, int queueCapacity, double usagePercent,
+                                long completedTaskCount) {
         super(source);
         this.poolName = poolName;
         this.activeCount = activeCount;

@@ -4,25 +4,26 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.IllegalSQLInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.starter.mybatis.handler.AutoFillMetaObjectHandler;
 import com.sloth.boot.starter.mybatis.injector.InsertBatchSqlInjector;
-import com.sloth.boot.starter.mybatis.interceptor.DataPermissionInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.DataScopeInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.SlowSqlInterceptor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * MyBatis Plus 自动配置。
@@ -34,18 +35,22 @@ import org.springframework.core.env.Environment;
 @EnableConfigurationProperties(MybatisPlusProperties.class)
 public class MybatisPlusAutoConfiguration {
 
+    private static final Logger log = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
+
     /**
      * 注册 MyBatis Plus 主拦截器。
      *
      * @param properties  配置属性
      * @param environment 环境信息
+     * @param dataSource  数据源，用于自动检测数据库类型
      * @return 主拦截器
      */
     @Bean
     @ConditionalOnMissingBean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(MybatisPlusProperties properties, Environment environment) {
+    public MybatisPlusInterceptor mybatisPlusInterceptor(MybatisPlusProperties properties, Environment environment,
+                                                         DataSource dataSource) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(detectDbType(dataSource)));
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         if (isDevProfile(environment)) {
@@ -76,12 +81,13 @@ public class MybatisPlusAutoConfiguration {
     /**
      * 注册自动填充处理器。
      *
+     * @param properties MyBatis Plus 配置属性
      * @return 自动填充处理器
      */
     @Bean
     @ConditionalOnMissingBean(MetaObjectHandler.class)
-    public MetaObjectHandler metaObjectHandler() {
-        return new AutoFillMetaObjectHandler();
+    public MetaObjectHandler metaObjectHandler(MybatisPlusProperties properties) {
+        return new AutoFillMetaObjectHandler(properties);
     }
 
     /**
@@ -136,5 +142,46 @@ public class MybatisPlusAutoConfiguration {
             }
         }
         return environment.getActiveProfiles().length == 0;
+    }
+
+    /**
+     * 根据数据源 JDBC URL 自动检测数据库类型。
+     *
+     * @param dataSource 数据源
+     * @return 数据库类型，默认返回 {@link DbType#MYSQL}
+     */
+    private DbType detectDbType(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            String url = connection.getMetaData().getURL();
+            if (url == null) {
+                return DbType.MYSQL;
+            }
+            if (url.startsWith("jdbc:mysql:")) {
+                return DbType.MYSQL;
+            } else if (url.startsWith("jdbc:postgresql:")) {
+                return DbType.POSTGRE_SQL;
+            } else if (url.startsWith("jdbc:oracle:")) {
+                return DbType.ORACLE;
+            } else if (url.startsWith("jdbc:sqlserver:")) {
+                return DbType.SQL_SERVER;
+            } else if (url.startsWith("jdbc:mariadb:")) {
+                return DbType.MARIADB;
+            } else if (url.startsWith("jdbc:h2:")) {
+                return DbType.H2;
+            } else if (url.startsWith("jdbc:sqlite:")) {
+                return DbType.SQLITE;
+            } else if (url.startsWith("jdbc:dm:")) {
+                return DbType.DM;
+            } else if (url.startsWith("jdbc:kingbase:")) {
+                return DbType.KINGBASE_ES;
+            } else if (url.startsWith("jdbc:oceanbase:")) {
+                return DbType.OCEAN_BASE;
+            }
+            log.warn("无法识别数据库类型, JDBC URL: {}, 将使用默认 MySQL 方言", url);
+            return DbType.MYSQL;
+        } catch (SQLException e) {
+            log.warn("检测数据库类型失败, 将使用默认 MySQL 方言", e);
+            return DbType.MYSQL;
+        }
     }
 }

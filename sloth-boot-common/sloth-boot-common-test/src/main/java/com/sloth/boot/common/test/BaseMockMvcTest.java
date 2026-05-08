@@ -13,6 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * MockMvc 测试基类。
+ * <p>
+ * 继承自 {@link BaseSpringBootTest}，自动配置 MockMvc， 提供 GET/POST/PUT/DELETE 等 HTTP
+ * 请求辅助方法以及通用响应断言方法， 简化 Controller 层接口测试。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -20,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public abstract class BaseMockMvcTest extends BaseSpringBootTest {
 
+    /**
+     * MockMvc 实例，由 Spring 自动注入。
+     */
     @Autowired
     protected MockMvc mockMvc;
 
@@ -43,9 +49,8 @@ public abstract class BaseMockMvcTest extends BaseSpringBootTest {
      * @throws Exception 执行异常
      */
     protected ResultActions post(String url, Object body) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.toJson(body)));
+        return mockMvc.perform(
+            MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(body)));
     }
 
     /**
@@ -57,9 +62,8 @@ public abstract class BaseMockMvcTest extends BaseSpringBootTest {
      * @throws Exception 执行异常
      */
     protected ResultActions put(String url, Object body) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.put(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.toJson(body)));
+        return mockMvc.perform(
+            MockMvcRequestBuilders.put(url).contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(body)));
     }
 
     /**
@@ -93,8 +97,7 @@ public abstract class BaseMockMvcTest extends BaseSpringBootTest {
      * @throws Exception 执行异常
      */
     protected ResultActions post(String url) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .contentType(MediaType.APPLICATION_JSON));
+        return mockMvc.perform(MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON));
     }
 
     /**
@@ -105,8 +108,7 @@ public abstract class BaseMockMvcTest extends BaseSpringBootTest {
      * @throws Exception 断言异常
      */
     protected ResultActions assertSuccess(ResultActions result) throws Exception {
-        return result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0));
+        return result.andExpect(status().isOk()).andExpect(jsonPath("$.code").value(0));
     }
 
     /**
@@ -118,14 +120,15 @@ public abstract class BaseMockMvcTest extends BaseSpringBootTest {
      */
     protected ResultActions assertFail(ResultActions result) throws Exception {
         return result.andExpect(jsonPath("$.code").isNumber())
-                .andExpect(jsonPath("$.code").value(org.hamcrest.Matchers.not(0)));
+            .andExpect(jsonPath("$.code").value(org.hamcrest.Matchers.not(0)));
     }
 
     /**
      * 将参数键值对转换为 MultiValueMap。
      */
     private static org.springframework.util.MultiValueMap<String, String> toMultiValueMap(Object... params) {
-        org.springframework.util.LinkedMultiValueMap<String, String> map = new org.springframework.util.LinkedMultiValueMap<>();
+        org.springframework.util.LinkedMultiValueMap<String, String> map =
+            new org.springframework.util.LinkedMultiValueMap<>();
         for (int i = 0; i < params.length - 1; i += 2) {
             map.add(params[i].toString(), params[i + 1].toString());
         }

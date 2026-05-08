@@ -15,6 +15,11 @@
     <name>Sloth Boot Generator</name>
     <description>Sloth Boot 代码生成器，基于 MyBatis-Plus Generator 封装</description>
 
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+        <spotbugs.skip>true</spotbugs.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.sloth.boot</groupId>

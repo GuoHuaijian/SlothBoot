@@ -39,7 +39,7 @@ public class IdempotentAutoConfiguration {
     /**
      * 注册 Token 幂等服务。
      *
-     * @param stringRedisTemplate Redis 模板
+     * @param stringRedisTemplate  Redis 模板
      * @param idempotentProperties 幂等配置
      * @return Token 幂等服务
      */
@@ -53,7 +53,7 @@ public class IdempotentAutoConfiguration {
     /**
      * 注册幂等切面。
      *
-     * @param stringRedisTemplate Redis 模板
+     * @param stringRedisTemplate  Redis 模板
      * @param idempotentProperties 幂等配置
      * @return 幂等切面
      */

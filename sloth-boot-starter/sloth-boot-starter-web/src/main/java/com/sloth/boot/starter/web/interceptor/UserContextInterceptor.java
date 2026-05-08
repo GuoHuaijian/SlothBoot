@@ -4,10 +4,9 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.UserContext;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * 用户上下文拦截器。
@@ -52,7 +51,8 @@ public class UserContextInterceptor implements HandlerInterceptor {
      * @param ex       异常对象
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                Exception ex) {
         UserContext.clear();
     }
 }

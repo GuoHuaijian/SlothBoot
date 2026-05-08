@@ -2,6 +2,7 @@ package com.sloth.boot.starter.redis.lock;
 
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -51,7 +52,11 @@ public class RedissonDistributedLock implements DistributedLock {
     public void unlock(String key) {
         RLock lock = redissonClient.getLock(key);
         if (lock.isHeldByCurrentThread()) {
-            lock.unlock();
+            try {
+                lock.unlock();
+            } catch (IllegalMonitorStateException e) {
+                log.warn("释放分布式锁失败, 锁可能已过期或已释放, key={}", key, e);
+            }
         }
     }
 

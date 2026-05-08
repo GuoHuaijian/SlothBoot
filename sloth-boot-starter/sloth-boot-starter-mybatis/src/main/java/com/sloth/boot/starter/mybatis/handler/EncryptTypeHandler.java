@@ -36,16 +36,40 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
         ps.setString(i, encrypt(parameter));
     }
 
+    /**
+     * 根据列名获取解密后的结果。
+     *
+     * @param rs         结果集
+     * @param columnName 列名
+     * @return 解密后的字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
         return decrypt(rs.getString(columnName));
     }
 
+    /**
+     * 根据列索引获取解密后的结果。
+     *
+     * @param rs          结果集
+     * @param columnIndex 列索引
+     * @return 解密后的字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         return decrypt(rs.getString(columnIndex));
     }
 
+    /**
+     * 从存储过程获取解密后的结果。
+     *
+     * @param cs          CallableStatement
+     * @param columnIndex 列索引
+     * @return 解密后的字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         return decrypt(cs.getString(columnIndex));

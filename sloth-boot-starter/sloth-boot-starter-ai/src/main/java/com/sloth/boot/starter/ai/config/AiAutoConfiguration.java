@@ -3,6 +3,7 @@ package com.sloth.boot.starter.ai.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sloth.boot.starter.ai.core.AiChatClient;
 import com.sloth.boot.starter.ai.core.SpringAiChatClient;
+import com.sloth.boot.starter.ai.function.AiFunctionRegistry;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
@@ -55,7 +56,7 @@ public class AiAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "slothAiChatClient")
     public ChatClient slothAiChatClient(ChatModel chatModel, AiProperties aiProperties,
-                                         @Autowired(required = false) ChatMemory chatMemory) {
+                                        @Autowired(required = false) ChatMemory chatMemory) {
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         if (StringUtils.hasText(aiProperties.getDefaultSystemPrompt())) {
             builder.defaultSystem(aiProperties.getDefaultSystemPrompt());
@@ -72,16 +73,27 @@ public class AiAutoConfiguration {
     /**
      * 注册统一 AI Chat Client。
      *
-     * @param chatClient     Spring AI ChatClient
-     * @param chatMemory     对话记忆（可选）
-     * @param objectMapper   JSON 序列化器
+     * @param chatClient   Spring AI ChatClient
+     * @param chatMemory   对话记忆（可选）
+     * @param objectMapper JSON 序列化器
      * @return AI Chat Client
      */
     @Bean
     @ConditionalOnMissingBean
-    public AiChatClient aiChatClient(ChatClient chatClient,
-                                      @Autowired(required = false) ChatMemory chatMemory,
-                                      ObjectMapper objectMapper) {
+    public AiChatClient aiChatClient(ChatClient chatClient, @Autowired(required = false) ChatMemory chatMemory,
+                                     ObjectMapper objectMapper) {
         return new SpringAiChatClient(chatClient, chatMemory, objectMapper);
+    }
+
+    /**
+     * 注册 AI 函数调用注册中心。
+     *
+     * @return 函数注册中心
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.ai.function", name = "enabled", havingValue = "true")
+    public AiFunctionRegistry aiFunctionRegistry() {
+        return new AiFunctionRegistry();
     }
 }

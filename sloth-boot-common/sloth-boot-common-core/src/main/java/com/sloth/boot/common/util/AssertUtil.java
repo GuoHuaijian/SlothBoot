@@ -34,8 +34,8 @@ public final class AssertUtil {
     /**
      * 断言对象不为空，否则抛出业务异常
      *
-     * @param obj  对象
-     * @param msg  错误信息
+     * @param obj 对象
+     * @param msg 错误信息
      */
     public static void notNull(Object obj, String msg) {
         if (obj == null) {

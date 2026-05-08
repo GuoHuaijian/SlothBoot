@@ -181,9 +181,9 @@ public final class JsonUtil {
     /**
      * 对象类型转换（通过 JSON 序列化/反序列化）
      *
-     * @param fromValue 源对象
+     * @param fromValue   源对象
      * @param toValueType 目标类型
-     * @param <T>       目标类型
+     * @param <T>         目标类型
      * @return 转换后的对象
      */
     public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
@@ -193,7 +193,7 @@ public final class JsonUtil {
     /**
      * 合并两个 JSON 对象（后者覆盖前者）
      *
-     * @param baseJson   基础 JSON 字符串
+     * @param baseJson    基础 JSON 字符串
      * @param overlayJson 覆盖 JSON 字符串
      * @return 合并后的 JSON 字符串
      */

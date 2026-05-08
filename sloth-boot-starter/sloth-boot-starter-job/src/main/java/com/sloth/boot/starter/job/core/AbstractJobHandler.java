@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.job.core;
 
 import com.sloth.boot.common.context.TraceContext;
-import com.sloth.boot.common.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
@@ -30,7 +29,7 @@ public abstract class AbstractJobHandler {
             log.info("XXL-Job 开始执行, handler={}, traceId={}", getClass().getSimpleName(), traceId);
             doExecute();
             log.info("XXL-Job 执行成功, handler={}, traceId={}, cost={}ms",
-                    getClass().getSimpleName(), traceId, System.currentTimeMillis() - startTime);
+                getClass().getSimpleName(), traceId, System.currentTimeMillis() - startTime);
         } catch (Exception ex) {
             log.error("XXL-Job 执行失败, handler={}, traceId={}", getClass().getSimpleName(), traceId, ex);
             throw ex;

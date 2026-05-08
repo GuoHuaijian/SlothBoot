@@ -6,10 +6,9 @@ import com.sloth.boot.starter.oss.config.OssProperties;
 import com.sloth.boot.starter.oss.model.OssFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -59,10 +58,15 @@ public class LocalOssClient implements OssClient {
     }
 
     @Override
+    public String generatePresignedUrl(String objectKey, Duration expiry) {
+        return buildUrl(objectKey);
+    }
+
+    @Override
     public List<OssFile> listFiles(String prefix) {
         File baseDir = prefix == null || prefix.isBlank()
-                ? resolveBaseDir()
-                : new File(resolveBaseDir(), prefix);
+            ? resolveBaseDir()
+            : new File(resolveBaseDir(), prefix);
         List<OssFile> result = new ArrayList<>();
         if (!baseDir.exists()) {
             return result;
@@ -75,8 +79,8 @@ public class LocalOssClient implements OssClient {
             ossFile.setUrl(buildUrl(relativePath));
             ossFile.setSize(file.length());
             ossFile.setLastModified(LocalDateTime.ofInstant(file.toPath().toFile().lastModified() == 0
-                    ? java.time.Instant.now()
-                    : java.time.Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()));
+                ? java.time.Instant.now()
+                : java.time.Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()));
             result.add(ossFile);
         }
         return result;

@@ -43,7 +43,7 @@ public class CodeGenerator {
         String basePackage = config.getParentPackage() + "." + config.getModuleName();
 
         List<String> tables = config.getTableNames().length > 0
-                ? Arrays.asList(config.getTableNames()) : List.of();
+            ? Arrays.asList(config.getTableNames()) : List.of();
 
         Map<OutputFile, String> pathMap = new HashMap<>();
         pathMap.put(OutputFile.entity, config.getOutputDir() + "/" + config.getJavaPath());
@@ -54,51 +54,51 @@ public class CodeGenerator {
         pathMap.put(OutputFile.xml, config.getOutputDir() + "/" + config.getMapperXmlPath());
 
         FastAutoGenerator.create(config.getUrl(), config.getUsername(), config.getPassword())
-                .globalConfig(builder -> builder
-                        .author(config.getAuthor())
-                        .outputDir(config.getOutputDir() + "/" + config.getJavaPath())
-                        .disableOpenDir()
-                )
-                .packageConfig(builder -> builder
-                        .parent(basePackage)
-                        .entity(config.getEntityPackage())
-                        .mapper(config.getMapperPackage())
-                        .service(config.getServicePackage())
-                        .serviceImpl(config.getServiceImplPackage())
-                        .controller(config.getControllerPackage())
-                        .pathInfo(pathMap)
-                )
-                .strategyConfig(builder -> {
-                    builder.addInclude(tables);
+            .globalConfig(builder -> builder
+                .author(config.getAuthor())
+                .outputDir(config.getOutputDir() + "/" + config.getJavaPath())
+                .disableOpenDir()
+            )
+            .packageConfig(builder -> builder
+                .parent(basePackage)
+                .entity(config.getEntityPackage())
+                .mapper(config.getMapperPackage())
+                .service(config.getServicePackage())
+                .serviceImpl(config.getServiceImplPackage())
+                .controller(config.getControllerPackage())
+                .pathInfo(pathMap)
+            )
+            .strategyConfig(builder -> {
+                builder.addInclude(tables);
 
-                    // Entity 策略
-                    builder.entityBuilder()
-                            .enableLombok()
-                            .enableTableFieldAnnotation()
-                            .enableRemoveIsPrefix()
-                            .logicDeleteColumnName("deleted")
-                            .versionColumnName("version");
+                // Entity 策略
+                builder.entityBuilder()
+                    .enableLombok()
+                    .enableTableFieldAnnotation()
+                    .enableRemoveIsPrefix()
+                    .logicDeleteColumnName("deleted")
+                    .versionColumnName("version");
 
-                    // 表前缀（移除表名前缀生成更简洁的类名）
-                    if (config.getTablePrefixes() != null && config.getTablePrefixes().length > 0) {
-                        builder.addTablePrefix(config.getTablePrefixes());
-                    }
+                // 表前缀（移除表名前缀生成更简洁的类名）
+                if (config.getTablePrefixes() != null && config.getTablePrefixes().length > 0) {
+                    builder.addTablePrefix(config.getTablePrefixes());
+                }
 
-                    // Mapper 策略
-                    builder.mapperBuilder()
-                            .enableMapperAnnotation();
+                // Mapper 策略
+                builder.mapperBuilder()
+                    .enableMapperAnnotation();
 
-                    // Service 策略
-                    builder.serviceBuilder()
-                            .formatServiceFileName("%sService");
+                // Service 策略
+                builder.serviceBuilder()
+                    .formatServiceFileName("%sService");
 
-                    // Controller 策略
-                    builder.controllerBuilder()
-                            .enableRestStyle()
-                            .enableHyphenStyle();
-                })
-                .templateEngine(new VelocityTemplateEngine())
-                .execute();
+                // Controller 策略
+                builder.controllerBuilder()
+                    .enableRestStyle()
+                    .enableHyphenStyle();
+            })
+            .templateEngine(new VelocityTemplateEngine())
+            .execute();
     }
 
     /**

@@ -26,7 +26,7 @@ public class DefaultStpInterface implements StpInterface {
      * <p>
      * 默认实现返回空列表，业务侧需重写。
      *
-     * @param loginId  用户 ID
+     * @param loginId   用户 ID
      * @param loginType 账号类型
      * @return 权限码列表
      */

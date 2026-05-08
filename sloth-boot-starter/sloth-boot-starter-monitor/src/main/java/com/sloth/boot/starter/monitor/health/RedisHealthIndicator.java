@@ -38,8 +38,8 @@ public class RedisHealthIndicator extends AbstractHealthIndicator {
             String pong = connection.ping();
             Properties memoryInfo = connection.serverCommands().info("memory");
             builder.up()
-                    .withDetail("ping", pong)
-                    .withDetail("usedMemory", memoryInfo == null ? null : memoryInfo.getProperty("used_memory_human"));
+                .withDetail("ping", pong)
+                .withDetail("usedMemory", memoryInfo == null ? null : memoryInfo.getProperty("used_memory_human"));
         }
     }
 }

@@ -4,41 +4,68 @@
       "name": "sloth.monitor.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Whether to enable monitor starter."
+      "description": "是否启用监控 starter。"
     },
     {
       "name": "sloth.monitor.slow-api-enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Whether to enable slow API monitoring."
+      "description": "是否启用慢接口监控。"
     },
     {
       "name": "sloth.monitor.slow-api-threshold",
       "type": "java.lang.Long",
       "defaultValue": 3000,
-      "description": "Slow API threshold in milliseconds."
+      "description": "慢接口阈值（毫秒）。"
     },
     {
       "name": "sloth.monitor.alarm.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": false,
-      "description": "Whether to enable alarm service."
+      "description": "是否启用告警服务。"
     },
     {
       "name": "sloth.monitor.alarm.type",
       "type": "java.lang.String",
       "defaultValue": "dingtalk",
-      "description": "Alarm type: dingtalk / wechat / feishu."
+      "description": "告警类型。"
     },
     {
       "name": "sloth.monitor.alarm.webhook",
       "type": "java.lang.String",
-      "description": "Webhook address."
+      "description": "告警 Webhook 地址。"
     },
     {
       "name": "sloth.monitor.alarm.secret",
       "type": "java.lang.String",
-      "description": "Webhook secret."
+      "description": "告警 Webhook 签名密钥。"
+    },
+    {
+      "name": "sloth.monitor.alarm.cpu-threshold",
+      "type": "java.lang.Double",
+      "defaultValue": 80.0,
+      "description": "CPU 使用率告警阈值（百分比），超过此值触发告警。"
+    },
+    {
+      "name": "sloth.monitor.alarm.memory-threshold",
+      "type": "java.lang.Double",
+      "defaultValue": 80.0,
+      "description": "内存使用率告警阈值（百分比），超过此值触发告警。"
+    },
+    {
+      "name": "sloth.monitor.alarm.disk-threshold",
+      "type": "java.lang.Double",
+      "defaultValue": 90.0,
+      "description": "磁盘使用率告警阈值（百分比），超过此值触发告警。"
+    }
+  ],
+  "hints": [
+    {
+      "name": "sloth.monitor.alarm.type",
+      "values": [
+        { "value": "dingtalk", "description": "钉钉" },
+        { "value": "wechat", "description": "企业微信" }
+      ]
     }
   ]
 }

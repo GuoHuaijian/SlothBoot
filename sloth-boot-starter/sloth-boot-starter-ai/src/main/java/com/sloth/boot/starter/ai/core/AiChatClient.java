@@ -82,4 +82,16 @@ public interface AiChatClient {
      * @return 解析后的对象实例
      */
     <T> T chat(String systemPrompt, String userPrompt, Class<T> type);
+
+    /**
+     * 结构化输出对话。
+     * <p>
+     * 使用 Spring AI 的结构化输出能力，将 LLM 响应直接映射为目标类型。
+     *
+     * @param request 对话请求
+     * @param clazz   目标类型
+     * @param <T>     泛型
+     * @return 结构化响应
+     */
+    <T> T chatStructured(ChatRequest request, Class<T> clazz);
 }

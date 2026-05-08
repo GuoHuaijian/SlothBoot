@@ -4,13 +4,66 @@
       "name": "sloth.thread-pool.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Whether to enable thread pool starter."
+      "description": "是否启用线程池 starter。"
     },
     {
       "name": "sloth.thread-pool.dynamic",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Whether dynamic thread pool config is enabled."
+      "description": "是否启用线程池动态配置。"
+    },
+    {
+      "name": "sloth.thread-pool.virtual-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用 Java 21 虚拟线程。启用后注册基于虚拟线程的 Executor，适用于 I/O 密集型任务。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.core-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 8,
+      "description": "线程池核心线程数。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.max-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 32,
+      "description": "线程池最大线程数。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.queue-capacity",
+      "type": "java.lang.Integer",
+      "defaultValue": 1024,
+      "description": "任务队列容量。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.keep-alive-time",
+      "type": "java.lang.Integer",
+      "defaultValue": 60,
+      "description": "空闲线程存活时间（秒）。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.thread-name-prefix",
+      "type": "java.lang.String",
+      "defaultValue": "sloth-async-",
+      "description": "线程名前缀。"
+    },
+    {
+      "name": "sloth.thread-pool.pools.*.rejected-policy",
+      "type": "java.lang.String",
+      "defaultValue": "CALLER_RUNS",
+      "description": "拒绝策略。"
+    }
+  ],
+  "hints": [
+    {
+      "name": "sloth.thread-pool.pools.*.rejected-policy",
+      "values": [
+        { "value": "CALLER_RUNS", "description": "由调用线程执行" },
+        { "value": "ABORT", "description": "抛出异常" },
+        { "value": "DISCARD", "description": "静默丢弃" },
+        { "value": "DISCARD_OLDEST", "description": "丢弃最旧任务" }
+      ]
     }
   ]
 }

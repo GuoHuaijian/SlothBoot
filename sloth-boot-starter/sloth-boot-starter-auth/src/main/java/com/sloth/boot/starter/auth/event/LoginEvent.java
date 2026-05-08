@@ -45,8 +45,17 @@ public class LoginEvent extends BaseEvent {
      */
     private final String device;
 
-    public LoginEvent(Object source, Long userId, String loginType,
-                      String loginIp, String userAgent, String device) {
+    /**
+     * 构造登录事件。
+     *
+     * @param source    事件源
+     * @param userId    用户 ID
+     * @param loginType 登录类型：login / logout / kickout / forced_logout
+     * @param loginIp   登录 IP
+     * @param userAgent User-Agent
+     * @param device    设备标识
+     */
+    public LoginEvent(Object source, Long userId, String loginType, String loginIp, String userAgent, String device) {
         super(source);
         this.userId = userId;
         this.loginType = loginType;

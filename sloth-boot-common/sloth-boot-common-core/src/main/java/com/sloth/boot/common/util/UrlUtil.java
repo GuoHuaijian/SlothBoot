@@ -60,8 +60,8 @@ public final class UrlUtil {
             return baseUrl;
         }
         String query = params.entrySet().stream()
-                .map(e -> encode(e.getKey()) + KEY_VALUE_SEPARATOR + encode(e.getValue()))
-                .collect(Collectors.joining(PARAM_DELIMITER));
+            .map(e -> encode(e.getKey()) + KEY_VALUE_SEPARATOR + encode(e.getValue()))
+            .collect(Collectors.joining(PARAM_DELIMITER));
         if (baseUrl.contains(PARAM_SEPARATOR)) {
             return baseUrl + PARAM_DELIMITER + query;
         }
@@ -102,8 +102,8 @@ public final class UrlUtil {
             return url;
         }
         String query = params.entrySet().stream()
-                .map(e -> encode(e.getKey()) + KEY_VALUE_SEPARATOR + encode(e.getValue()))
-                .collect(Collectors.joining(PARAM_DELIMITER));
+            .map(e -> encode(e.getKey()) + KEY_VALUE_SEPARATOR + encode(e.getValue()))
+            .collect(Collectors.joining(PARAM_DELIMITER));
         if (url.contains(PARAM_SEPARATOR)) {
             return url + PARAM_DELIMITER + query;
         }
@@ -128,12 +128,12 @@ public final class UrlUtil {
         String baseUrl = url.substring(0, questionMarkIndex);
         String queryString = url.substring(questionMarkIndex + 1);
         String filteredQuery = java.util.Arrays.stream(queryString.split(PARAM_DELIMITER))
-                .filter(param -> {
-                    int eqIndex = param.indexOf(KEY_VALUE_SEPARATOR);
-                    String key = eqIndex > 0 ? param.substring(0, eqIndex) : param;
-                    return !name.equals(key);
-                })
-                .collect(Collectors.joining(PARAM_DELIMITER));
+            .filter(param -> {
+                int eqIndex = param.indexOf(KEY_VALUE_SEPARATOR);
+                String key = eqIndex > 0 ? param.substring(0, eqIndex) : param;
+                return !name.equals(key);
+            })
+            .collect(Collectors.joining(PARAM_DELIMITER));
         if (filteredQuery.isEmpty()) {
             return baseUrl;
         }

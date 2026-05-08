@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.thread.monitor;
 
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
+
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -21,13 +22,13 @@ public class ThreadPoolMetrics {
     public ThreadPoolMetrics(MeterRegistry meterRegistry, ThreadPoolRegistry threadPoolRegistry) {
         threadPoolRegistry.getAllPools().forEach((name, executor) -> {
             Gauge.builder("thread.pool." + name + ".active", executor, pool -> (double) pool.getActiveCount())
-                    .register(meterRegistry);
+                .register(meterRegistry);
             Gauge.builder("thread.pool." + name + ".queue.size", executor, pool -> (double) pool.getQueueSize())
-                    .register(meterRegistry);
+                .register(meterRegistry);
             Gauge.builder("thread.pool." + name + ".completed", executor, pool -> (double) pool.getCompletedTaskCount())
-                    .register(meterRegistry);
+                .register(meterRegistry);
             Gauge.builder("thread.pool." + name + ".rejected", executor, pool -> (double) pool.getRejectedCount().get())
-                    .register(meterRegistry);
+                .register(meterRegistry);
         });
     }
 }

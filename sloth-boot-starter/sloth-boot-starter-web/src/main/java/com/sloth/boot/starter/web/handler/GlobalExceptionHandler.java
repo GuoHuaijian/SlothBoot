@@ -67,8 +67,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         return handleBadRequest(ex, ex.getBindingResult().getFieldErrors().stream()
-                .map(this::formatFieldError)
-                .collect(Collectors.joining("; ")));
+            .map(this::formatFieldError)
+            .collect(Collectors.joining("; ")));
     }
 
     /**
@@ -80,8 +80,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public R<Void> handleBindException(BindException ex) {
         return handleBadRequest(ex, ex.getBindingResult().getFieldErrors().stream()
-                .map(this::formatFieldError)
-                .collect(Collectors.joining("; ")));
+            .map(this::formatFieldError)
+            .collect(Collectors.joining("; ")));
     }
 
     /**
@@ -93,10 +93,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class, MethodArgumentTypeMismatchException.class})
     public R<Void> handleConstraintViolationException(Exception ex) {
         String message = ex instanceof ConstraintViolationException constraintViolationException
-                ? constraintViolationException.getConstraintViolations().stream()
-                .map(item -> item.getPropertyPath() + " " + item.getMessage())
-                .collect(Collectors.joining("; "))
-                : ex.getMessage();
+            ? constraintViolationException.getConstraintViolations().stream()
+              .map(item -> item.getPropertyPath() + " " + item.getMessage())
+              .collect(Collectors.joining("; "))
+            : ex.getMessage();
         return handleBadRequest(ex, message);
     }
 
@@ -200,7 +200,8 @@ public class GlobalExceptionHandler {
 
     private R<Void> handleBadRequest(Exception ex, String message) {
         log.warn("请求参数异常, traceId={}, msg={}", TraceContext.getTraceId(), message, ex);
-        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), StrUtil.blankToDefault(message, GlobalErrorCode.BAD_REQUEST.getMsg()));
+        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(),
+            StrUtil.blankToDefault(message, GlobalErrorCode.BAD_REQUEST.getMsg()));
     }
 
     private String formatFieldError(FieldError fieldError) {
@@ -237,11 +238,11 @@ public class GlobalExceptionHandler {
     private R<Void> buildBlockExceptionResponse(Throwable throwable) {
         String exceptionName = throwable.getClass().getName();
         if ("com.alibaba.csp.sentinel.slots.block.flow.FlowException".equals(exceptionName)
-                || "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException".equals(exceptionName)) {
+            || "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException".equals(exceptionName)) {
             return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), "请求过于频繁，请稍后再试");
         }
         if ("com.alibaba.csp.sentinel.slots.block.degrade.DegradeException".equals(exceptionName)
-                || "com.alibaba.csp.sentinel.slots.system.SystemBlockException".equals(exceptionName)) {
+            || "com.alibaba.csp.sentinel.slots.system.SystemBlockException".equals(exceptionName)) {
             return R.fail(503, "服务暂时不可用，请稍后再试");
         }
         if ("com.alibaba.csp.sentinel.slots.block.authority.AuthorityException".equals(exceptionName)) {

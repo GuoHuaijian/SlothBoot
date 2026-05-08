@@ -1,9 +1,6 @@
 package com.sloth.boot.starter.gateway.config;
 
-import com.sloth.boot.starter.gateway.filter.AuthGlobalFilter;
-import com.sloth.boot.starter.gateway.filter.BlackListGlobalFilter;
-import com.sloth.boot.starter.gateway.filter.RequestLogGlobalFilter;
-import com.sloth.boot.starter.gateway.filter.TraceIdGlobalFilter;
+import com.sloth.boot.starter.gateway.filter.*;
 import com.sloth.boot.starter.gateway.handler.GatewayExceptionHandler;
 import com.sloth.boot.starter.gateway.handler.SentinelFallbackHandler;
 import com.sloth.boot.starter.gateway.route.DynamicRouteService;
@@ -114,5 +111,18 @@ public class GatewayAutoConfiguration {
                                                    GatewayProperties gatewayProperties,
                                                    Environment environment) {
         return new DynamicRouteService(routeDefinitionWriter, gatewayProperties, environment);
+    }
+
+    /**
+     * 注册全局重试过滤器（仅当 {@code sloth.gateway.retry.enabled=true} 时生效）。
+     *
+     * @param gatewayProperties Gateway 配置
+     * @return 重试过滤器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.gateway.retry", name = "enabled", havingValue = "true")
+    public RetryGlobalFilter retryGlobalFilter(GatewayProperties gatewayProperties) {
+        return new RetryGlobalFilter(gatewayProperties);
     }
 }

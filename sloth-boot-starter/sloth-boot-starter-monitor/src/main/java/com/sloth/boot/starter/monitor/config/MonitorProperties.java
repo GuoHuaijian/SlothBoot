@@ -61,5 +61,20 @@ public class MonitorProperties {
          * Webhook 签名密钥。
          */
         private String secret;
+
+        /**
+         * CPU 使用率告警阈值（百分比），超过此值触发告警。
+         */
+        private double cpuThreshold = 80.0;
+
+        /**
+         * 内存使用率告警阈值（百分比），超过此值触发告警。
+         */
+        private double memoryThreshold = 80.0;
+
+        /**
+         * 磁盘使用率告警阈值（百分比），超过此值触发告警。
+         */
+        private double diskThreshold = 90.0;
     }
 }

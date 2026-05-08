@@ -2,15 +2,9 @@ package com.sloth.boot.starter.oss.config;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.sloth.boot.starter.oss.core.AliyunOssClient;
-import com.sloth.boot.starter.oss.core.LocalOssClient;
-import com.sloth.boot.starter.oss.core.MinioOssClient;
-import com.sloth.boot.starter.oss.core.OssClient;
-import com.sloth.boot.starter.oss.core.OssTemplate;
-import com.sloth.boot.starter.oss.util.ContentTypeDetector;
+import com.sloth.boot.starter.oss.core.*;
 import io.minio.MinioClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -37,17 +31,17 @@ public class OssAutoConfiguration {
         String type = properties.getType();
         if ("aliyun".equalsIgnoreCase(type)) {
             OSS oss = new OSSClientBuilder().build(
-                    properties.getEndpoint(),
-                    properties.getAccessKey(),
-                    properties.getSecretKey()
+                properties.getEndpoint(),
+                properties.getAccessKey(),
+                properties.getSecretKey()
             );
             return new AliyunOssClient(oss, properties);
         }
         if ("minio".equalsIgnoreCase(type)) {
             MinioClient minioClient = MinioClient.builder()
-                    .endpoint(properties.getEndpoint())
-                    .credentials(properties.getAccessKey(), properties.getSecretKey())
-                    .build();
+                .endpoint(properties.getEndpoint())
+                .credentials(properties.getAccessKey(), properties.getSecretKey())
+                .build();
             return new MinioOssClient(minioClient, properties);
         }
         return new LocalOssClient(properties);

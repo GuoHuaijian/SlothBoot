@@ -1,12 +1,16 @@
 package com.sloth.boot.starter.redis.id;
 
 import com.sloth.boot.starter.redis.config.RedisProperties;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
 
 /**
  * 基于 Redis 的分布式 ID 生成器。
@@ -24,9 +28,12 @@ import java.util.concurrent.TimeUnit;
 public class RedisIdGenerator {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final int SEQ_MODULO = 10000;
+    private static final long EXPIRE_SECONDS = 2 * 24 * 60 * 60;
 
     private final StringRedisTemplate stringRedisTemplate;
     private final RedisProperties redisProperties;
+    private final ResourceScriptSource idGeneratorScriptSource;
 
     /**
      * 生成下一个分布式 ID。
@@ -38,17 +45,10 @@ public class RedisIdGenerator {
         String date = LocalDate.now().format(DATE_FMT);
         String key = redisProperties.getKeyPrefix() + "id:" + config.getPrefix() + ":" + date;
 
-        Long sequence = stringRedisTemplate.opsForValue().increment(key);
-        if (sequence == null) {
-            sequence = 1L;
-        }
+        Long sequence = executeIncrScript(key);
 
-        // 首次设置 key 过期时间为 2 天，避免 key 堆积
-        if (sequence == 1L) {
-            stringRedisTemplate.expire(key, 2, TimeUnit.DAYS);
-        }
-
-        return config.getPrefix() + "_" + date + "_" + config.getWorkerId() + "_" + String.format("%04d", sequence);
+        return config.getPrefix() + "_" + date + "_" + config.getWorkerId() + "_"
+            + String.format("%04d", wrapSequence(sequence));
     }
 
     /**
@@ -63,18 +63,44 @@ public class RedisIdGenerator {
         String date = LocalDate.now().format(DATE_FMT);
         String key = redisProperties.getKeyPrefix() + "id:num:" + config.getPrefix() + ":" + date;
 
-        Long sequence = stringRedisTemplate.opsForValue().increment(key);
-        if (sequence == null) {
-            sequence = 1L;
-        }
-
-        if (sequence == 1L) {
-            stringRedisTemplate.expire(key, 2, TimeUnit.DAYS);
-        }
+        Long sequence = executeIncrScript(key);
 
         // 日期8位 + 机器号4位 + 序列号4位 = 16位数字
         String workerPart = String.format("%04d", config.getWorkerId());
-        String seqPart = String.format("%04d", sequence % 10000);
+        String seqPart = String.format("%04d", wrapSequence(sequence));
         return Long.parseLong(date + workerPart + seqPart);
+    }
+
+    /**
+     * 通过 Lua 脚本原子执行 INCR + EXPIRE。
+     *
+     * @param key Redis key
+     * @return 递增后的序列号
+     */
+    private Long executeIncrScript(String key) {
+        Long sequence = stringRedisTemplate.execute(buildRedisScript(), Collections.singletonList(key),
+            String.valueOf(EXPIRE_SECONDS));
+        return sequence != null ? sequence : 1L;
+    }
+
+    /**
+     * 将序列号包装到 1-9999 范围，避免出现 0000。
+     *
+     * @param sequence 原始序列号
+     * @return 包装后的序列号（1~9999）
+     */
+    private long wrapSequence(long sequence) {
+        return ((sequence - 1) % SEQ_MODULO) + 1;
+    }
+
+    private DefaultRedisScript<Long> buildRedisScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setResultType(Long.class);
+        try {
+            redisScript.setScriptText(idGeneratorScriptSource.getScriptAsString());
+        } catch (IOException ex) {
+            throw new IllegalStateException("加载 ID 生成器脚本失败", ex);
+        }
+        return redisScript;
     }
 }

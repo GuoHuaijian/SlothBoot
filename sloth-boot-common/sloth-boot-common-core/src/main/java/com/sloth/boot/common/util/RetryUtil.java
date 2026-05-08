@@ -21,10 +21,10 @@ public final class RetryUtil {
      * 共享的异步重试线程池
      */
     private static final ExecutorService ASYNC_EXECUTOR = new ThreadPoolExecutor(
-            0, 4, 60L, TimeUnit.SECONDS,
-            new SynchronousQueue<>(),
-            new RetryThreadFactory(),
-            new ThreadPoolExecutor.CallerRunsPolicy()
+        0, 4, 60L, TimeUnit.SECONDS,
+        new SynchronousQueue<>(),
+        new RetryThreadFactory(),
+        new ThreadPoolExecutor.CallerRunsPolicy()
     );
 
     /**
@@ -43,11 +43,11 @@ public final class RetryUtil {
     /**
      * 执行带重试的任务
      *
-     * @param task          任务
-     * @param maxRetries    最大重试次数
-     * @param delay         重试间隔
+     * @param task           任务
+     * @param maxRetries     最大重试次数
+     * @param delay          重试间隔
      * @param exceptionClass 需要重试的异常类型
-     * @param <T>           返回类型
+     * @param <T>            返回类型
      * @return 任务结果
      */
     public static <T> T executeWithRetry(Supplier<T> task, int maxRetries, Duration delay, Class<? extends Exception> exceptionClass) {

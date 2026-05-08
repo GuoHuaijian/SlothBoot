@@ -15,12 +15,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -338,11 +333,8 @@ public class RedisCacheUtil {
         }
         T loaded = supplier.get();
         if (loaded == null) {
-            redisTemplate.opsForValue().set(
-                    redisKey,
-                    NULL_HOLDER,
-                    Duration.ofSeconds(redisProperties.getNullValueExpireSeconds())
-            );
+            redisTemplate.opsForValue().set(redisKey, NULL_HOLDER,
+                Duration.ofSeconds(redisProperties.getNullValueExpireSeconds()));
             return null;
         }
         redisTemplate.opsForValue().set(redisKey, loaded, timeout);

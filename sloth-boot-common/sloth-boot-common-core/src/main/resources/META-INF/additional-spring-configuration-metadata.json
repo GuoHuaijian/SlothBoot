@@ -133,6 +133,42 @@
       "defaultValue": 1000
     },
     {
+      "name": "sloth.monitor.alarm.cpu-threshold",
+      "type": "java.lang.Double",
+      "description": "CPU 使用率告警阈值（百分比），超过此值触发告警。",
+      "defaultValue": 80.0
+    },
+    {
+      "name": "sloth.monitor.alarm.memory-threshold",
+      "type": "java.lang.Double",
+      "description": "内存使用率告警阈值（百分比），超过此值触发告警。",
+      "defaultValue": 80.0
+    },
+    {
+      "name": "sloth.monitor.alarm.disk-threshold",
+      "type": "java.lang.Double",
+      "description": "磁盘使用率告警阈值（百分比），超过此值触发告警。",
+      "defaultValue": 90.0
+    },
+    {
+      "name": "sloth.gateway.retry.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用网关请求重试。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.gateway.retry.max-attempts",
+      "type": "java.lang.Integer",
+      "description": "最大重试次数。",
+      "defaultValue": 3
+    },
+    {
+      "name": "sloth.gateway.retry.backoff-ms",
+      "type": "java.lang.Long",
+      "description": "重试退避间隔（毫秒）。",
+      "defaultValue": 100
+    },
+    {
       "name": "sloth.doc.enabled",
       "type": "java.lang.Boolean",
       "description": "是否启用 API 文档（Knife4j/OpenAPI 3）。",

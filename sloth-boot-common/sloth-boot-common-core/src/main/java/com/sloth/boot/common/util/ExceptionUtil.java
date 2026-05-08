@@ -45,7 +45,7 @@ public final class ExceptionUtil {
     /**
      * 检查异常链中是否包含指定类型的异常
      *
-     * @param throwable 异常
+     * @param throwable     异常
      * @param exceptionType 异常类型
      * @return 是否包含
      */

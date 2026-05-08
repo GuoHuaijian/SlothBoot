@@ -10,13 +10,24 @@ import com.sloth.boot.common.util.DesensitizeUtil;
 import java.io.IOException;
 
 /**
- * 脱敏序列化器
+ * 脱敏 JSON 序列化器。
+ * <p>
+ * 配合 {@link com.sloth.boot.common.annotation.Desensitize} 注解使用， 在 Jackson
+ * 序列化时根据注解指定的脱敏类型自动对字段值进行脱敏处理。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
 public class DesensitizeSerializer extends JsonSerializer<String> {
 
+    /**
+     * 序列化字段值，根据 {@link Desensitize} 注解配置进行脱敏。
+     *
+     * @param value    原始字段值
+     * @param gen      JSON 生成器
+     * @param provider 序列化提供者
+     * @throws IOException IO 异常
+     */
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         Desensitize desensitize = gen.getCurrentValue().getClass().getAnnotation(Desensitize.class);

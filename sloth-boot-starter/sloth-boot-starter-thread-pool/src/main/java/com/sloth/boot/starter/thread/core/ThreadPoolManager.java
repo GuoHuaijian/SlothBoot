@@ -26,7 +26,7 @@ public class ThreadPoolManager {
      * @param maxSize  新的最大线程数
      */
     public void updatePoolSize(String poolName, int coreSize, int maxSize) {
-        VisibleThreadPoolExecutor executor = threadPoolRegistry.get(poolName);
+        VisibleThreadPoolExecutor executor = threadPoolRegistry.getPool(poolName);
         if (executor == null) {
             log.warn("[ThreadPool] 线程池不存在: {}", poolName);
             return;
@@ -42,8 +42,8 @@ public class ThreadPoolManager {
      * @param poolName 线程池名称
      * @return 快照信息，不存在时返回 null
      */
-    public VisibleThreadPoolExecutor.Snapshot getSnapshot(String poolName) {
-        VisibleThreadPoolExecutor executor = threadPoolRegistry.get(poolName);
+    public java.util.Map<String, Object> getSnapshot(String poolName) {
+        VisibleThreadPoolExecutor executor = threadPoolRegistry.getPool(poolName);
         if (executor == null) {
             return null;
         }

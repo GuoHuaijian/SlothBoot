@@ -7,13 +7,7 @@ import lombok.Getter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -36,13 +30,13 @@ public class VisibleThreadPoolExecutor extends ThreadPoolExecutor {
     /**
      * 构造函数。
      *
-     * @param poolName              线程池名称
-     * @param corePoolSize          核心线程数
-     * @param maximumPoolSize       最大线程数
-     * @param keepAliveTime         空闲线程存活时间
-     * @param unit                  时间单位
-     * @param workQueue             任务队列
-     * @param threadFactory         线程工厂
+     * @param poolName                 线程池名称
+     * @param corePoolSize             核心线程数
+     * @param maximumPoolSize          最大线程数
+     * @param keepAliveTime            空闲线程存活时间
+     * @param unit                     时间单位
+     * @param workQueue                任务队列
+     * @param threadFactory            线程工厂
      * @param rejectedExecutionHandler 拒绝策略
      */
     public VisibleThreadPoolExecutor(String poolName,
@@ -72,7 +66,7 @@ public class VisibleThreadPoolExecutor extends ThreadPoolExecutor {
     /**
      * 执行后统计耗时。
      *
-     * @param runnable 任务
+     * @param runnable  任务
      * @param throwable 异常
      */
     @Override

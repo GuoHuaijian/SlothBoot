@@ -54,6 +54,16 @@ public class RedisProperties {
     private IdGenerator idGenerator = new IdGenerator();
 
     /**
+     * 布隆过滤器配置。
+     */
+    private BloomFilter bloomFilter = new BloomFilter();
+
+    /**
+     * Pub/Sub 配置。
+     */
+    private PubSub pubSub = new PubSub();
+
+    /**
      * 多级缓存配置。
      */
     @Data
@@ -95,5 +105,39 @@ public class RedisProperties {
          * ID 前缀。
          */
         private String prefix = "sloth";
+    }
+
+    /**
+     * 布隆过滤器配置。
+     */
+    @Data
+    public static class BloomFilter {
+
+        /**
+         * 是否启用布隆过滤器。
+         */
+        private boolean enabled = false;
+
+        /**
+         * 预期插入元素数量。
+         */
+        private long expectedInsertions = 1000000L;
+
+        /**
+         * 误判概率。
+         */
+        private double falsePositiveProbability = 0.01;
+    }
+
+    /**
+     * Pub/Sub 配置。
+     */
+    @Data
+    public static class PubSub {
+
+        /**
+         * 是否启用 Pub/Sub 模板。
+         */
+        private boolean enabled = false;
     }
 }

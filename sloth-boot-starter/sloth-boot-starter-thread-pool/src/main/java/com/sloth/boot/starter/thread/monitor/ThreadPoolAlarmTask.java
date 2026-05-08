@@ -22,9 +22,8 @@ public class ThreadPoolAlarmTask {
     private final ApplicationEventPublisher eventPublisher;
     private final double alarmThreshold;
 
-    public ThreadPoolAlarmTask(ThreadPoolRegistry threadPoolRegistry,
-                                ApplicationEventPublisher eventPublisher,
-                                double alarmThreshold) {
+    public ThreadPoolAlarmTask(ThreadPoolRegistry threadPoolRegistry, ApplicationEventPublisher eventPublisher,
+                               double alarmThreshold) {
         this.threadPoolRegistry = threadPoolRegistry;
         this.eventPublisher = eventPublisher;
         this.alarmThreshold = alarmThreshold;
@@ -33,27 +32,29 @@ public class ThreadPoolAlarmTask {
     /**
      * 检查所有线程池队列使用率。
      */
+    @SuppressWarnings("unchecked")
     public void check() {
-        Map<String, VisibleThreadPoolExecutor> pools = threadPoolRegistry.getAll();
+        Map<String, VisibleThreadPoolExecutor> pools = threadPoolRegistry.getAllPools();
         for (Map.Entry<String, VisibleThreadPoolExecutor> entry : pools.entrySet()) {
             String poolName = entry.getKey();
             VisibleThreadPoolExecutor executor = entry.getValue();
-            VisibleThreadPoolExecutor.Snapshot snapshot = executor.snapshot();
+            Map<String, Object> snapshot = executor.snapshot();
 
-            int queueCapacity = snapshot.getQueueCapacity();
+            int queueCapacity = ((Number) snapshot.getOrDefault("queueRemainingCapacity", 0)).intValue();
+            int queueSize = ((Number) snapshot.getOrDefault("queueSize", 0)).intValue();
+
             if (queueCapacity <= 0) {
                 continue;
             }
 
-            double usagePercent = (double) snapshot.getQueueSize() / queueCapacity * 100;
+            double usagePercent = (double) queueSize / queueCapacity * 100;
             if (usagePercent >= alarmThreshold) {
-                log.warn("[ThreadPool] 线程池 {} 队列使用率告警: {:.1f}% ({}/{})",
-                    poolName, usagePercent, snapshot.getQueueSize(), queueCapacity);
+                log.warn("[ThreadPool] 线程池 {} 队列使用率告警: {}% ({}/{})", poolName, String.format("%.1f", usagePercent),
+                    queueSize, queueCapacity);
 
-                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(
-                    this, poolName, snapshot.getActiveCount(),
-                    snapshot.getQueueSize(), queueCapacity, usagePercent,
-                    snapshot.getCompletedTaskCount());
+                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(this, poolName,
+                    ((Number) snapshot.getOrDefault("activeCount", 0)).intValue(), queueSize, queueCapacity,
+                    usagePercent, ((Number) snapshot.getOrDefault("completedTaskCount", 0L)).longValue());
                 eventPublisher.publishEvent(event);
             }
         }

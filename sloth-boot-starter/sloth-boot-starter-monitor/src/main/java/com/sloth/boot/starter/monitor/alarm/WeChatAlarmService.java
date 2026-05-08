@@ -30,12 +30,12 @@ public class WeChatAlarmService extends AbstractWebhookAlarmService {
         payload.put("msgtype", "markdown");
         Map<String, Object> markdown = new HashMap<>();
         markdown.put("content", "## " + message.getTitle() + "\n"
-                + "> 级别: " + message.getLevel() + "\n"
-                + "> 时间: " + message.getTime() + "\n"
-                + "> 服务: " + message.getServiceName() + "\n"
-                + "> IP: " + message.getIp() + "\n"
-                + "> TraceId: " + message.getTraceId() + "\n"
-                + message.getContent());
+            + "> 级别: " + message.getLevel() + "\n"
+            + "> 时间: " + message.getTime() + "\n"
+            + "> 服务: " + message.getServiceName() + "\n"
+            + "> IP: " + message.getIp() + "\n"
+            + "> TraceId: " + message.getTraceId() + "\n"
+            + message.getContent());
         payload.put("markdown", markdown);
         return payload;
     }

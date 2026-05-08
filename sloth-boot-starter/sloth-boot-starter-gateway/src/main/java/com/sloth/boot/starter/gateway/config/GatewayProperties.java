@@ -35,4 +35,34 @@ public class GatewayProperties {
      * IP 黑名单。
      */
     private Set<String> blackList = new LinkedHashSet<>();
+
+    /**
+     * 重试配置。
+     */
+    private RetryConfig retry = new RetryConfig();
+
+    /**
+     * 重试配置对象。
+     *
+     * @author sloth-boot
+     * @since 1.0.0
+     */
+    @Data
+    public static class RetryConfig {
+
+        /**
+         * 是否启用重试。
+         */
+        private boolean enabled = false;
+
+        /**
+         * 最大重试次数。
+         */
+        private int maxAttempts = 3;
+
+        /**
+         * 退避间隔，单位毫秒。
+         */
+        private long backoffMs = 100;
+    }
 }

@@ -52,10 +52,9 @@ public class ExcelExampleController {
      */
     @PostMapping("/import")
     public List<UserExcelVO> importExcel(@RequestParam("file") MultipartFile file) throws IOException {
-        return ExcelUtil.importExcel(file, UserExcelVO.class,
-                new ExcelReadListener<>(batch -> {
-                    // 分批处理逻辑（每 1000 条一批）
-                }));
+        return ExcelUtil.importExcel(file, UserExcelVO.class, new ExcelReadListener<>(batch -> {
+            // 分批处理逻辑（每 1000 条一批）
+        }));
     }
 
     /**

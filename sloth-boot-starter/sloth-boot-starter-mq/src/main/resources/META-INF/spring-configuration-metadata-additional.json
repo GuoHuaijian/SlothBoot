@@ -29,6 +29,24 @@
       "type": "java.lang.String",
       "defaultValue": "sloth:mq:consume:",
       "description": "Redis key prefix for consumer idempotence."
+    },
+    {
+      "name": "sloth.mq.dlq.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable dead letter queue handling."
+    },
+    {
+      "name": "sloth.mq.dlq.max-retries",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "Maximum retries before publishing to DLQ topic."
+    },
+    {
+      "name": "sloth.mq.dlq.delay-seconds",
+      "type": "java.lang.Integer",
+      "defaultValue": 60,
+      "description": "Delay seconds between retry attempts."
     }
   ]
 }

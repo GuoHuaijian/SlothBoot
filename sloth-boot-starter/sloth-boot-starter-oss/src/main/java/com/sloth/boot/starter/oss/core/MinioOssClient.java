@@ -5,6 +5,7 @@ import com.sloth.boot.starter.oss.model.OssFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,11 +35,11 @@ public class MinioOssClient implements OssClient {
     public String upload(String path, InputStream inputStream) {
         try {
             minioClient.putObject(
-                    io.minio.PutObjectArgs.builder()
-                            .bucket(ossProperties.getBucketName())
-                            .object(path)
-                            .stream(inputStream, -1, 10 * 1024 * 1024)
-                            .build()
+                io.minio.PutObjectArgs.builder()
+                    .bucket(ossProperties.getBucketName())
+                    .object(path)
+                    .stream(inputStream, -1, 10 * 1024 * 1024)
+                    .build()
             );
             return getPresignedUrl(path, 60);
         } catch (Exception ex) {
@@ -49,10 +50,10 @@ public class MinioOssClient implements OssClient {
     @Override
     public void download(String path, OutputStream outputStream) {
         try (InputStream inputStream = minioClient.getObject(
-                io.minio.GetObjectArgs.builder()
-                        .bucket(ossProperties.getBucketName())
-                        .object(path)
-                        .build())) {
+            io.minio.GetObjectArgs.builder()
+                .bucket(ossProperties.getBucketName())
+                .object(path)
+                .build())) {
             inputStream.transferTo(outputStream);
         } catch (Exception ex) {
             throw new IllegalStateException("MinIO 下载失败", ex);
@@ -63,10 +64,10 @@ public class MinioOssClient implements OssClient {
     public void delete(String path) {
         try {
             minioClient.removeObject(
-                    io.minio.RemoveObjectArgs.builder()
-                            .bucket(ossProperties.getBucketName())
-                            .object(path)
-                            .build()
+                io.minio.RemoveObjectArgs.builder()
+                    .bucket(ossProperties.getBucketName())
+                    .object(path)
+                    .build()
             );
         } catch (Exception ex) {
             throw new IllegalStateException("MinIO 删除失败", ex);
@@ -77,13 +78,19 @@ public class MinioOssClient implements OssClient {
     public String getPresignedUrl(String path, int expireMinutes) {
         try {
             return minioClient.getPresignedObjectUrl(
-                    io.minio.GetPresignedObjectUrlArgs.builder()
-                            .bucket(ossProperties.getBucketName())
-                            .object(path)
-                            .expiry(expireMinutes * 60)
-                            .method(io.minio.http.Method.GET)
-                            .build()
-            );
+                io.minio.GetPresignedObjectUrlArgs.builder().bucket(ossProperties.getBucketName()).object(path)
+                    .expiry(expireMinutes * 60).method(io.minio.http.Method.GET).build());
+        } catch (Exception ex) {
+            throw new IllegalStateException("MinIO 获取预签名地址失败", ex);
+        }
+    }
+
+    @Override
+    public String generatePresignedUrl(String objectKey, Duration expiry) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                io.minio.GetPresignedObjectUrlArgs.builder().bucket(ossProperties.getBucketName()).object(objectKey)
+                    .expiry((int) expiry.getSeconds()).method(io.minio.http.Method.GET).build());
         } catch (Exception ex) {
             throw new IllegalStateException("MinIO 获取预签名地址失败", ex);
         }

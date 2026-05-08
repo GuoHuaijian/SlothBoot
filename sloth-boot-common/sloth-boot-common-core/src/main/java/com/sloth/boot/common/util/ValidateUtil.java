@@ -45,37 +45,37 @@ public final class ValidateUtil {
      * IPv4 正则表达式
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile(
-            "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+        "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
 
     /**
      * IPv6 正则表达式
      */
     private static final Pattern IPV6_PATTERN = Pattern.compile(
-            "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,7}:$");
+        "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,7}:$");
 
     /**
      * UUID 正则表达式
      */
     private static final Pattern UUID_PATTERN = Pattern.compile(
-            "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
     /**
      * MAC 地址正则表达式
      */
     private static final Pattern MAC_ADDRESS_PATTERN = Pattern.compile(
-            "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$");
+        "^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$");
 
     /**
      * 中国车牌号正则表达式
      */
     private static final Pattern PLATE_NUMBER_PATTERN = Pattern.compile(
-            "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤川青藏琼宁][A-HJ-NP-Z][A-HJ-NP-Z0-9]{4,5}[A-HJ-NP-Z0-9挂学警港澳]$");
+        "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤川青藏琼宁][A-HJ-NP-Z][A-HJ-NP-Z0-9]{4,5}[A-HJ-NP-Z0-9挂学警港澳]$");
 
     /**
      * 中国座机号正则表达式
      */
     private static final Pattern LANDLINE_PATTERN = Pattern.compile(
-            "^0\\d{2,3}-?\\d{7,8}$");
+        "^0\\d{2,3}-?\\d{7,8}$");
 
     /**
      * 用户名正则表达式（4-20位字母数字下划线）
@@ -86,13 +86,13 @@ public final class ValidateUtil {
      * 强密码正则表达式（8位以上，含大小写字母、数字、特殊字符中的至少三种）
      */
     private static final Pattern STRONG_PASSWORD_PATTERN = Pattern.compile(
-            "^(?![a-zA-Z]+$)(?!\\d+$)(?![!@#$%^&*_]+$)[a-zA-Z\\d!@#$%^&*_]{8,}$");
+        "^(?![a-zA-Z]+$)(?!\\d+$)(?![!@#$%^&*_]+$)[a-zA-Z\\d!@#$%^&*_]{8,}$");
 
     /**
      * 域名正则表达式
      */
     private static final Pattern DOMAIN_PATTERN = Pattern.compile(
-            "^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\\.[A-Za-z0-9-]{1,63})*(\\.[A-Za-z]{2,})$");
+        "^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\\.[A-Za-z0-9-]{1,63})*(\\.[A-Za-z]{2,})$");
 
     /**
      * 中文姓名正则表达式（2-20个汉字）

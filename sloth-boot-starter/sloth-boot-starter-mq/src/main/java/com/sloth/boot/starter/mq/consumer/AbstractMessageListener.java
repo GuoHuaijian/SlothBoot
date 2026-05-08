@@ -32,7 +32,7 @@ public abstract class AbstractMessageListener<T extends BaseMessage> implements 
     /**
      * 构造函数。
      *
-     * @param mqProperties               MQ 配置
+     * @param mqProperties                MQ 配置
      * @param stringRedisTemplateProvider Redis 模板提供者
      */
     protected AbstractMessageListener(MQProperties mqProperties,
@@ -54,25 +54,25 @@ public abstract class AbstractMessageListener<T extends BaseMessage> implements 
             T message = parseMessage(messageExt);
             if (needIdempotentCheck(message) && !markConsumed(message)) {
                 log.warn("RocketMQ 消息重复消费, topic={}, msgId={}, traceId={}",
-                        messageExt.getTopic(), message.getMsgId(), traceId);
+                    messageExt.getTopic(), message.getMsgId(), traceId);
                 return;
             }
             onMessage(message);
             log.info("RocketMQ 消息消费成功, topic={}, msgId={}, traceId={}, cost={}ms",
-                    messageExt.getTopic(), message.getMsgId(), traceId, System.currentTimeMillis() - startTime);
+                messageExt.getTopic(), message.getMsgId(), traceId, System.currentTimeMillis() - startTime);
         } catch (Exception ex) {
             int reconsumeTimes = messageExt.getReconsumeTimes();
             log.error("RocketMQ 消息消费失败, topic={}, msgId={}, traceId={}, retryTimes={}, maxRetry={}, cost={}ms",
-                    messageExt.getTopic(),
-                    messageExt.getMsgId(),
-                    traceId,
-                    reconsumeTimes,
-                    mqProperties.getMaxRetry(),
-                    System.currentTimeMillis() - startTime,
-                    ex);
+                messageExt.getTopic(),
+                messageExt.getMsgId(),
+                traceId,
+                reconsumeTimes,
+                mqProperties.getMaxRetry(),
+                System.currentTimeMillis() - startTime,
+                ex);
             if (reconsumeTimes >= mqProperties.getMaxRetry()) {
                 log.error("RocketMQ 消息达到最大重试阈值, topic={}, msgId={}, traceId={}, retryTimes={}",
-                        messageExt.getTopic(), messageExt.getMsgId(), traceId, reconsumeTimes);
+                    messageExt.getTopic(), messageExt.getMsgId(), traceId, reconsumeTimes);
             }
             throw ex;
         } finally {

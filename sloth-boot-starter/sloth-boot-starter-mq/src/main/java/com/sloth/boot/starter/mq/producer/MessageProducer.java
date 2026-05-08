@@ -92,7 +92,7 @@ public class MessageProducer {
     public SendResult sendDelay(String topic, BaseMessage msg, int delayLevel) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
         log.info("发送延迟 RocketMQ 消息, topic={}, delayLevel={}, msgId={}, traceId={}",
-                topic, delayLevel, msg.getMsgId(), msg.getTraceId());
+            topic, delayLevel, msg.getMsgId(), msg.getTraceId());
         return rocketMQTemplate.syncSend(topic, message, rocketMQTemplate.getProducer().getSendMsgTimeout(), delayLevel);
     }
 
@@ -107,7 +107,7 @@ public class MessageProducer {
     public SendResult sendOrderly(String topic, BaseMessage msg, String hashKey) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
         log.info("顺序发送 RocketMQ 消息, topic={}, hashKey={}, msgId={}, traceId={}",
-                topic, hashKey, msg.getMsgId(), msg.getTraceId());
+            topic, hashKey, msg.getMsgId(), msg.getTraceId());
         return rocketMQTemplate.syncSendOrderly(topic, message, hashKey);
     }
 
@@ -135,26 +135,26 @@ public class MessageProducer {
     private TransactionSendResult invokeTransactionSend(String topic, Message<String> message, Object arg) {
         try {
             Method method = RocketMQTemplate.class.getMethod(
-                    "sendMessageInTransaction",
-                    String.class,
-                    String.class,
-                    Message.class,
-                    Object.class
+                "sendMessageInTransaction",
+                String.class,
+                String.class,
+                Message.class,
+                Object.class
             );
             return (TransactionSendResult) method.invoke(
-                    rocketMQTemplate,
-                    mqProperties.getTransactionProducerGroup(),
-                    topic,
-                    message,
-                    arg
+                rocketMQTemplate,
+                mqProperties.getTransactionProducerGroup(),
+                topic,
+                message,
+                arg
             );
         } catch (NoSuchMethodException ex) {
             try {
                 Method method = RocketMQTemplate.class.getMethod(
-                        "sendMessageInTransaction",
-                        String.class,
-                        Message.class,
-                        Object.class
+                    "sendMessageInTransaction",
+                    String.class,
+                    Message.class,
+                    Object.class
                 );
                 return (TransactionSendResult) method.invoke(rocketMQTemplate, topic, message, arg);
             } catch (ReflectiveOperationException innerEx) {

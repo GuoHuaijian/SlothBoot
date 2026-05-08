@@ -16,14 +16,12 @@ public final class ContentTypeDetector {
 
     private static final Map<String, String> MIME_TYPES = Map.ofEntries(
         // 图片
-        Map.entry("jpg", "image/jpeg"), Map.entry("jpeg", "image/jpeg"),
-        Map.entry("png", "image/png"), Map.entry("gif", "image/gif"),
-        Map.entry("bmp", "image/bmp"), Map.entry("webp", "image/webp"),
-        Map.entry("svg", "image/svg+xml"), Map.entry("ico", "image/x-icon"),
-        Map.entry("tiff", "image/tiff"), Map.entry("tif", "image/tiff"),
+        Map.entry("jpg", "image/jpeg"), Map.entry("jpeg", "image/jpeg"), Map.entry("png", "image/png"),
+        Map.entry("gif", "image/gif"), Map.entry("bmp", "image/bmp"), Map.entry("webp", "image/webp"),
+        Map.entry("svg", "image/svg+xml"), Map.entry("ico", "image/x-icon"), Map.entry("tiff", "image/tiff"),
+        Map.entry("tif", "image/tiff"),
         // 文档
-        Map.entry("pdf", "application/pdf"),
-        Map.entry("doc", "application/msword"),
+        Map.entry("pdf", "application/pdf"), Map.entry("doc", "application/msword"),
         Map.entry("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
         Map.entry("xls", "application/vnd.ms-excel"),
         Map.entry("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
@@ -31,25 +29,22 @@ public final class ContentTypeDetector {
         Map.entry("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
         Map.entry("csv", "text/csv"),
         // 文本
-        Map.entry("txt", "text/plain"), Map.entry("html", "text/html"),
-        Map.entry("htm", "text/html"), Map.entry("css", "text/css"),
-        Map.entry("js", "application/javascript"), Map.entry("json", "application/json"),
-        Map.entry("xml", "application/xml"), Map.entry("yaml", "text/yaml"),
-        Map.entry("yml", "text/yaml"), Map.entry("md", "text/markdown"),
+        Map.entry("txt", "text/plain"), Map.entry("html", "text/html"), Map.entry("htm", "text/html"),
+        Map.entry("css", "text/css"), Map.entry("js", "application/javascript"), Map.entry("json", "application/json"),
+        Map.entry("xml", "application/xml"), Map.entry("yaml", "text/yaml"), Map.entry("yml", "text/yaml"),
+        Map.entry("md", "text/markdown"),
         // 音视频
-        Map.entry("mp3", "audio/mpeg"), Map.entry("wav", "audio/wav"),
-        Map.entry("ogg", "audio/ogg"), Map.entry("flac", "audio/flac"),
-        Map.entry("mp4", "video/mp4"), Map.entry("avi", "video/x-msvideo"),
-        Map.entry("mov", "video/quicktime"), Map.entry("wmv", "video/x-ms-wmv"),
-        Map.entry("flv", "video/x-flv"), Map.entry("webm", "video/webm"),
+        Map.entry("mp3", "audio/mpeg"), Map.entry("wav", "audio/wav"), Map.entry("ogg", "audio/ogg"),
+        Map.entry("flac", "audio/flac"), Map.entry("mp4", "video/mp4"), Map.entry("avi", "video/x-msvideo"),
+        Map.entry("mov", "video/quicktime"), Map.entry("wmv", "video/x-ms-wmv"), Map.entry("flv", "video/x-flv"),
+        Map.entry("webm", "video/webm"),
         // 压缩
         Map.entry("zip", "application/zip"), Map.entry("rar", "application/vnd.rar"),
-        Map.entry("7z", "application/x-7z-compressed"),
-        Map.entry("tar", "application/x-tar"), Map.entry("gz", "application/gzip"),
+        Map.entry("7z", "application/x-7z-compressed"), Map.entry("tar", "application/x-tar"),
+        Map.entry("gz", "application/gzip"),
         // 字体
-        Map.entry("ttf", "font/ttf"), Map.entry("otf", "font/otf"),
-        Map.entry("woff", "font/woff"), Map.entry("woff2", "font/woff2")
-    );
+        Map.entry("ttf", "font/ttf"), Map.entry("otf", "font/otf"), Map.entry("woff", "font/woff"),
+        Map.entry("woff2", "font/woff2"));
 
     private ContentTypeDetector() {
     }

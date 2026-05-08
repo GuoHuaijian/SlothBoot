@@ -20,8 +20,7 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration(after = AiAutoConfiguration.class)
 @ConditionalOnClass(ImageModel.class)
-@ConditionalOnProperty(prefix = "sloth.ai.image", name = "enabled",
-    havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sloth.ai.image", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(AiProperties.class)
 public class AiImageAutoConfiguration {
 

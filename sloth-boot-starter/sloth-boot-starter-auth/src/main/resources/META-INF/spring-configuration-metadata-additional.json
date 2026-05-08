@@ -59,6 +59,12 @@
       "type": "com.sloth.boot.starter.auth.enums.DeviceStrategy",
       "defaultValue": "ALLOW_MULTI",
       "description": "多设备登录策略：ALLOW_MULTI / REPLACED / PROHIBIT。"
+    },
+    {
+      "name": "sloth.auth.blacklist.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用 Token 黑名单（需配合 Redis）。"
     }
   ]
 }

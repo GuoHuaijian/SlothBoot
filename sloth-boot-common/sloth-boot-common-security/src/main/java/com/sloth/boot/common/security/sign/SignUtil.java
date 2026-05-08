@@ -1,14 +1,16 @@
 package com.sloth.boot.common.security.sign;
 
-import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.common.security.crypto.HashUtil;
+import com.sloth.boot.common.util.JsonUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 签名工具类
+ * 请求签名工具类。
+ * <p>
+ * 提供基于 SHA-256 的请求签名校验机制。将所有请求参数按字典序排列后拼接时间戳、随机数和密钥， 再进行 SHA-256
+ * 哈希生成签名，用于防止请求篡改和重放攻击。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -18,10 +20,10 @@ public class SignUtil {
     /**
      * 生成签名
      *
-     * @param params       参数Map
-     * @param secretKey    密钥
-     * @param timestamp    时间戳
-     * @param nonce        随机数
+     * @param params    参数Map
+     * @param secretKey 密钥
+     * @param timestamp 时间戳
+     * @param nonce     随机数
      * @return 签名
      */
     public static String generateSign(Map<String, Object> params, String secretKey, long timestamp, String nonce) {
@@ -38,9 +40,7 @@ public class SignUtil {
         }
 
         // 添加时间戳、随机数和密钥
-        sb.append("&timestamp=").append(timestamp)
-          .append("&nonce=").append(nonce)
-          .append("&secret=").append(secretKey);
+        sb.append("&timestamp=").append(timestamp).append("&nonce=").append(nonce).append("&secret=").append(secretKey);
 
         // SHA256 哈希
         return HashUtil.sha256(sb.toString());
@@ -49,14 +49,15 @@ public class SignUtil {
     /**
      * 验证签名
      *
-     * @param params       参数Map
-     * @param sign         签名
-     * @param secretKey    密钥
-     * @param timestamp    时间戳
-     * @param nonce        随机数
+     * @param params    参数Map
+     * @param sign      签名
+     * @param secretKey 密钥
+     * @param timestamp 时间戳
+     * @param nonce     随机数
      * @return 是否验证成功
      */
-    public static boolean verifySign(Map<String, Object> params, String sign, String secretKey, long timestamp, String nonce) {
+    public static boolean verifySign(Map<String, Object> params, String sign, String secretKey, long timestamp,
+                                     String nonce) {
         String generatedSign = generateSign(params, secretKey, timestamp, nonce);
         return generatedSign.equals(sign);
     }
@@ -64,10 +65,10 @@ public class SignUtil {
     /**
      * 从 JSON 字符串生成签名
      *
-     * @param json        JSON 字符串
-     * @param secretKey   密钥
-     * @param timestamp   时间戳
-     * @param nonce       随机数
+     * @param json      JSON 字符串
+     * @param secretKey 密钥
+     * @param timestamp 时间戳
+     * @param nonce     随机数
      * @return 签名
      */
     public static String generateSignFromJson(String json, String secretKey, long timestamp, String nonce) {
@@ -78,11 +79,11 @@ public class SignUtil {
     /**
      * 从 JSON 字符串验证签名
      *
-     * @param json        JSON 字符串
-     * @param sign        签名
-     * @param secretKey   密钥
-     * @param timestamp   时间戳
-     * @param nonce       随机数
+     * @param json      JSON 字符串
+     * @param sign      签名
+     * @param secretKey 密钥
+     * @param timestamp 时间戳
+     * @param nonce     随机数
      * @return 是否验证成功
      */
     public static boolean verifySignFromJson(String json, String sign, String secretKey, long timestamp, String nonce) {

@@ -29,10 +29,10 @@ public @interface DataPermission {
      * <p>
      * 可用变量：
      * <ul>
-     *   <li>{@code {userId}} — 当前用户 ID</li>
-     *   <li>{@code {deptId}} — 当前用户部门 ID（从 extra 中获取）</li>
-     *   <li>{@code {username}} — 当前用户名</li>
-     *   <li>{@code {tenantId}} — 当前租户 ID</li>
+     * <li>{@code {userId}} — 当前用户 ID</li>
+     * <li>{@code {deptId}} — 当前用户部门 ID（从 extra 中获取）</li>
+     * <li>{@code {username}} — 当前用户名</li>
+     * <li>{@code {tenantId}} — 当前租户 ID</li>
      * </ul>
      *
      * @return SpEL 表达式

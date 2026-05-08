@@ -5,6 +5,7 @@ import com.sloth.boot.common.annotation.Idempotent;
 import com.sloth.boot.common.annotation.RateLimit;
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +47,7 @@ public class RedisExampleController {
     /**
      * 分布式锁示例
      * <p>
-     * 使用 @DistributedLock 注解，自动获取/释放 Redisson 分布式锁。
-     * key 支持 SpEL 表达式，可引用方法参数。
+     * 使用 @DistributedLock 注解，自动获取/释放 Redisson 分布式锁。 key 支持 SpEL 表达式，可引用方法参数。
      */
     @PostMapping("/lock/{orderId}")
     @DistributedLock(key = "'order:' + #orderId", waitTime = 3, leaseTime = 30, message = "请勿重复操作")
@@ -59,8 +59,7 @@ public class RedisExampleController {
     /**
      * 限流示例
      * <p>
-     * 使用 @RateLimit 注解，基于 Redis 滑动窗口限流。
-     * 以下示例：每 10 秒最多允许 5 次请求。
+     * 使用 @RateLimit 注解，基于 Redis 滑动窗口限流。 以下示例：每 10 秒最多允许 5 次请求。
      */
     @GetMapping("/rate-limit")
     @RateLimit(count = 5, period = 10, message = "请求过于频繁，请稍后再试")
@@ -71,8 +70,7 @@ public class RedisExampleController {
     /**
      * 幂等示例
      * <p>
-     * 使用 @Idempotent 注解，防止重复提交。
-     * 同一请求在 timeout 秒内只能执行一次。
+     * 使用 @Idempotent 注解，防止重复提交。 同一请求在 timeout 秒内只能执行一次。
      */
     @PostMapping("/idempotent")
     @Idempotent(timeout = 30, message = "请勿重复提交")

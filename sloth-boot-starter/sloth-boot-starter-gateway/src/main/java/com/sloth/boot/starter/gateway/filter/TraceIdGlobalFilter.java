@@ -2,6 +2,7 @@ package com.sloth.boot.starter.gateway.filter;
 
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.TraceContext;
+
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -31,8 +32,8 @@ public class TraceIdGlobalFilter implements GlobalFilter, Ordered {
         }
         String finalTraceId = traceId;
         ServerWebExchange mutated = exchange.mutate()
-                .request(builder -> builder.header(HeaderConstant.TRACE_ID, finalTraceId))
-                .build();
+            .request(builder -> builder.header(HeaderConstant.TRACE_ID, finalTraceId))
+            .build();
         return chain.filter(mutated);
     }
 

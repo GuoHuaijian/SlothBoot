@@ -10,11 +10,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
@@ -39,9 +35,7 @@ import java.util.Properties;
  * @since 1.0.0
  */
 @Slf4j
-@Intercepts({
-        @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
-})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class DataScopeInterceptor implements Interceptor {
 
     private static final String SCOPE_ALL = "all";
@@ -49,6 +43,13 @@ public class DataScopeInterceptor implements Interceptor {
     private static final String SCOPE_DEPT_AND_BELOW = "dept_and_below";
     private static final String SCOPE_SELF = "self";
 
+    /**
+     * 拦截 SQL 执行，根据 {@link DataScope} 注解和用户上下文自动追加数据权限 WHERE 条件。
+     *
+     * @param invocation 调用对象
+     * @return 执行结果
+     * @throws Throwable 异常
+     */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
@@ -86,7 +87,7 @@ public class DataScopeInterceptor implements Interceptor {
                 if (plainSelect != null) {
                     if (plainSelect.getWhere() != null) {
                         plainSelect.setWhere(new AndExpression(plainSelect.getWhere(),
-                                CCJSqlParserUtil.parseCondExpression(condition)));
+                            CCJSqlParserUtil.parseCondExpression(condition)));
                     } else {
                         plainSelect.setWhere(CCJSqlParserUtil.parseCondExpression(condition));
                     }
@@ -125,8 +126,8 @@ public class DataScopeInterceptor implements Interceptor {
                     yield null;
                 }
                 yield userAlias.isEmpty()
-                        ? "dept_id IN (SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "')"
-                        : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = '" + userId + "'";
+                    ? "dept_id IN (SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "')"
+                    : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = '" + userId + "'";
             }
             case SCOPE_DEPT_AND_BELOW -> {
                 String deptAlias = dataScope.deptAlias();
@@ -134,19 +135,30 @@ public class DataScopeInterceptor implements Interceptor {
                     yield null;
                 }
                 yield deptAlias + ".dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = "
-                        + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "') "
-                        + "OR find_in_set(dept_id, (SELECT ancestors FROM sys_dept WHERE dept_id = "
-                        + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "'))))";
+                    + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "') "
+                    + "OR find_in_set(dept_id, (SELECT ancestors FROM sys_dept WHERE dept_id = "
+                    + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "'))))";
             }
             default -> null;
         };
     }
 
+    /**
+     * 包装目标对象生成代理。
+     *
+     * @param target 目标对象
+     * @return 代理对象
+     */
     @Override
     public Object plugin(Object target) {
         return Plugin.wrap(target, this);
     }
 
+    /**
+     * 设置插件属性。
+     *
+     * @param properties 属性
+     */
     @Override
     public void setProperties(Properties properties) {
         // no-op

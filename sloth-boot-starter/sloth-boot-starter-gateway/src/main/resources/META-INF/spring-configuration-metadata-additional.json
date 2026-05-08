@@ -4,17 +4,35 @@
       "name": "sloth.gateway.dynamic-route-enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Whether to enable dynamic gateway routes."
+      "description": "是否启用动态路由。"
     },
     {
       "name": "sloth.gateway.white-list",
       "type": "java.util.Set<java.lang.String>",
-      "description": "White list paths."
+      "description": "白名单路径（不需要认证）。"
     },
     {
       "name": "sloth.gateway.black-list",
       "type": "java.util.Set<java.lang.String>",
-      "description": "Black list IPs."
+      "description": "IP 黑名单。"
+    },
+    {
+      "name": "sloth.gateway.retry.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用请求重试。启用后当后端服务返回 5xx 错误时自动重试。"
+    },
+    {
+      "name": "sloth.gateway.retry.max-attempts",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "最大重试次数。"
+    },
+    {
+      "name": "sloth.gateway.retry.backoff-ms",
+      "type": "java.lang.Long",
+      "defaultValue": 100,
+      "description": "重试退避间隔（毫秒）。"
     }
   ]
 }

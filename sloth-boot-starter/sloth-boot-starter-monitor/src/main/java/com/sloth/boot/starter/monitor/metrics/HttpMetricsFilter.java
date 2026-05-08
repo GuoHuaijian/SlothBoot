@@ -41,27 +41,27 @@ public class HttpMetricsFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         long startTime = System.currentTimeMillis();
         try {
             filterChain.doFilter(request, response);
         } finally {
             long cost = System.currentTimeMillis() - startTime;
             Timer.builder("http.server.requests")
-                    .tag("uri", request.getRequestURI())
-                    .tag("method", request.getMethod())
-                    .tag("status", String.valueOf(response.getStatus()))
-                    .register(meterRegistry)
-                    .record(Duration.ofMillis(cost));
+                .tag("uri", request.getRequestURI())
+                .tag("method", request.getMethod())
+                .tag("status", String.valueOf(response.getStatus()))
+                .register(meterRegistry)
+                .record(Duration.ofMillis(cost));
             if (monitorProperties.isSlowApiEnabled() && cost >= monitorProperties.getSlowApiThreshold()) {
                 log.warn("检测到慢接口, uri={}, method={}, status={}, cost={}ms",
-                        request.getRequestURI(), request.getMethod(), response.getStatus(), cost);
+                    request.getRequestURI(), request.getMethod(), response.getStatus(), cost);
                 if (alarmService != null) {
                     AlarmMessage alarmMessage = new AlarmMessage();
                     alarmMessage.setTitle("慢接口告警");
                     alarmMessage.setContent("接口: " + request.getMethod() + " " + request.getRequestURI()
-                            + "\n状态码: " + response.getStatus()
-                            + "\n耗时: " + cost + "ms");
+                        + "\n状态码: " + response.getStatus()
+                        + "\n耗时: " + cost + "ms");
                     alarmService.send(alarmMessage);
                 }
             }

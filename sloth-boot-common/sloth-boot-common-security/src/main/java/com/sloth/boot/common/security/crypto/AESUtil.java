@@ -7,7 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * AES 加解密工具类
+ * AES 对称加解密工具类。
+ * <p>
+ * 基于 AES/CBC/PKCS5Padding 算法，密钥长度为 16 字节（128 位），IV 长度为 16 字节。 加密结果使用 Base64
+ * 编码输出，解密时输入也应为 Base64 编码字符串。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -22,10 +25,11 @@ public class AESUtil {
     /**
      * AES 加密
      *
-     * @param data      待加密数据
-     * @param key       密钥
-     * @param iv        偏移量
-     * @return 加密后的数据
+     * @param data 待加密数据
+     * @param key  密钥（16 字节）
+     * @param iv   偏移量（16 字节）
+     * @return Base64 编码的加密数据
+     * @throws RuntimeException 加密失败时抛出
      */
     public static String encrypt(String data, String key, String iv) {
         try {
@@ -41,12 +45,13 @@ public class AESUtil {
     }
 
     /**
-     * AES 解密
+     * AES 解密。
      *
-     * @param data      待解密数据
-     * @param key       密钥
-     * @param iv        偏移量
-     * @return 解密后的数据
+     * @param data Base64 编码的加密数据
+     * @param key  密钥（16 字节）
+     * @param iv   偏移量（16 字节）
+     * @return 解密后的原始数据
+     * @throws RuntimeException 解密失败时抛出
      */
     public static String decrypt(String data, String key, String iv) {
         try {

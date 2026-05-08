@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.web.config;
 
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -26,9 +27,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userContextInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/error", "/favicon.ico", "/swagger-ui/**", "/v3/api-docs/**", "/doc.html");
+        registry.addInterceptor(userContextInterceptor).addPathPatterns("/**").excludePathPatterns("/error",
+            "/favicon.ico", "/swagger-ui/**", "/v3/api-docs/**", "/doc.html");
     }
 
     /**
@@ -44,14 +44,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String[] allowedOrigins = corsConfiguration.getAllowedOrigins().isEmpty()
-                ? new String[]{"*"}
-                : corsConfiguration.getAllowedOrigins().toArray(new String[0]);
-        registry.addMapping("/**")
-                .allowedOriginPatterns(allowedOrigins)
-                .allowedMethods(corsConfiguration.getAllowedMethods().toArray(new String[0]))
-                .allowedHeaders(corsConfiguration.getAllowedHeaders().toArray(new String[0]))
-                .allowCredentials(corsConfiguration.isAllowCredentials())
-                .maxAge(corsConfiguration.getMaxAge());
+        String[] allowedOrigins = corsConfiguration.getAllowedOrigins().isEmpty() ? new String[]{"*"}
+            : corsConfiguration.getAllowedOrigins().toArray(new String[0]);
+        registry.addMapping("/**").allowedOriginPatterns(allowedOrigins)
+            .allowedMethods(corsConfiguration.getAllowedMethods().toArray(new String[0]))
+            .allowedHeaders(corsConfiguration.getAllowedHeaders().toArray(new String[0]))
+            .allowCredentials(corsConfiguration.isAllowCredentials()).maxAge(corsConfiguration.getMaxAge());
     }
 }

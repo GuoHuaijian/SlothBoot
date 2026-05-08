@@ -8,7 +8,13 @@ import com.sloth.boot.starter.web.filter.CachedBodyHttpServletRequestWrapper;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
+import com.sloth.boot.starter.web.properties.GzipProperties;
 import com.sloth.boot.starter.web.properties.SlothWebProperties;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,13 +25,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -34,12 +36,10 @@ import java.io.IOException;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableConfigurationProperties({
-        SlothWebProperties.class,
-        CorsConfiguration.class
-})
+@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class})
 @Import(JacksonConfiguration.class)
 public class WebAutoConfiguration {
 
@@ -121,8 +121,8 @@ public class WebAutoConfiguration {
         FilterRegistrationBean<OncePerRequestFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                    throws ServletException, IOException {
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain filterChain) throws ServletException, IOException {
                 if (shouldSkip(request, xssProperties)) {
                     filterChain.doFilter(request, response);
                     return;
@@ -164,7 +164,7 @@ public class WebAutoConfiguration {
         registration.setFilter(new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                             FilterChain filterChain) throws ServletException, IOException {
+                                            FilterChain filterChain) throws ServletException, IOException {
                 CachedBodyHttpServletRequestWrapper wrappedRequest = new CachedBodyHttpServletRequestWrapper(request);
                 filterChain.doFilter(wrappedRequest, response);
             }
@@ -178,20 +178,20 @@ public class WebAutoConfiguration {
     /**
      * 注册 API 访问日志过滤器（发布 AccessLogEvent 事件）。
      *
-     * @param eventPublisher   事件发布器
-     * @param webProperties    Web 配置
+     * @param eventPublisher 事件发布器
+     * @param webProperties  Web 配置
      * @return 访问日志过滤器注册器
      */
     @Bean
     @ConditionalOnMissingBean(name = "slothAccessLogFilterRegistration")
     @ConditionalOnProperty(prefix = "sloth.web", name = "access-log-enabled", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<OncePerRequestFilter> slothAccessLogFilterRegistration(
-            ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
+        ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
         FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                             FilterChain filterChain) throws ServletException, IOException {
+                                            FilterChain filterChain) throws ServletException, IOException {
                 long start = System.currentTimeMillis();
                 try {
                     filterChain.doFilter(request, response);
@@ -206,11 +206,11 @@ public class WebAutoConfiguration {
                     Long userId = null;
                     try {
                         userId = UserContext.getUserId();
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        log.trace("获取用户上下文失败, 跳过用户ID记录", e);
                     }
-                    AccessLogEvent event = new AccessLogEvent(this,
-                        request.getMethod(), request.getRequestURI(), request.getQueryString(),
-                        clientIp, request.getHeader("User-Agent"), userId,
+                    AccessLogEvent event = new AccessLogEvent(this, request.getMethod(), request.getRequestURI(),
+                        request.getQueryString(), clientIp, request.getHeader("User-Agent"), userId,
                         response.getStatus(), elapsed, requestBody);
                     eventPublisher.publishEvent(event);
                 }

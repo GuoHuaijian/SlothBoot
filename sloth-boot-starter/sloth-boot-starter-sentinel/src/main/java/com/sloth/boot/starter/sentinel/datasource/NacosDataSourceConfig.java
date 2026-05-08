@@ -4,12 +4,12 @@ import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
-import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sloth.boot.common.util.JsonUtil;
@@ -47,7 +47,7 @@ public class NacosDataSourceConfig {
     @PostConstruct
     public void init() {
         String serverAddr = environment.getProperty("spring.cloud.nacos.config.server-addr",
-                environment.getProperty("spring.cloud.nacos.discovery.server-addr"));
+            environment.getProperty("spring.cloud.nacos.discovery.server-addr"));
         String applicationName = environment.getProperty("spring.application.name", "application");
         if (serverAddr == null || serverAddr.isBlank()) {
             return;
@@ -60,44 +60,44 @@ public class NacosDataSourceConfig {
 
     private void registerFlowRules(String serverAddr, String applicationName) {
         ReadableDataSource<String, List<FlowRule>> dataSource = new NacosDataSource<>(
-                serverAddr,
-                sentinelProperties.getNacosGroupId(),
-                applicationName + "-flow-rules",
-                jsonConverter(new TypeReference<List<FlowRule>>() {
-                })
+            serverAddr,
+            sentinelProperties.getNacosGroupId(),
+            applicationName + "-flow-rules",
+            jsonConverter(new TypeReference<List<FlowRule>>() {
+            })
         );
         FlowRuleManager.register2Property(dataSource.getProperty());
     }
 
     private void registerDegradeRules(String serverAddr, String applicationName) {
         ReadableDataSource<String, List<DegradeRule>> dataSource = new NacosDataSource<>(
-                serverAddr,
-                sentinelProperties.getNacosGroupId(),
-                applicationName + "-degrade-rules",
-                jsonConverter(new TypeReference<List<DegradeRule>>() {
-                })
+            serverAddr,
+            sentinelProperties.getNacosGroupId(),
+            applicationName + "-degrade-rules",
+            jsonConverter(new TypeReference<List<DegradeRule>>() {
+            })
         );
         DegradeRuleManager.register2Property(dataSource.getProperty());
     }
 
     private void registerSystemRules(String serverAddr, String applicationName) {
         ReadableDataSource<String, List<SystemRule>> dataSource = new NacosDataSource<>(
-                serverAddr,
-                sentinelProperties.getNacosGroupId(),
-                applicationName + "-system-rules",
-                jsonConverter(new TypeReference<List<SystemRule>>() {
-                })
+            serverAddr,
+            sentinelProperties.getNacosGroupId(),
+            applicationName + "-system-rules",
+            jsonConverter(new TypeReference<List<SystemRule>>() {
+            })
         );
         SystemRuleManager.register2Property(dataSource.getProperty());
     }
 
     private void registerParamFlowRules(String serverAddr, String applicationName) {
         ReadableDataSource<String, List<ParamFlowRule>> dataSource = new NacosDataSource<>(
-                serverAddr,
-                sentinelProperties.getNacosGroupId(),
-                applicationName + "-param-rules",
-                jsonConverter(new TypeReference<List<ParamFlowRule>>() {
-                })
+            serverAddr,
+            sentinelProperties.getNacosGroupId(),
+            applicationName + "-param-rules",
+            jsonConverter(new TypeReference<List<ParamFlowRule>>() {
+            })
         );
         ParamFlowRuleManager.register2Property(dataSource.getProperty());
     }

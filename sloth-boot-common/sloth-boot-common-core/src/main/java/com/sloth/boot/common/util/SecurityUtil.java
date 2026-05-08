@@ -107,8 +107,8 @@ public final class SecurityUtil {
     /**
      * 验证密码
      *
-     * @param password     待验证密码
-     * @param salt         盐
+     * @param password       待验证密码
+     * @param salt           盐
      * @param hashedPassword 已哈希的密码
      * @return 是否匹配
      */
@@ -136,9 +136,9 @@ public final class SecurityUtil {
     /**
      * 通用脱敏
      *
-     * @param str        原始字符串
-     * @param prefixLen  前缀保留长度
-     * @param suffixLen  后缀保留长度
+     * @param str       原始字符串
+     * @param prefixLen 前缀保留长度
+     * @param suffixLen 后缀保留长度
      * @return 脱敏后的字符串
      */
     public static String mask(String str, int prefixLen, int suffixLen) {

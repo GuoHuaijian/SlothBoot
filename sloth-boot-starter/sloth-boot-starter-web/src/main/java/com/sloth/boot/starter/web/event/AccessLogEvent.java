@@ -65,9 +65,22 @@ public class AccessLogEvent extends BaseEvent {
      */
     private final String requestBody;
 
-    public AccessLogEvent(Object source, String method, String uri, String queryString,
-                           String clientIp, String userAgent, Long userId,
-                           Integer statusCode, long elapsed, String requestBody) {
+    /**
+     * 构造访问日志事件。
+     *
+     * @param source      事件源
+     * @param method      请求方法
+     * @param uri         请求 URI
+     * @param queryString 查询参数
+     * @param clientIp    客户端 IP
+     * @param userAgent   User-Agent
+     * @param userId      用户 ID
+     * @param statusCode  HTTP 响应状态码
+     * @param elapsed     请求耗时（毫秒）
+     * @param requestBody 请求体内容
+     */
+    public AccessLogEvent(Object source, String method, String uri, String queryString, String clientIp,
+                          String userAgent, Long userId, Integer statusCode, long elapsed, String requestBody) {
         super(source);
         this.method = method;
         this.uri = uri;

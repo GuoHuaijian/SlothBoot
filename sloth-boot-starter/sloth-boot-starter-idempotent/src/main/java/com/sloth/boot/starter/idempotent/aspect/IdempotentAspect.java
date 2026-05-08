@@ -8,10 +8,10 @@ import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -62,7 +62,7 @@ public class IdempotentAspect {
         String defaultKey = joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String resolved = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
-                idempotent.key(), defaultKey);
+            idempotent.key(), defaultKey);
         return idempotentProperties.getKeyPrefix() + resolved;
     }
 }

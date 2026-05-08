@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.metadata.Usage;
+import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
@@ -29,6 +30,9 @@ public class SpringAiChatClient implements AiChatClient {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String chat(String userPrompt) {
         validatePrompt(userPrompt);
@@ -38,6 +42,9 @@ public class SpringAiChatClient implements AiChatClient {
             .content();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String chat(String systemPrompt, String userPrompt) {
         validatePrompt(userPrompt);
@@ -51,28 +58,37 @@ public class SpringAiChatClient implements AiChatClient {
         return chat(userPrompt);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Flux<String> chatStream(String userPrompt) {
         validatePrompt(userPrompt);
         return chatClient.prompt()
-                .user(userPrompt)
-                .stream()
-                .content();
+            .user(userPrompt)
+            .stream()
+            .content();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Flux<String> chatStream(String systemPrompt, String userPrompt) {
         validatePrompt(userPrompt);
         if (StringUtils.hasText(systemPrompt)) {
             return chatClient.prompt()
-                    .system(systemPrompt)
-                    .user(userPrompt)
-                    .stream()
-                    .content();
+                .system(systemPrompt)
+                .user(userPrompt)
+                .stream()
+                .content();
         }
         return chatStream(userPrompt);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ChatResponse chat(ChatRequest request) {
         validatePrompt(request.getUserPrompt());
@@ -82,6 +98,9 @@ public class SpringAiChatClient implements AiChatClient {
         return extractChatResponse(springResponse);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Flux<String> chatStream(ChatRequest request) {
         validatePrompt(request.getUserPrompt());
@@ -89,6 +108,9 @@ public class SpringAiChatClient implements AiChatClient {
         return spec.stream().content();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T chat(String userPrompt, Class<T> type) {
         validatePrompt(userPrompt);
@@ -99,6 +121,9 @@ public class SpringAiChatClient implements AiChatClient {
         return parseStructuredOutput(content, type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T chat(String systemPrompt, String userPrompt, Class<T> type) {
         validatePrompt(userPrompt);
@@ -119,7 +144,28 @@ public class SpringAiChatClient implements AiChatClient {
     }
 
     /**
-     * 构建 ChatClient 请求，处理记忆、工具、变量等。
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T chatStructured(ChatRequest request, Class<T> clazz) {
+        validatePrompt(request.getUserPrompt());
+        BeanOutputConverter<T> converter = new BeanOutputConverter<>(clazz);
+        // 将格式指令追加到用户提示词末尾，确保经过模板渲染和工具注册等完整流程
+        ChatRequest structuredRequest =
+            ChatRequest.builder().userPrompt(request.getUserPrompt() + "\n\n" + converter.getFormat())
+                .systemPrompt(request.getSystemPrompt()).conversationId(request.getConversationId())
+                .model(request.getModel()).temperature(request.getTemperature()).topP(request.getTopP())
+                .maxTokens(request.getMaxTokens()).variables(request.getVariables()).tools(request.getTools()).build();
+        var spec = buildPromptSpec(structuredRequest);
+        String content = spec.call().content();
+        return converter.convert(content);
+    }
+
+    /**
+     * 构建 ChatClient 请求，处理记忆、工具、变量模板渲染及每请求参数覆盖。
+     *
+     * @param request 对话请求
+     * @return ChatClient 请求规格
      */
     private ChatClient.ChatClientRequestSpec buildPromptSpec(ChatRequest request) {
         ChatClient.ChatClientRequestSpec spec = chatClient.prompt();
@@ -169,6 +215,12 @@ public class SpringAiChatClient implements AiChatClient {
         return spec;
     }
 
+    /**
+     * 判断请求是否包含每请求级别的参数覆盖。
+     *
+     * @param request 对话请求
+     * @return 是否有参数覆盖
+     */
     private boolean hasPerRequestOptions(ChatRequest request) {
         return StringUtils.hasText(request.getModel())
             || request.getTemperature() != null
@@ -177,7 +229,10 @@ public class SpringAiChatClient implements AiChatClient {
     }
 
     /**
-     * 从 Spring AI ChatResponse 提取为 sloth ChatResponse DTO。
+     * 从 Spring AI ChatResponse 提取为 Sloth ChatResponse DTO。
+     *
+     * @param springResponse Spring AI 响应对象
+     * @return Sloth 对话响应
      */
     private ChatResponse extractChatResponse(org.springframework.ai.chat.model.ChatResponse springResponse) {
         ChatResponse.ChatResponseBuilder builder = ChatResponse.builder()
@@ -200,7 +255,12 @@ public class SpringAiChatClient implements AiChatClient {
     }
 
     /**
-     * 解析结构化输出。
+     * 将响应文本解析为指定类型的对象。
+     *
+     * @param content 响应文本
+     * @param type    目标类型
+     * @param <T>     泛型
+     * @return 解析后的对象实例
      */
     private <T> T parseStructuredOutput(String content, Class<T> type) {
         if (type == String.class) {

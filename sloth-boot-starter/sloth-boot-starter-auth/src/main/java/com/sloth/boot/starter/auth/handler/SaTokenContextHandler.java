@@ -1,20 +1,13 @@
 package com.sloth.boot.starter.auth.handler;
 
-import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
 import com.sloth.boot.common.context.UserContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Sa-Token 上下文处理器。
  * <p>
- * 负责在 Sa-Token 登录成功后同步用户信息到 {@link UserContext}，
- * 并提供权限/角色查询的默认实现。
+ * 负责在 Sa-Token 登录成功后同步用户信息到 {@link UserContext}， 并提供权限/角色查询的默认实现。
  *
  * @author sloth-boot
  * @since 1.0.0

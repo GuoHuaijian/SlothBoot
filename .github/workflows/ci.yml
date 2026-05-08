@@ -25,6 +25,12 @@ jobs:
       - name: Build and Test
         run: mvn -B -U clean verify
 
+      - name: Checkstyle
+        run: mvn -B checkstyle:check -DskipTests -pl '!sloth-boot-example,!sloth-boot-generator'
+
+      - name: SpotBugs
+        run: mvn -B spotbugs:check -DskipTests -pl '!sloth-boot-example,!sloth-boot-generator'
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

@@ -37,7 +37,7 @@ public class RocketMQHealthIndicator extends AbstractHealthIndicator {
         Method namesrvMethod = producer.getClass().getMethod("getNamesrvAddr");
         Method groupMethod = producer.getClass().getMethod("getProducerGroup");
         builder.up()
-                .withDetail("namesrvAddr", String.valueOf(namesrvMethod.invoke(producer)))
-                .withDetail("producerGroup", String.valueOf(groupMethod.invoke(producer)));
+            .withDetail("namesrvAddr", String.valueOf(namesrvMethod.invoke(producer)))
+            .withDetail("producerGroup", String.valueOf(groupMethod.invoke(producer)));
     }
 }

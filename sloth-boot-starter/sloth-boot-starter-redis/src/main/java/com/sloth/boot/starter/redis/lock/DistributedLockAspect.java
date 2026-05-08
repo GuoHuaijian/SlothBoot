@@ -6,10 +6,10 @@ import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,19 +40,19 @@ public class DistributedLockAspect {
         String defaultKey = joinPoint.getSignature().toShortString();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String key = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
-                distributedLockAnnotation.key(), defaultKey);
+            distributedLockAnnotation.key(), defaultKey);
         if (StrUtil.isBlank(key)) {
             key = defaultKey;
         }
         if (!key.startsWith(redisProperties.getKeyPrefix())) {
             key = redisProperties.getKeyPrefix() + "lock:" + key;
         }
-        boolean locked = distributedLock.tryLock(
-                key,
-                distributedLockAnnotation.waitTime() > 0 ? distributedLockAnnotation.waitTime() : redisProperties.getLockWaitTime(),
-                distributedLockAnnotation.leaseTime() > 0 ? distributedLockAnnotation.leaseTime() : redisProperties.getLockLeaseTime(),
-                TimeUnit.SECONDS
-        );
+        boolean locked = distributedLock.tryLock(key,
+            distributedLockAnnotation.waitTime() > 0 ? distributedLockAnnotation.waitTime()
+                : redisProperties.getLockWaitTime(),
+            distributedLockAnnotation.leaseTime() > 0 ? distributedLockAnnotation.leaseTime()
+                : redisProperties.getLockLeaseTime(),
+            TimeUnit.SECONDS);
         if (!locked) {
             throw BizException.of(GlobalErrorCode.REPEATED_REQUEST.getCode(), distributedLockAnnotation.message());
         }

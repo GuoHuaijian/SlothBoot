@@ -54,12 +54,12 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         ServerHttpRequest.Builder builder = exchange.getRequest().mutate();
         builder.header(HeaderConstant.INNER_CALL, DEFAULT_INNER_CALL_VALUE);
         builder.header(
-                HeaderConstant.USER_ID,
-                defaultHeader(exchange, HeaderConstant.USER_ID, DEFAULT_USER_ID)
+            HeaderConstant.USER_ID,
+            defaultHeader(exchange, HeaderConstant.USER_ID, DEFAULT_USER_ID)
         );
         builder.header(
-                HeaderConstant.USERNAME,
-                defaultHeader(exchange, HeaderConstant.USERNAME, DEFAULT_USERNAME)
+            HeaderConstant.USERNAME,
+            defaultHeader(exchange, HeaderConstant.USERNAME, DEFAULT_USERNAME)
         );
         if (exchange.getRequest().getHeaders().getFirst(HeaderConstant.TENANT_ID) != null) {
             builder.header(HeaderConstant.TENANT_ID, exchange.getRequest().getHeaders().getFirst(HeaderConstant.TENANT_ID));

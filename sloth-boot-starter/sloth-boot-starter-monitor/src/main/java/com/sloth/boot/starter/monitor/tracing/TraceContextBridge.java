@@ -2,6 +2,7 @@ package com.sloth.boot.starter.monitor.tracing;
 
 import com.sloth.boot.common.context.TraceContext;
 import io.micrometer.tracing.Tracer;
+import io.micrometer.tracing.handler.TracingObservationHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**

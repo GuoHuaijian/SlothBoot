@@ -83,9 +83,9 @@ public class R<T> implements Serializable {
     /**
      * 成功响应
      *
-     * @param msg 响应消息
+     * @param msg  响应消息
      * @param data 响应数据
-     * @param <T> 数据类型
+     * @param <T>  数据类型
      * @return 统一响应
      */
     public static <T> R<T> ok(String msg, T data) {

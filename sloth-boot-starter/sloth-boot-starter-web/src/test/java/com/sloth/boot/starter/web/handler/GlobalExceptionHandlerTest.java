@@ -8,9 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.MethodParameter;
-import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -19,8 +16,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @DisplayName("GlobalExceptionHandler 测试")
 class GlobalExceptionHandlerTest {
@@ -76,8 +71,7 @@ class GlobalExceptionHandlerTest {
         @Test
         @DisplayName("MissingServletRequestParameterException 返回 400")
         void handleMissingParam() {
-            MissingServletRequestParameterException ex =
-                    new MissingServletRequestParameterException("id", "Long");
+            MissingServletRequestParameterException ex = new MissingServletRequestParameterException("id", "Long");
             R<Void> result = handler.handleMissingServletRequestParameterException(ex);
             assertThat(result.getCode()).isEqualTo(400);
             assertThat(result.getMsg()).contains("id");
@@ -87,7 +81,7 @@ class GlobalExceptionHandlerTest {
         @DisplayName("HttpRequestMethodNotSupportedException 返回 405")
         void handleMethodNotAllowed() {
             HttpRequestMethodNotSupportedException ex =
-                    new HttpRequestMethodNotSupportedException("POST", List.of("GET"));
+                new HttpRequestMethodNotSupportedException("POST", List.of("GET"));
             R<Void> result = handler.handleHttpRequestMethodNotSupportedException(ex);
             assertThat(result.getCode()).isEqualTo(405);
         }

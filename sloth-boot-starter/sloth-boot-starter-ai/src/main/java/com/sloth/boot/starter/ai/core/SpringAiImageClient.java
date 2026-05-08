@@ -24,6 +24,9 @@ public class SpringAiImageClient implements AiImageClient {
 
     private final ImageModel imageModel;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generate(String prompt) {
         if (!StringUtils.hasText(prompt)) {
@@ -41,6 +44,9 @@ public class SpringAiImageClient implements AiImageClient {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ImageResponse generate(ImageRequest request) {
         if (request == null || !StringUtils.hasText(request.getPrompt())) {
@@ -64,13 +70,9 @@ public class SpringAiImageClient implements AiImageClient {
             ImagePrompt imagePrompt = new ImagePrompt(request.getPrompt(), optionsBuilder.build());
             org.springframework.ai.image.ImageResponse response = imageModel.call(imagePrompt);
 
-            List<String> urls = response.getResults().stream()
-                .map(gen -> gen.getOutput().getUrl())
-                .toList();
+            List<String> urls = response.getResults().stream().map(gen -> gen.getOutput().getUrl()).toList();
 
-            return ImageResponse.builder()
-                .urls(urls)
-                .build();
+            return ImageResponse.builder().urls(urls).build();
         } catch (BizException e) {
             throw e;
         } catch (Exception e) {

@@ -87,6 +87,12 @@
       "type": "java.lang.Long",
       "defaultValue": 3000,
       "description": "AI 慢调用告警阈值（毫秒）。"
+    },
+    {
+      "name": "sloth.ai.function.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用 AI 函数调用注册中心。"
     }
   ]
 }

@@ -2,9 +2,9 @@ package com.sloth.boot.starter.feign.decoder;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sloth.boot.common.exception.RemoteCallException;
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.common.util.JsonUtil;
-import com.sloth.boot.starter.feign.exception.RemoteCallException;
 import feign.Response;
 import feign.Util;
 import feign.codec.Decoder;
@@ -56,10 +56,10 @@ public class FeignResponseDecoder implements Decoder {
             return delegate.decode(rebuildResponse(response, body), type);
         }
         JavaType wrapperType = OBJECT_MAPPER.getTypeFactory()
-                .constructParametricType(R.class, OBJECT_MAPPER.getTypeFactory().constructType(type));
+            .constructParametricType(R.class, OBJECT_MAPPER.getTypeFactory().constructType(type));
         R<?> result = OBJECT_MAPPER.readValue(body, wrapperType);
         if (result.getCode() != 0) {
-            throw new RemoteCallException(result.getCode(), result.getMsg());
+            throw new RemoteCallException("unknown", result.getCode(), result.getMsg());
         }
         if (isReturnR(type)) {
             return result;
@@ -71,6 +71,12 @@ public class FeignResponseDecoder implements Decoder {
         return OBJECT_MAPPER.convertValue(data, OBJECT_MAPPER.getTypeFactory().constructType(type));
     }
 
+    /**
+     * 判断目标类型是否为 R 类型（统一返回值包装）。
+     *
+     * @param type 目标类型
+     * @return 是否为 R 类型
+     */
     private boolean isReturnR(Type type) {
         if (type instanceof Class<?> clazz) {
             return R.class.isAssignableFrom(clazz);
@@ -81,6 +87,13 @@ public class FeignResponseDecoder implements Decoder {
         return false;
     }
 
+    /**
+     * 使用新 body 重建 Feign Response 对象。
+     *
+     * @param response 原始响应
+     * @param body     新的响应体内容
+     * @return 重建后的响应
+     */
     private Response rebuildResponse(Response response, String body) {
         return response.toBuilder().body(body, StandardCharsets.UTF_8).build();
     }

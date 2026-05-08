@@ -1,6 +1,7 @@
 package com.sloth.boot.example.controller;
 
 import com.sloth.boot.common.result.R;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

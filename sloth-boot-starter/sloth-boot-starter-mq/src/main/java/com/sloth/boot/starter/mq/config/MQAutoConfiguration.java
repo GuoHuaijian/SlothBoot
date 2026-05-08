@@ -1,7 +1,9 @@
 package com.sloth.boot.starter.mq.config;
 
+import com.sloth.boot.starter.mq.dlq.DeadLetterQueueHandler;
 import com.sloth.boot.starter.mq.monitor.MQHealthIndicator;
 import com.sloth.boot.starter.mq.producer.MessageProducer;
+
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -60,5 +62,19 @@ public class MQAutoConfiguration {
     @ConditionalOnMissingBean(name = "messageFailureLogListener")
     public com.sloth.boot.starter.mq.event.MessageFailureLogListener messageFailureLogListener() {
         return new com.sloth.boot.starter.mq.event.MessageFailureLogListener();
+    }
+
+    /**
+     * 注册死信队列处理器。
+     *
+     * @param messageProducer 消息生产者
+     * @param mqProperties    MQ 配置
+     * @return 死信队列处理器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.mq.dlq", name = "enabled", havingValue = "true")
+    public DeadLetterQueueHandler deadLetterQueueHandler(MessageProducer messageProducer, MQProperties mqProperties) {
+        return new DeadLetterQueueHandler(messageProducer, mqProperties);
     }
 }

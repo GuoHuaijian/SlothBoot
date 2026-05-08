@@ -23,9 +23,9 @@ public final class TreeUtil {
     /**
      * 构建树形结构
      *
-     * @param list     节点列表
-     * @param rootId   根节点ID
-     * @param <T>      节点类型
+     * @param list   节点列表
+     * @param rootId 根节点ID
+     * @param <T>    节点类型
      * @return 树形结构列表
      */
     public static <T extends TreeNode> List<T> buildTree(List<T> list, Long rootId) {
@@ -61,8 +61,8 @@ public final class TreeUtil {
     /**
      * 展开树形结构为扁平列表
      *
-     * @param tree     树形结构
-     * @param <T>      节点类型
+     * @param tree 树形结构
+     * @param <T>  节点类型
      * @return 扁平列表
      */
     public static <T extends TreeNode> List<T> flattenTree(List<T> tree) {

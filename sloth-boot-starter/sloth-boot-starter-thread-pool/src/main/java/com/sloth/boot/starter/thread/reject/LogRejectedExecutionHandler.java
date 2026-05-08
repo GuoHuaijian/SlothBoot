@@ -28,12 +28,12 @@ public class LogRejectedExecutionHandler implements RejectedExecutionHandler {
     @Override
     public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
         log.warn("线程池任务被拒绝, poolName={}, activeCount={}, poolSize={}, queueSize={}, queueRemainingCapacity={}, task={}",
-                poolName,
-                executor.getActiveCount(),
-                executor.getPoolSize(),
-                executor.getQueue().size(),
-                executor.getQueue().remainingCapacity(),
-                runnable);
+            poolName,
+            executor.getActiveCount(),
+            executor.getPoolSize(),
+            executor.getQueue().size(),
+            executor.getQueue().remainingCapacity(),
+            runnable);
         if (callerRunsFallback && !executor.isShutdown()) {
             runnable.run();
         }

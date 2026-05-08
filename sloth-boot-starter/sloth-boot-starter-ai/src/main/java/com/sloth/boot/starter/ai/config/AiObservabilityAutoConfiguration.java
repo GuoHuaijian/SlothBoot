@@ -11,15 +11,13 @@ import org.springframework.context.annotation.Bean;
 /**
  * AI 可观测性自动配置。
  * <p>
- * 当未禁用时，自动注册 AiChatClientDecorator 装饰器，
- * 为 AiChatClient 添加日志、慢调用告警和 Token 统计能力。
+ * 当未禁用时，自动注册 AiChatClientDecorator 装饰器， 为 AiChatClient 添加日志、慢调用告警和 Token 统计能力。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
 @AutoConfiguration(after = AiAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "sloth.ai.observability", name = "enabled",
-    havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sloth.ai.observability", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(AiProperties.class)
 public class AiObservabilityAutoConfiguration {
 
@@ -32,8 +30,7 @@ public class AiObservabilityAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public AiChatClientDecorator aiChatClientDecorator(AiChatClient aiChatClient,
-                                                        AiProperties aiProperties) {
+    public AiChatClientDecorator aiChatClientDecorator(AiChatClient aiChatClient, AiProperties aiProperties) {
         return new AiChatClientDecorator(aiChatClient, aiProperties.getObservability());
     }
 }

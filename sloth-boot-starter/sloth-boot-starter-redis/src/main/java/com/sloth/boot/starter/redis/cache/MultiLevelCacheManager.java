@@ -28,14 +28,18 @@ public class MultiLevelCacheManager implements org.springframework.cache.CacheMa
     private final RedisCacheManager redisCacheManager;
     private final ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<>();
 
-    public MultiLevelCacheManager(RedisTemplate<String, Object> redisTemplate,
-                                   RedisProperties redisProperties) {
+    /**
+     * 构造多级缓存管理器。
+     *
+     * @param redisTemplate   Redis 模板
+     * @param redisProperties Redis 配置
+     */
+    public MultiLevelCacheManager(RedisTemplate<String, Object> redisTemplate, RedisProperties redisProperties) {
         RedisProperties.MultiCache config = redisProperties.getMultiCache();
 
         // L1: Caffeine
         this.caffeineCacheManager = new CaffeineCacheManager();
-        this.caffeineCacheManager.setCaffeine(Caffeine.newBuilder()
-            .maximumSize(config.getL1MaxSize())
+        this.caffeineCacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(config.getL1MaxSize())
             .expireAfterWrite(config.getL1TtlSeconds(), TimeUnit.SECONDS));
 
         // L2: Redis
@@ -45,6 +49,12 @@ public class MultiLevelCacheManager implements org.springframework.cache.CacheMa
             .build();
     }
 
+    /**
+     * 获取多级缓存实例，不存在时自动创建。
+     *
+     * @param name 缓存名称
+     * @return 多级缓存实例
+     */
     @Override
     public Cache getCache(String name) {
         return cacheMap.computeIfAbsent(name, n -> {
@@ -54,6 +64,11 @@ public class MultiLevelCacheManager implements org.springframework.cache.CacheMa
         });
     }
 
+    /**
+     * 获取所有缓存名称。
+     *
+     * @return 缓存名称集合
+     */
     @Override
     public Collection<String> getCacheNames() {
         return cacheMap.keySet();

@@ -8,7 +8,9 @@ import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
 import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
 import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
 import com.sloth.boot.starter.auth.properties.AuthProperties;
+import com.sloth.boot.starter.auth.service.DefaultPermissionService;
 import com.sloth.boot.starter.auth.service.OnlineUserService;
+import com.sloth.boot.starter.auth.service.PermissionService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -51,14 +53,14 @@ public class AuthAutoConfiguration {
     /**
      * 注册认证拦截器配置。
      *
-     * @param authProperties       认证配置
+     * @param authProperties        认证配置
      * @param saTokenContextHandler 上下文处理器
      * @return WebMvc 配置
      */
     @Bean
     @ConditionalOnMissingBean(name = "authWebMvcConfigurer")
     public WebMvcConfigurer authWebMvcConfigurer(AuthProperties authProperties,
-                                                  SaTokenContextHandler saTokenContextHandler) {
+                                                 SaTokenContextHandler saTokenContextHandler) {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
@@ -77,8 +79,7 @@ public class AuthAutoConfiguration {
                         // 登录成功后同步到 UserContext
                         saTokenContextHandler.syncToUserContext();
                     });
-                })).addPathPatterns("/**")
-                  .excludePathPatterns(authProperties.getWhiteList());
+                })).addPathPatterns("/**").excludePathPatterns(authProperties.getWhiteList());
             }
         };
     }
@@ -95,7 +96,7 @@ public class AuthAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SaTokenEventListener saTokenEventListener(ApplicationEventPublisher eventPublisher,
-                                                      AuthProperties authProperties) {
+                                                     AuthProperties authProperties) {
         SaTokenEventListener listener = new SaTokenEventListener(eventPublisher, authProperties);
         SaTokenEventCenter.registerListener(listener);
         return listener;
@@ -127,5 +128,18 @@ public class AuthAutoConfiguration {
         registration.addUrlPatterns("/*");
         registration.setOrder(Ordered.LOWEST_PRECEDENCE - 10);
         return registration;
+    }
+
+    /**
+     * 注册权限服务（RBAC SPI）。
+     * <p>
+     * 业务系统可提供自定义实现覆盖此默认 Bean。
+     *
+     * @return 权限服务
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public PermissionService permissionService() {
+        return new DefaultPermissionService();
     }
 }

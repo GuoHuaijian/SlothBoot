@@ -35,4 +35,9 @@ public class MybatisPlusProperties {
      * 慢 SQL 阈值，单位毫秒。
      */
     private long slowSqlThreshold = 1000L;
+
+    /**
+     * INSERT 时是否自动填充 tenantId 字段（从 UserContext 获取）。
+     */
+    private boolean tenantAutoFill = true;
 }

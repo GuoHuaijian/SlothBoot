@@ -4,6 +4,7 @@ import com.sloth.boot.starter.oss.model.OssFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -43,6 +44,11 @@ public class OssTemplate implements OssClient {
     @Override
     public String getPresignedUrl(String path, int expireMinutes) {
         return delegate.getPresignedUrl(path, expireMinutes);
+    }
+
+    @Override
+    public String generatePresignedUrl(String objectKey, Duration expiry) {
+        return delegate.generatePresignedUrl(objectKey, expiry);
     }
 
     @Override

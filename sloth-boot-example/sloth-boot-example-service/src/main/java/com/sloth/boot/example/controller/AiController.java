@@ -6,6 +6,7 @@ import com.sloth.boot.starter.ai.core.AiEmbeddingClient;
 import com.sloth.boot.starter.ai.core.AiImageClient;
 import com.sloth.boot.starter.ai.dto.ChatRequest;
 import com.sloth.boot.starter.ai.dto.ChatResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -50,8 +51,7 @@ public class AiController {
     /**
      * AI 流式对话示例接口（SSE）。
      * <p>
-     * 返回 text/event-stream 格式，逐 token 推送 AI 响应。
-     * 适用于实时对话、打字机效果等场景。
+     * 返回 text/event-stream 格式，逐 token 推送 AI 响应。 适用于实时对话、打字机效果等场景。
      *
      * @param prompt 用户输入内容
      * @return AI 响应文本流
@@ -64,8 +64,7 @@ public class AiController {
     /**
      * AI 多轮对话示例接口（带记忆）。
      * <p>
-     * 需要先开启 sloth.ai.memory.enabled=true。
-     * 相同 conversationId 的请求会共享上下文。
+     * 需要先开启 sloth.ai.memory.enabled=true。 相同 conversationId 的请求会共享上下文。
      *
      * @param prompt         用户输入内容
      * @param conversationId 会话 ID
@@ -73,11 +72,8 @@ public class AiController {
      */
     @GetMapping("/ai/chat/conversation")
     public R<ChatResponse> conversation(@RequestParam("prompt") String prompt,
-                                         @RequestParam("conversationId") String conversationId) {
-        ChatRequest request = ChatRequest.builder()
-            .userPrompt(prompt)
-            .conversationId(conversationId)
-            .build();
+                                        @RequestParam("conversationId") String conversationId) {
+        ChatRequest request = ChatRequest.builder().userPrompt(prompt).conversationId(conversationId).build();
         return R.ok(aiChatClient.chat(request));
     }
 

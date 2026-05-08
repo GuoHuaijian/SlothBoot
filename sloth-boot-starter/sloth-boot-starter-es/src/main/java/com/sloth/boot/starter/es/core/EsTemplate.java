@@ -125,13 +125,13 @@ public class EsTemplate {
      */
     public <T> Page<T> page(Query query, Pageable pageable, Class<T> clazz) {
         NativeQuery nativeQuery = new NativeQueryBuilder()
-                .withQuery(query)
-                .withPageable(pageable)
-                .build();
+            .withQuery(query)
+            .withPageable(pageable)
+            .build();
         SearchHits<T> searchHits = elasticsearchOperations.search(nativeQuery, clazz);
         List<T> content = searchHits.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .collect(Collectors.toList());
+            .map(SearchHit::getContent)
+            .collect(Collectors.toList());
         return new PageImpl<>(content, pageable, searchHits.getTotalHits());
     }
 
@@ -147,13 +147,13 @@ public class EsTemplate {
         NativeQuery nativeQuery = new NativeQueryBuilder().withQuery(query).build();
         SearchHits<T> searchHits = elasticsearchOperations.search(nativeQuery, clazz);
         return searchHits.getSearchHits().stream()
-                .map(hit -> {
-                    Map<String, Object> result = new HashMap<>(4);
-                    result.put("content", hit.getContent());
-                    result.put("highlightFields", hit.getHighlightFields());
-                    result.put("score", hit.getScore());
-                    return result;
-                })
-                .collect(Collectors.toList());
+            .map(hit -> {
+                Map<String, Object> result = new HashMap<>(4);
+                result.put("content", hit.getContent());
+                result.put("highlightFields", hit.getHighlightFields());
+                result.put("score", hit.getScore());
+                return result;
+            })
+            .collect(Collectors.toList());
     }
 }

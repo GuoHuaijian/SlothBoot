@@ -106,6 +106,11 @@
 
         <!-- GraalVM Native Image -->
         <native-maven-plugin.version>0.10.4</native-maven-plugin.version>
+
+        <!-- Code Quality -->
+        <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+        <checkstyle.version>10.14.2</checkstyle.version>
+        <spotbugs-maven-plugin.version>4.8.3.1</spotbugs-maven-plugin.version>
     </properties>
 
     <modules>
@@ -245,6 +250,41 @@
                     <extensions>true</extensions>
                     <configuration>
                         <mainClass>com.sloth.boot.example.Application</mainClass>
+                    </configuration>
+                </plugin>
+
+                <!-- Checkstyle 代码规范检查 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>${maven.multiModuleProjectDirectory}/config/checkstyle/checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>false</failsOnError>
+                        <failOnViolation>false</failOnViolation>
+                        <violationSeverity>warning</violationSeverity>
+                        <includeTestSourceRoots>false</includeTestSourceRoots>
+                    </configuration>
+                </plugin>
+
+                <!-- SpotBugs 静态分析 -->
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin.version}</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>High</threshold>
+                        <excludeFilterFile>${maven.multiModuleProjectDirectory}/config/spotbugs/exclude.xml</excludeFilterFile>
+                        <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
             </plugins>

@@ -40,9 +40,9 @@ public class DingTalkAlarmService extends AbstractWebhookAlarmService {
         long timestamp = System.currentTimeMillis();
         String sign = sign(secret, timestamp);
         return UrlBuilder.ofHttp(webhook)
-                .addQuery("timestamp", String.valueOf(timestamp))
-                .addQuery("sign", sign)
-                .build();
+            .addQuery("timestamp", String.valueOf(timestamp))
+            .addQuery("sign", sign)
+            .build();
     }
 
     @Override
@@ -52,12 +52,12 @@ public class DingTalkAlarmService extends AbstractWebhookAlarmService {
         Map<String, Object> markdown = new HashMap<>();
         markdown.put("title", message.getTitle());
         markdown.put("text", "### " + message.getTitle() + "\n"
-                + "> 级别: " + message.getLevel() + "\n\n"
-                + "> 时间: " + message.getTime() + "\n\n"
-                + "> 服务: " + message.getServiceName() + "\n\n"
-                + "> IP: " + message.getIp() + "\n\n"
-                + "> TraceId: " + message.getTraceId() + "\n\n"
-                + message.getContent());
+            + "> 级别: " + message.getLevel() + "\n\n"
+            + "> 时间: " + message.getTime() + "\n\n"
+            + "> 服务: " + message.getServiceName() + "\n\n"
+            + "> IP: " + message.getIp() + "\n\n"
+            + "> TraceId: " + message.getTraceId() + "\n\n"
+            + message.getContent());
         payload.put("markdown", markdown);
         return payload;
     }

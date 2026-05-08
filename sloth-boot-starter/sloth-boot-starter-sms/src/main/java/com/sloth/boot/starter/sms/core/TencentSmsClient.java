@@ -27,9 +27,9 @@ public class TencentSmsClient implements SmsClient {
     public SendResult send(String phone, String templateCode, Map<String, String> params) {
         log.warn("腾讯云短信客户端当前为预留实现, phone={}, templateCode={}", phone, templateCode);
         return SendResult.builder()
-                .success(false)
-                .message("腾讯云短信客户端暂未接入")
-                .build();
+            .success(false)
+            .message("腾讯云短信客户端暂未接入")
+            .build();
     }
 
     /**
@@ -44,8 +44,8 @@ public class TencentSmsClient implements SmsClient {
     public SendResult batchSend(List<String> phones, String templateCode, Map<String, String> params) {
         log.warn("腾讯云批量短信客户端当前为预留实现, phones={}, templateCode={}", phones, templateCode);
         return SendResult.builder()
-                .success(false)
-                .message("腾讯云短信客户端暂未接入")
-                .build();
+            .success(false)
+            .message("腾讯云短信客户端暂未接入")
+            .build();
     }
 }

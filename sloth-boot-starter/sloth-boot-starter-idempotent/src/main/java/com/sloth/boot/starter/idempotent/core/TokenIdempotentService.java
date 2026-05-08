@@ -29,9 +29,9 @@ public class TokenIdempotentService {
     public String createToken() {
         String token = IdUtil.nanoId();
         stringRedisTemplate.opsForValue().set(
-                buildTokenKey(token),
-                "1",
-                Duration.ofSeconds(idempotentProperties.getTimeout())
+            buildTokenKey(token),
+            "1",
+            Duration.ofSeconds(idempotentProperties.getTimeout())
         );
         return token;
     }

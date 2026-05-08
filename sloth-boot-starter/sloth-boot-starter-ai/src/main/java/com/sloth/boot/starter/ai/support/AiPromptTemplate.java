@@ -26,7 +26,7 @@ public final class AiPromptTemplate {
     /**
      * 渲染提示词模板。
      *
-     * @param template 模板文本
+     * @param template  模板文本
      * @param variables 变量列表
      * @return 渲染后的文本
      */

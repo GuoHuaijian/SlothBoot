@@ -2,7 +2,9 @@ package com.sloth.boot.starter.job.config;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -33,8 +35,8 @@ public class JobAutoConfiguration {
         executor.setAdminAddresses(jobProperties.getAdminAddresses());
         executor.setAccessToken(jobProperties.getAccessToken());
         executor.setAppname(jobProperties.getAppname() == null || jobProperties.getAppname().isBlank()
-                ? environment.getProperty("spring.application.name", "application")
-                : jobProperties.getAppname());
+            ? environment.getProperty("spring.application.name", "application")
+            : jobProperties.getAppname());
         executor.setAddress(jobProperties.getAddress());
         executor.setIp(jobProperties.getIp());
         executor.setPort(jobProperties.getPort());

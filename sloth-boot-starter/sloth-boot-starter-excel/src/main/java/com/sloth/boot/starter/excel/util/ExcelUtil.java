@@ -6,9 +6,9 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.sloth.boot.starter.excel.listener.ExcelReadListener;
 import com.sloth.boot.starter.excel.model.SheetData;
 import com.sloth.boot.starter.excel.wrapper.ExcelResponseWrapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,8 @@ public final class ExcelUtil {
     public static <T> void export(HttpServletResponse response, String fileName, Class<T> head, List<T> data) throws IOException {
         ExcelResponseWrapper.wrap(response, fileName);
         EasyExcel.write(response.getOutputStream(), head)
-                .sheet("Sheet1")
-                .doWrite(data);
+            .sheet("Sheet1")
+            .doWrite(data);
     }
 
     /**
@@ -55,8 +55,8 @@ public final class ExcelUtil {
             int index = 0;
             for (SheetData sheetData : sheets) {
                 WriteSheet writeSheet = EasyExcel.writerSheet(index++, sheetData.getSheetName())
-                        .head(sheetData.getHead())
-                        .build();
+                    .head(sheetData.getHead())
+                    .build();
                 excelWriter.write(sheetData.getData(), writeSheet);
             }
         }

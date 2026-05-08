@@ -20,6 +20,9 @@ public class SpringAiEmbeddingClient implements AiEmbeddingClient {
 
     private final EmbeddingModel embeddingModel;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public float[] embed(String text) {
         if (!StringUtils.hasText(text)) {
@@ -32,6 +35,9 @@ public class SpringAiEmbeddingClient implements AiEmbeddingClient {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<float[]> embed(List<String> texts) {
         if (texts == null || texts.isEmpty()) {

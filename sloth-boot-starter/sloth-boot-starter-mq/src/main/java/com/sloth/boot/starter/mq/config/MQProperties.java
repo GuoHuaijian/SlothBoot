@@ -37,4 +37,31 @@ public class MQProperties {
      * 消费幂等键前缀。
      */
     private String consumeIdempotentKeyPrefix = "sloth:mq:consume:";
+
+    /**
+     * 死信队列配置。
+     */
+    private DLQProperties dlq = new DLQProperties();
+
+    /**
+     * 死信队列配置属性。
+     */
+    @Data
+    public static class DLQProperties {
+
+        /**
+         * 是否启用死信队列处理。
+         */
+        private boolean enabled = false;
+
+        /**
+         * 最大重试次数。
+         */
+        private int maxRetries = 3;
+
+        /**
+         * 重试延迟时间（秒）。
+         */
+        private int delaySeconds = 60;
+    }
 }

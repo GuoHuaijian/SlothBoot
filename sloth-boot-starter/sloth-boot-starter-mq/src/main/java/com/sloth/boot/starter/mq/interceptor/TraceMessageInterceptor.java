@@ -40,8 +40,8 @@ public final class TraceMessageInterceptor {
             message.getHeaders().putIfAbsent("bizKey", message.getBizKey());
         }
         MessageBuilder<String> builder = MessageBuilder.withPayload(JsonUtil.toJson(message))
-                .setHeader(HeaderConstant.TRACE_ID, traceId)
-                .setHeader("msgId", message.getMsgId());
+            .setHeader(HeaderConstant.TRACE_ID, traceId)
+            .setHeader("msgId", message.getMsgId());
         if (message.getBizKey() != null) {
             builder.setHeader("bizKey", message.getBizKey());
         }
@@ -59,8 +59,8 @@ public final class TraceMessageInterceptor {
         String traceId = messageExt.getUserProperty(HeaderConstant.TRACE_ID);
         if (traceId == null || traceId.isBlank()) {
             BaseMessage baseMessage = JsonUtil.parseObject(
-                    new String(messageExt.getBody(), StandardCharsets.UTF_8),
-                    BaseMessage.class
+                new String(messageExt.getBody(), StandardCharsets.UTF_8),
+                BaseMessage.class
             );
             traceId = baseMessage.getTraceId();
         }

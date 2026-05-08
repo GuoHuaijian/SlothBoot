@@ -1,7 +1,6 @@
 package com.sloth.boot.common.util;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 /**
@@ -84,8 +83,8 @@ public final class FileUtil {
     /**
      * 校验文件扩展名是否在白名单中
      *
-     * @param filename      文件名
-     * @param allowedExts   允许的扩展名集合（不含点号，不区分大小写）
+     * @param filename    文件名
+     * @param allowedExts 允许的扩展名集合（不含点号，不区分大小写）
      * @return 是否允许
      */
     public static boolean isAllowedExtension(String filename, Set<String> allowedExts) {
@@ -127,9 +126,9 @@ public final class FileUtil {
     /**
      * 写入字符串到 OutputStream
      *
-     * @param content    字符串内容
+     * @param content      字符串内容
      * @param outputStream 输出流
-     * @param charset    字符集名称
+     * @param charset      字符集名称
      */
     public static void writeString(String content, OutputStream outputStream, String charset) {
         if (content == null || outputStream == null) {

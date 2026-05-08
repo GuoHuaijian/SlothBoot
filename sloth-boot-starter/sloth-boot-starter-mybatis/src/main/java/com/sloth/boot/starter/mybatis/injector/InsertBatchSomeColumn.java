@@ -31,13 +31,10 @@ public class InsertBatchSomeColumn extends AbstractMethod {
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         String fieldSql = prepareFieldSql(tableInfo);
         String valueSql = prepareValuesSql(tableInfo);
-        String sql = "<script>INSERT INTO " + tableInfo.getTableName()
-                + " " + fieldSql
-                + " VALUES "
-                + "<foreach collection=\"list\" item=\"item\" separator=\",\">" + valueSql + "</foreach>"
-                + "</script>";
+        String sql = "<script>INSERT INTO " + tableInfo.getTableName() + " " + fieldSql + " VALUES "
+            + "<foreach collection=\"list\" item=\"item\" separator=\",\">" + valueSql + "</foreach>" + "</script>";
         return this.addInsertMappedStatement(mapperClass, modelClass, this.methodName,
-                this.createSqlSource(this.configuration, sql, modelClass), null, null, null);
+            this.createSqlSource(this.configuration, sql, modelClass), null, null, null);
     }
 
     private String prepareFieldSql(TableInfo tableInfo) {

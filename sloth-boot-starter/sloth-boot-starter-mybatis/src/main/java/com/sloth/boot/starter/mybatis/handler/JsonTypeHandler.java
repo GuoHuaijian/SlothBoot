@@ -31,16 +31,40 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
         ps.setString(i, JsonUtil.toJson(parameter));
     }
 
+    /**
+     * 根据列名获取 JSON 字符串。
+     *
+     * @param rs         结果集
+     * @param columnName 列名
+     * @return JSON 字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
         return rs.getString(columnName);
     }
 
+    /**
+     * 根据列索引获取 JSON 字符串。
+     *
+     * @param rs          结果集
+     * @param columnIndex 列索引
+     * @return JSON 字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         return rs.getString(columnIndex);
     }
 
+    /**
+     * 从存储过程获取 JSON 字符串。
+     *
+     * @param cs          CallableStatement
+     * @param columnIndex 列索引
+     * @return JSON 字符串
+     * @throws SQLException SQL 异常
+     */
     @Override
     public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         return cs.getString(columnIndex);

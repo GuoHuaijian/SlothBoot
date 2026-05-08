@@ -112,6 +112,9 @@ public class DocProperties {
 
     /**
      * API 分组配置。
+     *
+     * @author sloth-boot
+     * @since 1.0.0
      */
     @Data
     public static class ApiGroup {

@@ -21,6 +21,15 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
 
     private final RedissonClient redissonClient;
 
+    /**
+     * 尝试获取读锁。
+     *
+     * @param key       锁的 key
+     * @param waitTime  最大等待时间
+     * @param leaseTime 锁的持有时间
+     * @param unit      时间单位
+     * @return 是否获取成功
+     */
     @Override
     public boolean tryReadLock(String key, long waitTime, long leaseTime, TimeUnit unit) {
         try {
@@ -32,6 +41,15 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 尝试获取写锁。
+     *
+     * @param key       锁的 key
+     * @param waitTime  最大等待时间
+     * @param leaseTime 锁的持有时间
+     * @param unit      时间单位
+     * @return 是否获取成功
+     */
     @Override
     public boolean tryWriteLock(String key, long waitTime, long leaseTime, TimeUnit unit) {
         try {
@@ -43,6 +61,11 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 释放读锁。
+     *
+     * @param key 锁的 key
+     */
     @Override
     public void unlockRead(String key) {
         RLock readLock = getReadWriteLock(key).readLock();
@@ -51,6 +74,11 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 释放写锁。
+     *
+     * @param key 锁的 key
+     */
     @Override
     public void unlockWrite(String key) {
         RLock writeLock = getReadWriteLock(key).writeLock();
@@ -59,6 +87,17 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 在读锁保护下执行操作。
+     *
+     * @param key       锁的 key
+     * @param waitTime  最大等待时间
+     * @param leaseTime 锁的持有时间
+     * @param unit      时间单位
+     * @param supplier  要执行的操作
+     * @param <T>       返回值类型
+     * @return 操作结果
+     */
     @Override
     public <T> T executeWithReadLock(String key, long waitTime, long leaseTime, TimeUnit unit, Supplier<T> supplier) {
         boolean locked = tryReadLock(key, waitTime, leaseTime, unit);
@@ -72,6 +111,17 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 在写锁保护下执行操作。
+     *
+     * @param key       锁的 key
+     * @param waitTime  最大等待时间
+     * @param leaseTime 锁的持有时间
+     * @param unit      时间单位
+     * @param supplier  要执行的操作
+     * @param <T>       返回值类型
+     * @return 操作结果
+     */
     @Override
     public <T> T executeWithWriteLock(String key, long waitTime, long leaseTime, TimeUnit unit, Supplier<T> supplier) {
         boolean locked = tryWriteLock(key, waitTime, leaseTime, unit);
@@ -85,6 +135,12 @@ public class RedissonReadWriteLock implements DistributedReadWriteLock {
         }
     }
 
+    /**
+     * 获取 Redisson 读写锁实例。
+     *
+     * @param key 锁的 key
+     * @return 读写锁
+     */
     private RReadWriteLock getReadWriteLock(String key) {
         return redissonClient.getReadWriteLock(key);
     }

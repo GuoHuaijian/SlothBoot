@@ -26,17 +26,33 @@ public class CachedBodyHttpServletRequestWrapper extends HttpServletRequestWrapp
 
     private final byte[] cachedBody;
 
+    /**
+     * 构造请求体缓存包装器，将原始 InputStream 读取并缓存为 byte[]。
+     *
+     * @param request 原始请求
+     * @throws IOException IO 异常
+     */
     public CachedBodyHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         ServletInputStream inputStream = request.getInputStream();
         this.cachedBody = inputStream.readAllBytes();
     }
 
+    /**
+     * 获取缓存的输入流，支持多次读取。
+     *
+     * @return 基于缓存字节数组的 ServletInputStream
+     */
     @Override
     public ServletInputStream getInputStream() {
         return new CachedBodyServletInputStream(this.cachedBody);
     }
 
+    /**
+     * 获取缓存的字符读取器。
+     *
+     * @return 基于缓存字节数组的 BufferedReader
+     */
     @Override
     public BufferedReader getReader() {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.cachedBody);

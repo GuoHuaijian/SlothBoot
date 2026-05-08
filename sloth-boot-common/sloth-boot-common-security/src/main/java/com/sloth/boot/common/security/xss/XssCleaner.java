@@ -1,7 +1,10 @@
 package com.sloth.boot.common.security.xss;
 
 /**
- * XSS 清洗器
+ * XSS 攻击内容清洗器。
+ * <p>
+ * 通过正则表达式匹配并移除 HTML 中的危险内容，包括 script 标签、style 标签、 事件属性（onclick 等）、javascript:
+ * 协议等 XSS 攻击向量。 具体清洗行为由 {@link XssProperties} 配置控制。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -17,7 +20,7 @@ public class XssCleaner {
     /**
      * 清洗 HTML 内容
      *
-     * @param content      待清洗内容
+     * @param content       待清洗内容
      * @param xssProperties XSS 配置
      * @return 清洗后的内容
      */

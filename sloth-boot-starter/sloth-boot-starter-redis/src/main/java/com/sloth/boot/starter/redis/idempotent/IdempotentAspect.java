@@ -8,10 +8,10 @@ import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -43,7 +43,7 @@ public class IdempotentAspect {
         String key = buildIdempotentKey(joinPoint, idempotent);
         String value = UUID.randomUUID().toString();
         Boolean success = stringRedisTemplate.opsForValue()
-                .setIfAbsent(key, value, Duration.ofSeconds(idempotent.timeout()));
+            .setIfAbsent(key, value, Duration.ofSeconds(idempotent.timeout()));
         if (!Boolean.TRUE.equals(success)) {
             throw BizException.of(GlobalErrorCode.REPEATED_REQUEST.getCode(), idempotent.message());
         }
@@ -61,8 +61,7 @@ public class IdempotentAspect {
     private String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String suffix = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
-                idempotent.key(),
-                joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId());
+            idempotent.key(), joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId());
         return redisProperties.getKeyPrefix() + "idempotent:" + suffix;
     }
 }

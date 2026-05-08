@@ -138,9 +138,9 @@ public final class CollectionUtil {
      * List&lt;User&gt; distinct = CollectionUtil.distinctByKey(users, User::getId);
      * </pre>
      *
-     * @param collection 集合
+     * @param collection   集合
      * @param keyExtractor key 提取函数
-     * @param <T>        元素类型
+     * @param <T>          元素类型
      * @return 去重后的列表
      */
     public static <T> List<T> distinctByKey(Collection<T> collection, Function<T, ?> keyExtractor) {
@@ -149,8 +149,8 @@ public final class CollectionUtil {
         }
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return collection.stream()
-                .filter(item -> seen.add(keyExtractor.apply(item)))
-                .collect(Collectors.toList());
+            .filter(item -> seen.add(keyExtractor.apply(item)))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -178,18 +178,18 @@ public final class CollectionUtil {
     /**
      * 将集合转换为 Map
      *
-     * @param collection 集合
-     * @param keyMapper  key 映射函数
+     * @param collection  集合
+     * @param keyMapper   key 映射函数
      * @param valueMapper value 映射函数
-     * @param <T>        元素类型
-     * @param <K>        key 类型
-     * @param <V>        value 类型
+     * @param <T>         元素类型
+     * @param <K>         key 类型
+     * @param <V>         value 类型
      * @return 转换后的 Map
      * @throws IllegalStateException 如果存在重复的 key
      */
     public static <T, K, V> Map<K, V> toMap(Collection<T> collection,
-                                             Function<T, K> keyMapper,
-                                             Function<T, V> valueMapper) {
+                                            Function<T, K> keyMapper,
+                                            Function<T, V> valueMapper) {
         if (isEmpty(collection)) {
             return new HashMap<>();
         }

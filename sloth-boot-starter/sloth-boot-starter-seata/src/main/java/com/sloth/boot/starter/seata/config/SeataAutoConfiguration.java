@@ -33,12 +33,11 @@ public class SeataAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public GlobalTransactionScanner globalTransactionScanner(Environment environment,
-                                                             SeataProperties seataProperties) {
+    public GlobalTransactionScanner globalTransactionScanner(Environment environment, SeataProperties seataProperties) {
         String applicationName = environment.getProperty("spring.application.name", "sloth-boot-app");
         String txServiceGroup = resolveTxServiceGroup(applicationName, seataProperties.getTxServiceGroup());
-        log.info("初始化 Seata 全局事务扫描器, applicationName={}, txServiceGroup={}, mode={}",
-                applicationName, txServiceGroup, seataProperties.getMode());
+        log.info("初始化 Seata 全局事务扫描器, applicationName={}, txServiceGroup={}, mode={}", applicationName, txServiceGroup,
+            seataProperties.getMode());
         return new GlobalTransactionScanner(applicationName, txServiceGroup);
     }
 

@@ -58,17 +58,17 @@ public final class SpelUtil {
             return defaultValue;
         }
         MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(
-                target,
-                method,
-                args,
-                PARAMETER_NAME_DISCOVERER
+            target,
+            method,
+            args,
+            PARAMETER_NAME_DISCOVERER
         );
         if (expression.contains("#")) {
             return EXPRESSION_PARSER.parseExpression(expression).getValue(context, String.class);
         }
         if (expression.contains("{") || expression.contains("}")) {
             return EXPRESSION_PARSER.parseExpression(expression, ParserContext.TEMPLATE_EXPRESSION)
-                    .getValue(context, String.class);
+                .getValue(context, String.class);
         }
         return expression;
     }

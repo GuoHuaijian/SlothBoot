@@ -4,6 +4,7 @@ import com.sloth.boot.starter.oss.model.OssFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -21,6 +22,15 @@ public interface OssClient {
     void delete(String path);
 
     String getPresignedUrl(String path, int expireMinutes);
+
+    /**
+     * 生成预签名访问 URL。
+     *
+     * @param objectKey 对象Key
+     * @param expiry    过期时间
+     * @return 预签名URL
+     */
+    String generatePresignedUrl(String objectKey, Duration expiry);
 
     List<OssFile> listFiles(String prefix);
 }

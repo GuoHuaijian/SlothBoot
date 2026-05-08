@@ -3,6 +3,7 @@ package com.sloth.boot.starter.web.handler;
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.web.properties.SlothWebProperties;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -60,8 +61,8 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request, ServerHttpResponse response) {
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
+                                  ServerHttpResponse response) {
         if (isSwaggerRequest(request) || body instanceof R<?>) {
             return body;
         }
@@ -77,8 +78,7 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
             return false;
         }
         String requestUri = servletServerHttpRequest.getServletRequest().getRequestURI();
-        return requestUri.startsWith(SWAGGER_UI_URI)
-                || requestUri.startsWith(API_DOCS_URI)
-                || requestUri.startsWith(KNIFE4J_URI);
+        return requestUri.startsWith(SWAGGER_UI_URI) || requestUri.startsWith(API_DOCS_URI)
+            || requestUri.startsWith(KNIFE4J_URI);
     }
 }

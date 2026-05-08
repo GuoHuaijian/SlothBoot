@@ -38,9 +38,9 @@ public class MQHealthIndicator extends AbstractHealthIndicator {
         String producerGroup = invokeString(producer, "getProducerGroup");
         String serviceState = invokeToString(producer, "getDefaultMQProducerImpl", "getServiceState");
         builder.up()
-                .withDetail("namesrvAddr", namesrvAddr)
-                .withDetail("producerGroup", producerGroup)
-                .withDetail("serviceState", serviceState);
+            .withDetail("namesrvAddr", namesrvAddr)
+            .withDetail("producerGroup", producerGroup)
+            .withDetail("serviceState", serviceState);
     }
 
     private String invokeString(Object target, String methodName) throws Exception {

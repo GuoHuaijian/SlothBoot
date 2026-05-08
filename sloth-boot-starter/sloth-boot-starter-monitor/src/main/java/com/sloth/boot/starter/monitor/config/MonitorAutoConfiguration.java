@@ -117,8 +117,8 @@ public class MonitorAutoConfiguration {
     /**
      * 注册 HTTP 指标过滤器。
      *
-     * @param meterRegistry 指标注册中心
-     * @param monitorProperties 配置
+     * @param meterRegistry        指标注册中心
+     * @param monitorProperties    配置
      * @param alarmServiceProvider 告警服务提供者
      * @return 过滤器注册器
      */

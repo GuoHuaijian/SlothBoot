@@ -65,9 +65,9 @@ public final class CacheKeyBuilder {
             return prefix;
         }
         String paramStr = params.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(Collectors.joining("&"));
+            .sorted(Map.Entry.comparingByKey())
+            .map(e -> e.getKey() + "=" + e.getValue())
+            .collect(Collectors.joining("&"));
         return prefix + SEPARATOR + paramStr;
     }
 

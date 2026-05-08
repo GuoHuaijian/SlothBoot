@@ -1,7 +1,7 @@
 package com.sloth.boot.common.exception;
 
 /**
- * Simple immutable error code implementation for dynamic errors.
+ * 简单的不可变错误码实现，用于动态错误场景。
  *
  * @author sloth-boot
  * @since 1.0.0

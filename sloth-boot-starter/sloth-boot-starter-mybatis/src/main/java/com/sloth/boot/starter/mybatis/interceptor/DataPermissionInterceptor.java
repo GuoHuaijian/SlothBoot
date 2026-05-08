@@ -20,7 +20,6 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,13 +32,18 @@ import java.util.regex.Pattern;
  * @since 1.0.0
  */
 @Slf4j
-@Intercepts({
-    @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
-})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class DataPermissionInterceptor implements Interceptor {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{(\\w+)}");
 
+    /**
+     * 拦截 SQL 执行，根据 {@link DataPermission} 注解的 SpEL 表达式追加数据权限条件。
+     *
+     * @param invocation 调用对象
+     * @return 执行结果
+     * @throws Throwable 异常
+     */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler handler = (StatementHandler) invocation.getTarget();

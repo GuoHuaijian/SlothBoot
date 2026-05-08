@@ -3,13 +3,13 @@ package com.sloth.boot.common.log.filter;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.TraceContext;
-import org.slf4j.MDC;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.MDC;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 
 /**
@@ -31,7 +31,7 @@ public class TraceFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         String traceId = request.getHeader(HeaderConstant.TRACE_ID);
         if (StrUtil.isBlank(traceId)) {
             traceId = TraceContext.generateTraceId();

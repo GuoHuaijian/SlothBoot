@@ -129,7 +129,11 @@ public class DocAutoConfiguration {
     }
 
     /**
-     * 构建服务器地址列表。
+     * 构建服务器地址列表。优先使用显式配置的 URL，否则自动检测。
+     *
+     * @param docProperties 文档配置
+     * @param environment   Spring 环境
+     * @return 服务器地址列表
      */
     private List<Server> buildServers(DocProperties docProperties, Environment environment) {
         List<Server> servers = new ArrayList<>();

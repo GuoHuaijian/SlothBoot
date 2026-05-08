@@ -9,6 +9,7 @@ import com.sloth.boot.starter.oss.model.OssFile;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -30,8 +31,8 @@ public class AliyunOssClient implements OssClient {
     /**
      * 构造函数。
      *
-     * @param ossClient      阿里云 OSS 客户端
-     * @param ossProperties  OSS 配置
+     * @param ossClient     阿里云 OSS 客户端
+     * @param ossProperties OSS 配置
      */
     public AliyunOssClient(OSS ossClient, OssProperties ossProperties) {
         this.ossClient = ossClient;
@@ -61,8 +62,16 @@ public class AliyunOssClient implements OssClient {
     @Override
     public String getPresignedUrl(String path, int expireMinutes) {
         Date expiration = new Date(System.currentTimeMillis() + expireMinutes * 60L * 1000L);
-        GeneratePresignedUrlRequest request =
-                new GeneratePresignedUrlRequest(ossProperties.getBucketName(), path);
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(ossProperties.getBucketName(), path);
+        request.setExpiration(expiration);
+        URL url = ossClient.generatePresignedUrl(request);
+        return url.toString();
+    }
+
+    @Override
+    public String generatePresignedUrl(String objectKey, Duration expiry) {
+        Date expiration = new Date(System.currentTimeMillis() + expiry.toMillis());
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(ossProperties.getBucketName(), objectKey);
         request.setExpiration(expiration);
         URL url = ossClient.generatePresignedUrl(request);
         return url.toString();
@@ -71,13 +80,15 @@ public class AliyunOssClient implements OssClient {
     @Override
     public List<OssFile> listFiles(String prefix) {
         List<OssFile> result = new ArrayList<>();
-        for (OSSObjectSummary summary : ossClient.listObjects(ossProperties.getBucketName(), prefix).getObjectSummaries()) {
+        for (OSSObjectSummary summary : ossClient.listObjects(ossProperties.getBucketName(), prefix)
+            .getObjectSummaries()) {
             OssFile ossFile = new OssFile();
             ossFile.setName(summary.getKey());
             ossFile.setPath(summary.getKey());
             ossFile.setUrl(getPresignedUrl(summary.getKey(), 60));
             ossFile.setSize(summary.getSize());
-            ossFile.setLastModified(LocalDateTime.ofInstant(Instant.ofEpochMilli(summary.getLastModified().getTime()), ZoneId.systemDefault()));
+            ossFile.setLastModified(LocalDateTime.ofInstant(Instant.ofEpochMilli(summary.getLastModified().getTime()),
+                ZoneId.systemDefault()));
             result.add(ossFile);
         }
         return result;

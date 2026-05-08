@@ -43,6 +43,24 @@
       "type": "java.lang.Long",
       "defaultValue": 3600,
       "description": "Max age for CORS preflight cache."
+    },
+    {
+      "name": "sloth.web.gzip.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable Gzip response compression."
+    },
+    {
+      "name": "sloth.web.gzip.min-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 1024,
+      "description": "Minimum response body size (bytes) to trigger Gzip compression."
+    },
+    {
+      "name": "sloth.web.gzip.mime-types",
+      "type": "java.lang.String[]",
+      "defaultValue": ["text/html", "text/xml", "text/plain", "text/css", "application/json", "application/javascript"],
+      "description": "MIME types eligible for Gzip compression."
     }
   ]
 }

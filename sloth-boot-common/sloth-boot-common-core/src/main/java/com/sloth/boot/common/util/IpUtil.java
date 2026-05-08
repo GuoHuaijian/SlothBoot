@@ -35,13 +35,13 @@ public final class IpUtil {
      * IPv4 正则表达式
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile(
-            "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+        "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
 
     /**
      * IPv6 正则表达式
      */
     private static final Pattern IPV6_PATTERN = Pattern.compile(
-            "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,7}:$");
+        "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::([0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4}$|^([0-9a-fA-F]{1,4}:){1,7}:$");
 
     /**
      * 内网 IP 前缀
@@ -186,9 +186,9 @@ public final class IpUtil {
      */
     public static String longToIp(long ipLong) {
         return ((ipLong >> 24) & 0xFF) + "." +
-                ((ipLong >> 16) & 0xFF) + "." +
-                ((ipLong >> 8) & 0xFF) + "." +
-                (ipLong & 0xFF);
+            ((ipLong >> 16) & 0xFF) + "." +
+            ((ipLong >> 8) & 0xFF) + "." +
+            (ipLong & 0xFF);
     }
 
     /**

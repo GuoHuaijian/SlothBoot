@@ -2,18 +2,16 @@ package com.sloth.boot.common.security.crypto;
 
 import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 /**
- * RSA 加解密工具类
+ * RSA 非对称加解密与签名工具类。
+ * <p>
+ * 使用 RSA 算法（2048 位密钥），支持公钥加密/私钥解密以及数字签名（SHA256withRSA）。 密钥以 Base64
+ * 编码字符串形式传入和输出，格式为 PKCS#8（私钥）/ X.509（公钥）。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -31,9 +29,10 @@ public class RSAUtil {
     private static final String SIGN_ALGORITHM = "SHA256withRSA";
 
     /**
-     * 生成密钥对
+     * 生成 RSA 密钥对（2048 位）。
      *
-     * @return 密钥对
+     * @return RSA 密钥对
+     * @throws RuntimeException 密钥对生成失败时抛出
      */
     public static KeyPair generateKeyPair() {
         try {
@@ -46,31 +45,32 @@ public class RSAUtil {
     }
 
     /**
-     * 获取公钥字符串
+     * 从密钥对提取 Base64 编码的公钥字符串。
      *
      * @param keyPair 密钥对
-     * @return 公钥字符串
+     * @return Base64 编码的公钥字符串
      */
     public static String getPublicKey(KeyPair keyPair) {
         return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
     }
 
     /**
-     * 获取私钥字符串
+     * 从密钥对提取 Base64 编码的私钥字符串。
      *
      * @param keyPair 密钥对
-     * @return 私钥字符串
+     * @return Base64 编码的私钥字符串
      */
     public static String getPrivateKey(KeyPair keyPair) {
         return Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
     }
 
     /**
-     * RSA 加密
+     * 使用公钥进行 RSA 加密。
      *
      * @param data      待加密数据
-     * @param publicKey 公钥
-     * @return 加密后的数据
+     * @param publicKey Base64 编码的公钥
+     * @return Base64 编码的加密数据
+     * @throws RuntimeException 加密失败时抛出
      */
     public static String encrypt(String data, String publicKey) {
         try {
@@ -85,11 +85,12 @@ public class RSAUtil {
     }
 
     /**
-     * RSA 解密
+     * 使用私钥进行 RSA 解密。
      *
-     * @param data       待解密数据
-     * @param privateKey 私钥
-     * @return 解密后的数据
+     * @param data       Base64 编码的加密数据
+     * @param privateKey Base64 编码的私钥
+     * @return 解密后的原始数据
+     * @throws RuntimeException 解密失败时抛出
      */
     public static String decrypt(String data, String privateKey) {
         try {
@@ -104,11 +105,12 @@ public class RSAUtil {
     }
 
     /**
-     * 签名
+     * 使用私钥对数据进行签名（SHA256withRSA）。
      *
      * @param data       待签名数据
-     * @param privateKey 私钥
-     * @return 签名
+     * @param privateKey Base64 编码的私钥
+     * @return Base64 编码的签名
+     * @throws RuntimeException 签名失败时抛出
      */
     public static String sign(String data, String privateKey) {
         try {
@@ -124,12 +126,13 @@ public class RSAUtil {
     }
 
     /**
-     * 验签
+     * 使用公钥验证签名（SHA256withRSA）。
      *
      * @param data      原始数据
-     * @param sign      签名
-     * @param publicKey 公钥
-     * @return 是否验证成功
+     * @param sign      Base64 编码的签名
+     * @param publicKey Base64 编码的公钥
+     * @return {@code true} 验证成功，{@code false} 验证失败
+     * @throws RuntimeException 验签失败时抛出
      */
     public static boolean verify(String data, String sign, String publicKey) {
         try {
@@ -144,7 +147,11 @@ public class RSAUtil {
     }
 
     /**
-     * 从字符串获取公钥
+     * 从 Base64 字符串还原 X.509 格式公钥。
+     *
+     * @param publicKey Base64 编码的公钥
+     * @return 公钥对象
+     * @throws Exception 解析失败时抛出
      */
     private static PublicKey getPublicKeyFromString(String publicKey) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(publicKey);
@@ -154,7 +161,11 @@ public class RSAUtil {
     }
 
     /**
-     * 从字符串获取私钥
+     * 从 Base64 字符串还原 PKCS#8 格式私钥。
+     *
+     * @param privateKey Base64 编码的私钥
+     * @return 私钥对象
+     * @throws Exception 解析失败时抛出
      */
     private static PrivateKey getPrivateKeyFromString(String privateKey) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(privateKey);

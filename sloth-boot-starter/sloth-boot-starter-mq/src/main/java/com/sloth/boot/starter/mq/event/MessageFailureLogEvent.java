@@ -55,8 +55,8 @@ public class MessageFailureLogEvent extends BaseEvent {
     private final String errorMessage;
 
     public MessageFailureLogEvent(Object source, String topic, String tag, String msgId,
-                                    String msgKey, String body, String consumerGroup,
-                                    int retryTimes, String errorMessage) {
+                                  String msgKey, String body, String consumerGroup,
+                                  int retryTimes, String errorMessage) {
         super(source);
         this.topic = topic;
         this.tag = tag;

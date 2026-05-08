@@ -31,7 +31,7 @@ public class NacosHealthIndicator extends AbstractHealthIndicator {
     @Override
     protected void doHealthCheck(Health.Builder builder) {
         String serverAddr = environment.getProperty("spring.cloud.nacos.discovery.server-addr",
-                environment.getProperty("spring.cloud.nacos.config.server-addr"));
+            environment.getProperty("spring.cloud.nacos.config.server-addr"));
         if (serverAddr == null || serverAddr.isBlank()) {
             builder.unknown().withDetail("message", "未配置 Nacos 地址");
             return;

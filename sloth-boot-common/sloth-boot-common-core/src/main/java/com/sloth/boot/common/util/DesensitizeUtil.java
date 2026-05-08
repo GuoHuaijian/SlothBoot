@@ -101,9 +101,9 @@ public final class DesensitizeUtil {
     /**
      * 自定义脱敏
      *
-     * @param str        原始字符串
-     * @param prefixLen  前缀保留长度
-     * @param suffixLen  后缀保留长度
+     * @param str       原始字符串
+     * @param prefixLen 前缀保留长度
+     * @param suffixLen 后缀保留长度
      * @return 脱敏后的字符串
      */
     public static String custom(String str, int prefixLen, int suffixLen) {

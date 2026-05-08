@@ -37,8 +37,8 @@ public class BlackListGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String hostAddress = exchange.getRequest().getRemoteAddress() == null
-                ? null
-                : exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+            ? null
+            : exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
         if (hostAddress != null && gatewayProperties.getBlackList().contains(hostAddress)) {
             exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
             return exchange.getResponse().setComplete();

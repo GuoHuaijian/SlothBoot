@@ -26,9 +26,9 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
     @Override
     public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
         log.error("异步任务执行异常, traceId={}, method={}, params={}",
-                TraceContext.getTraceId(),
-                method.toGenericString(),
-                Arrays.toString(objects),
-                throwable);
+            TraceContext.getTraceId(),
+            method.toGenericString(),
+            Arrays.toString(objects),
+            throwable);
     }
 }

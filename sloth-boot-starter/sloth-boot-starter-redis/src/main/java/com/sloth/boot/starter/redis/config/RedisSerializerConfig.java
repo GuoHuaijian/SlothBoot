@@ -34,11 +34,8 @@ public class RedisSerializerConfig {
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         if (redisProperties.isEnableTypeInfo()) {
             objectMapper.activateDefaultTyping(
-                    BasicPolymorphicTypeValidator.builder()
-                            .allowIfSubType(Object.class)
-                            .build(),
-                    ObjectMapper.DefaultTyping.NON_FINAL
-            );
+                BasicPolymorphicTypeValidator.builder().allowIfSubType(Object.class).build(),
+                ObjectMapper.DefaultTyping.NON_FINAL);
         }
         return new GenericJackson2JsonRedisSerializer(objectMapper);
     }

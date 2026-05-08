@@ -52,6 +52,11 @@ public enum GlobalErrorCode implements ErrorCode {
     TOO_MANY_REQUESTS(429, "请求过于频繁"),
 
     /**
+     * 资源冲突（乐观锁）
+     */
+    CONFLICT(409, "资源冲突"),
+
+    /**
      * 重复请求
      */
     REPEATED_REQUEST(900, "重复请求"),
