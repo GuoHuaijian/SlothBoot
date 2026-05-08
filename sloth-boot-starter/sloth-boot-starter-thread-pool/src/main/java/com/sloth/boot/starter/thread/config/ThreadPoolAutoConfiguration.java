@@ -1,8 +1,10 @@
 package com.sloth.boot.starter.thread.config;
 
 import com.sloth.boot.starter.thread.async.AsyncExceptionHandler;
+import com.sloth.boot.starter.thread.core.ThreadPoolManager;
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
+import com.sloth.boot.starter.thread.monitor.ThreadPoolAlarmTask;
 import com.sloth.boot.starter.thread.decorator.TtlTaskDecorator;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolEndpoint;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolMetrics;
@@ -209,5 +211,19 @@ public class ThreadPoolAutoConfiguration {
             thread.setName(prefix + counter.getAndIncrement());
             return thread;
         };
+    }
+
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册线程池动态管理器。
+     *
+     * @param threadPoolRegistry 线程池注册表
+     * @return 线程池管理器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public ThreadPoolManager threadPoolManager(ThreadPoolRegistry threadPoolRegistry) {
+        return new ThreadPoolManager(threadPoolRegistry);
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.core.env.Environment;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnClass(XxlJobSpringExecutor.class)
+@ConditionalOnProperty(prefix = "sloth.job", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(JobProperties.class)
 public class JobAutoConfiguration {
 

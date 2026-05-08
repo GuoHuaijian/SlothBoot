@@ -7,6 +7,7 @@ import com.sloth.boot.starter.oss.core.LocalOssClient;
 import com.sloth.boot.starter.oss.core.MinioOssClient;
 import com.sloth.boot.starter.oss.core.OssClient;
 import com.sloth.boot.starter.oss.core.OssTemplate;
+import com.sloth.boot.starter.oss.util.ContentTypeDetector;
 import io.minio.MinioClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

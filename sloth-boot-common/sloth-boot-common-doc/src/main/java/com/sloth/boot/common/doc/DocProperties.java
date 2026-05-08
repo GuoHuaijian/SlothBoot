@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * 文档配置属性
+ * 文档配置属性。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -68,4 +68,67 @@ public class DocProperties {
      * 扫描的基础包。
      */
     private List<String> basePackages = DEFAULT_BASE_PACKAGES;
+
+    // ==================== 安全方案 ====================
+
+    /**
+     * 是否启用 Bearer Token 安全方案（Swagger UI 中显示锁图标）。
+     */
+    private boolean securitySchemeEnabled = true;
+
+    /**
+     * 安全方案名称。
+     */
+    private String securitySchemeName = "Bearer";
+
+    /**
+     * Bearer Token 格式（显示在 Swagger UI 中）。
+     */
+    private String securityBearerFormat = "JWT";
+
+    /**
+     * 安全方案描述。
+     */
+    private String securityDescription = "请输入 Token（无需 Bearer 前缀）";
+
+    // ==================== 服务器地址 ====================
+
+    /**
+     * 服务器地址（不配置则自动从 server.port + context-path 检测）。
+     */
+    private String serverUrl;
+
+    /**
+     * 服务器描述。
+     */
+    private String serverDescription = "默认服务器";
+
+    // ==================== 多分组 ====================
+
+    /**
+     * 自定义 API 分组列表。
+     */
+    private List<ApiGroup> groups;
+
+    /**
+     * API 分组配置。
+     */
+    @Data
+    public static class ApiGroup {
+
+        /**
+         * 分组名称。
+         */
+        private String name;
+
+        /**
+         * 路径匹配规则列表（如 /api/order/**）。
+         */
+        private List<String> paths;
+
+        /**
+         * 包扫描路径列表。
+         */
+        private List<String> packages;
+    }
 }

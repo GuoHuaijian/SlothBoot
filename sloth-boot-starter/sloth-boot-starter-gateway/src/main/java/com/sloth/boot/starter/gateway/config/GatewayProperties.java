@@ -17,6 +17,11 @@ import java.util.Set;
 public class GatewayProperties {
 
     /**
+     * 是否启用 Gateway Starter。
+     */
+    private boolean enabled = true;
+
+    /**
      * 白名单路径。
      */
     private Set<String> whiteList = new LinkedHashSet<>();

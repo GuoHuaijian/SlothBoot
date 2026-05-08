@@ -1,12 +1,16 @@
 package com.sloth.boot.starter.redis.config;
 
+import com.sloth.boot.starter.redis.cache.MultiLevelCacheManager;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
 import com.sloth.boot.starter.redis.delay.RedisDelayQueue;
+import com.sloth.boot.starter.redis.id.RedisIdGenerator;
 import com.sloth.boot.starter.redis.idempotent.IdempotentAspect;
 import com.sloth.boot.starter.redis.limiter.RateLimiterAspect;
 import com.sloth.boot.starter.redis.lock.DistributedLock;
 import com.sloth.boot.starter.redis.lock.DistributedLockAspect;
+import com.sloth.boot.starter.redis.lock.DistributedReadWriteLock;
 import com.sloth.boot.starter.redis.lock.RedissonDistributedLock;
+import com.sloth.boot.starter.redis.lock.RedissonReadWriteLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -156,5 +160,51 @@ public class RedisAutoConfiguration {
     @ConditionalOnBean(RedissonClient.class)
     public RedisDelayQueue redisDelayQueue(RedissonClient redissonClient) {
         return new RedisDelayQueue(redissonClient);
+    }
+
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册分布式 ID 生成器。
+     *
+     * @param stringRedisTemplate StringRedisTemplate
+     * @param redisProperties     Redis 配置
+     * @return 分布式 ID 生成器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.redis.id-generator", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public RedisIdGenerator redisIdGenerator(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties) {
+        return new RedisIdGenerator(stringRedisTemplate, redisProperties);
+    }
+
+    /**
+     * 注册分布式读写锁实现。
+     *
+     * @param redissonClient Redisson 客户端
+     * @return 分布式读写锁
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(RedissonClient.class)
+    public DistributedReadWriteLock distributedReadWriteLock(RedissonClient redissonClient) {
+        return new RedissonReadWriteLock(redissonClient);
+    }
+
+    /**
+     * 注册多级缓存管理器（L1 Caffeine + L2 Redis）。
+     *
+     * @param redisTemplate   RedisTemplate
+     * @param redisProperties Redis 配置
+     * @return 多级缓存管理器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.redis.multi-cache", name = "enabled", havingValue = "true")
+    @ConditionalOnClass(name = "com.github.benmanes.caffeine.cache.Caffeine")
+    public MultiLevelCacheManager multiLevelCacheManager(
+            @Qualifier("slothRedisTemplate") RedisTemplate<String, Object> redisTemplate,
+            RedisProperties redisProperties) {
+        return new MultiLevelCacheManager(redisTemplate, redisProperties);
     }
 }

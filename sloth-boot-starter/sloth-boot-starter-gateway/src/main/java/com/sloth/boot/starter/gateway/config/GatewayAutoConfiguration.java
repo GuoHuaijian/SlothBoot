@@ -25,6 +25,7 @@ import org.springframework.core.env.Environment;
  */
 @AutoConfiguration
 @ConditionalOnClass(RouteDefinitionWriter.class)
+@ConditionalOnProperty(prefix = "sloth.gateway", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(GatewayProperties.class)
 @Import(CorsConfig.class)
 public class GatewayAutoConfiguration {

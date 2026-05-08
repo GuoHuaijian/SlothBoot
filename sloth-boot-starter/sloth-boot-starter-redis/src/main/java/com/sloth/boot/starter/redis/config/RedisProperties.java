@@ -42,4 +42,58 @@ public class RedisProperties {
      * 空值缓存时间，单位秒。
      */
     private long nullValueExpireSeconds = 60L;
+
+    /**
+     * 多级缓存配置。
+     */
+    private MultiCache multiCache = new MultiCache();
+
+    /**
+     * 分布式 ID 生成器配置。
+     */
+    private IdGenerator idGenerator = new IdGenerator();
+
+    /**
+     * 多级缓存配置。
+     */
+    @Data
+    public static class MultiCache {
+
+        /**
+         * 是否启用多级缓存（Caffeine + Redis）。
+         */
+        private boolean enabled = false;
+
+        /**
+         * L1 Caffeine 缓存最大条目数。
+         */
+        private int l1MaxSize = 1000;
+
+        /**
+         * L1 Caffeine 缓存过期时间（秒）。
+         */
+        private long l1TtlSeconds = 300;
+    }
+
+    /**
+     * 分布式 ID 生成器配置。
+     */
+    @Data
+    public static class IdGenerator {
+
+        /**
+         * 是否启用分布式 ID 生成器。
+         */
+        private boolean enabled = true;
+
+        /**
+         * 机器号（0-1023）。
+         */
+        private int workerId = 0;
+
+        /**
+         * ID 前缀。
+         */
+        private String prefix = "sloth";
+    }
 }

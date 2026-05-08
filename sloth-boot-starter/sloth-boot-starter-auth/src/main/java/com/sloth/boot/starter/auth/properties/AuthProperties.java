@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.auth.properties;
 
+import com.sloth.boot.starter.auth.enums.DeviceStrategy;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -70,4 +71,9 @@ public class AuthProperties {
      * 黑名单路径（禁止访问）
      */
     private List<String> blackList = new ArrayList<>();
+
+    /**
+     * 多设备登录策略：ALLOW_MULTI / REPLACED / PROHIBIT。
+     */
+    private DeviceStrategy deviceStrategy = DeviceStrategy.ALLOW_MULTI;
 }

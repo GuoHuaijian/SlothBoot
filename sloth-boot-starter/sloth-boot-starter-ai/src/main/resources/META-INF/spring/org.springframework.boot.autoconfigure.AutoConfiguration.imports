@@ -1,1 +1,4 @@
 com.sloth.boot.starter.ai.config.AiAutoConfiguration
+com.sloth.boot.starter.ai.config.AiEmbeddingAutoConfiguration
+com.sloth.boot.starter.ai.config.AiImageAutoConfiguration
+com.sloth.boot.starter.ai.config.AiObservabilityAutoConfiguration

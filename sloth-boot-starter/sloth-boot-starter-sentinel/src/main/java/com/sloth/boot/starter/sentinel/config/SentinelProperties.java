@@ -27,4 +27,14 @@ public class SentinelProperties {
      * Nacos Group ID。
      */
     private String nacosGroupId = "SENTINEL_GROUP";
+
+    /**
+     * Nacos Data ID（限流规则配置文件名）。
+     */
+    private String nacosDataId;
+
+    /**
+     * Nacos 命名空间。
+     */
+    private String nacosNamespace;
 }

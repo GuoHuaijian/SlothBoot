@@ -44,6 +44,35 @@
       "type": "java.lang.String",
       "defaultValue": "Apache 2.0",
       "description": "License name."
+    },
+    {
+      "name": "sloth.doc.security-scheme-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用 Bearer Token 安全方案（Swagger UI 显示锁图标）。"
+    },
+    {
+      "name": "sloth.doc.security-scheme-name",
+      "type": "java.lang.String",
+      "defaultValue": "Bearer",
+      "description": "安全方案名称。"
+    },
+    {
+      "name": "sloth.doc.security-bearer-format",
+      "type": "java.lang.String",
+      "defaultValue": "JWT",
+      "description": "Bearer Token 格式。"
+    },
+    {
+      "name": "sloth.doc.server-url",
+      "type": "java.lang.String",
+      "description": "服务器地址（不配置则自动检测）。"
+    },
+    {
+      "name": "sloth.doc.server-description",
+      "type": "java.lang.String",
+      "defaultValue": "默认服务器",
+      "description": "服务器描述。"
     }
   ]
 }

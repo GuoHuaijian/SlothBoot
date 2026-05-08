@@ -1,0 +1,2 @@
+org.springframework.test.context.TestExecutionListener=\
+  com.sloth.boot.common.test.mock.MockUserTestExecutionListener

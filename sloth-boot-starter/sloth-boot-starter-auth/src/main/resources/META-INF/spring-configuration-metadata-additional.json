@@ -1,0 +1,64 @@
+{
+  "properties": [
+    {
+      "name": "sloth.auth.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用认证授权 Starter。"
+    },
+    {
+      "name": "sloth.auth.token-name",
+      "type": "java.lang.String",
+      "defaultValue": "Authorization",
+      "description": "Token 名称（请求头中的 key）。"
+    },
+    {
+      "name": "sloth.auth.token-timeout",
+      "type": "java.lang.Long",
+      "defaultValue": 7200,
+      "description": "Token 有效期（秒），默认 7200（2 小时）。"
+    },
+    {
+      "name": "sloth.auth.active-timeout",
+      "type": "java.lang.Long",
+      "defaultValue": -1,
+      "description": "Token 最低活跃频率（秒），-1 表示不限。大于 0 时自动启用滑动续期。"
+    },
+    {
+      "name": "sloth.auth.is-concurrent",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否允许同一账号并发登录。"
+    },
+    {
+      "name": "sloth.auth.is-share",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "多人登录同一账号时是否共用同一个 Token。"
+    },
+    {
+      "name": "sloth.auth.token-prefix",
+      "type": "java.lang.String",
+      "defaultValue": "Bearer",
+      "description": "Token 前缀。"
+    },
+    {
+      "name": "sloth.auth.is-read-cookie",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否从 Cookie 中读取 Token。"
+    },
+    {
+      "name": "sloth.auth.is-read-body",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否从 Body 中读取 Token。"
+    },
+    {
+      "name": "sloth.auth.device-strategy",
+      "type": "com.sloth.boot.starter.auth.enums.DeviceStrategy",
+      "defaultValue": "ALLOW_MULTI",
+      "description": "多设备登录策略：ALLOW_MULTI / REPLACED / PROHIBIT。"
+    }
+  ]
+}

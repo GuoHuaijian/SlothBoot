@@ -29,6 +29,12 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updateBy", String.class, username);
         this.strictInsertFill(metaObject, "deleted", Integer.class, 0);
         this.strictInsertFill(metaObject, "version", Integer.class, 1);
+
+        // 租户 ID 自动填充（INSERT 时从 UserContext 获取）
+        String tenantId = UserContext.getTenantId();
+        if (tenantId != null) {
+            this.strictInsertFill(metaObject, "tenantId", String.class, tenantId);
+        }
     }
 
     /**

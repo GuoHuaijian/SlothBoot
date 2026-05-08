@@ -7,6 +7,7 @@ import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
 import com.sloth.boot.starter.monitor.health.NacosHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RedisHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
+import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
 import com.sloth.boot.starter.monitor.metrics.JvmMetricsConfig;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -159,6 +160,26 @@ public class MonitorAutoConfiguration {
     @ConditionalOnMissingBean
     public InfoEndpoint appInfoEndpoint(Environment environment) {
         return new InfoEndpoint(environment);
+    }
+
+    /**
+     * 自定义 Actuator 端点暴露配置。
+     *
+     * @return Bean 后处理器
+     */
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册业务指标工具类。
+     *
+     * @param meterRegistry 指标注册中心
+     * @return 业务指标工具
+     */
+    @Bean
+    @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnMissingBean
+    public BusinessMetrics businessMetrics(MeterRegistry meterRegistry) {
+        return new BusinessMetrics(meterRegistry);
     }
 
     /**

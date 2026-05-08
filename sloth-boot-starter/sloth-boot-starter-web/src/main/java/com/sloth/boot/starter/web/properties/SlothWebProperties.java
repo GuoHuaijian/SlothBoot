@@ -30,4 +30,14 @@ public class SlothWebProperties {
      * XSS 排除 URL。
      */
     private Set<String> xssExcludeUrls = new LinkedHashSet<>();
+
+    /**
+     * 是否启用请求体缓存（支持多次读取 @RequestBody）。
+     */
+    private boolean bodyCacheEnabled = false;
+
+    /**
+     * 是否启用 API 访问日志事件发布。
+     */
+    private boolean accessLogEnabled = true;
 }

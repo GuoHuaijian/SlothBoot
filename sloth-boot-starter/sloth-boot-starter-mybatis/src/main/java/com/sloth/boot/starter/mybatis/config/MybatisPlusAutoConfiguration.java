@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.starter.mybatis.handler.AutoFillMetaObjectHandler;
 import com.sloth.boot.starter.mybatis.injector.InsertBatchSqlInjector;
+import com.sloth.boot.starter.mybatis.interceptor.DataPermissionInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.DataScopeInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.SlowSqlInterceptor;
 import net.sf.jsqlparser.expression.Expression;
@@ -104,6 +105,17 @@ public class MybatisPlusAutoConfiguration {
     @ConditionalOnMissingBean(DataScopeInterceptor.class)
     public DataScopeInterceptor dataScopeInterceptor() {
         return new DataScopeInterceptor();
+    }
+
+    /**
+     * 注册增强数据权限拦截器（支持 SpEL 表达式）。
+     *
+     * @return 增强数据权限拦截器
+     */
+    @Bean
+    @ConditionalOnMissingBean(DataPermissionInterceptor.class)
+    public DataPermissionInterceptor dataPermissionInterceptor() {
+        return new DataPermissionInterceptor();
     }
 
     /**

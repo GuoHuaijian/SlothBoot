@@ -51,6 +51,42 @@
       "name": "spring.ai.openai.api-key",
       "type": "java.lang.String",
       "description": "OpenAI 兼容服务 API Key。"
+    },
+    {
+      "name": "sloth.ai.memory.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用对话记忆（多轮对话）。"
+    },
+    {
+      "name": "sloth.ai.memory.max-messages",
+      "type": "java.lang.Integer",
+      "defaultValue": 20,
+      "description": "对话记忆滑动窗口最大消息数。"
+    },
+    {
+      "name": "sloth.ai.embedding.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用向量嵌入客户端。"
+    },
+    {
+      "name": "sloth.ai.image.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用图像生成客户端。"
+    },
+    {
+      "name": "sloth.ai.observability.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用 AI 可观测性装饰器。"
+    },
+    {
+      "name": "sloth.ai.observability.slow-threshold-ms",
+      "type": "java.lang.Long",
+      "defaultValue": 3000,
+      "description": "AI 慢调用告警阈值（毫秒）。"
     }
   ]
 }

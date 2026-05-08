@@ -1,18 +1,25 @@
 package com.sloth.boot.starter.auth.config;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.listener.SaTokenEventCenter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
 import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
+import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
 import com.sloth.boot.starter.auth.properties.AuthProperties;
+import com.sloth.boot.starter.auth.service.OnlineUserService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -74,5 +81,51 @@ public class AuthAutoConfiguration {
                   .excludePathPatterns(authProperties.getWhiteList());
             }
         };
+    }
+
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册 Sa-Token 事件监听桥接器（登录/登出事件发布为 Spring Event）。
+     *
+     * @param eventPublisher Spring 事件发布器
+     * @param authProperties 认证配置
+     * @return Sa-Token 事件监听器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SaTokenEventListener saTokenEventListener(ApplicationEventPublisher eventPublisher,
+                                                      AuthProperties authProperties) {
+        SaTokenEventListener listener = new SaTokenEventListener(eventPublisher, authProperties);
+        SaTokenEventCenter.registerListener(listener);
+        return listener;
+    }
+
+    /**
+     * 注册在线用户管理服务。
+     *
+     * @return 在线用户服务
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public OnlineUserService onlineUserService() {
+        return new OnlineUserService();
+    }
+
+    /**
+     * 注册 Token 续期过滤器（滑动过期）。
+     *
+     * @param authProperties 认证配置
+     * @return 过滤器注册 Bean
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.auth", name = "active-timeout", havingValue = "-1", matchIfMissing = false)
+    public FilterRegistrationBean<TokenRenewalFilter> tokenRenewalFilterRegistration(AuthProperties authProperties) {
+        FilterRegistrationBean<TokenRenewalFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new TokenRenewalFilter(authProperties));
+        registration.addUrlPatterns("/*");
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE - 10);
+        return registration;
     }
 }

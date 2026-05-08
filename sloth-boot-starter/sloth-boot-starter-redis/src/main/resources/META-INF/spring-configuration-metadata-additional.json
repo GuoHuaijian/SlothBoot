@@ -35,6 +35,42 @@
       "type": "java.lang.Long",
       "defaultValue": 60,
       "description": "Expiration time for cached null values."
+    },
+    {
+      "name": "sloth.redis.multi-cache.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用多级缓存（Caffeine L1 + Redis L2）。"
+    },
+    {
+      "name": "sloth.redis.multi-cache.l1-max-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 1000,
+      "description": "L1 Caffeine 缓存最大条目数。"
+    },
+    {
+      "name": "sloth.redis.multi-cache.l1-ttl-seconds",
+      "type": "java.lang.Long",
+      "defaultValue": 300,
+      "description": "L1 Caffeine 缓存过期时间（秒）。"
+    },
+    {
+      "name": "sloth.redis.id-generator.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用分布式 ID 生成器。"
+    },
+    {
+      "name": "sloth.redis.id-generator.worker-id",
+      "type": "java.lang.Integer",
+      "defaultValue": 0,
+      "description": "分布式 ID 机器号（0-1023）。"
+    },
+    {
+      "name": "sloth.redis.id-generator.prefix",
+      "type": "java.lang.String",
+      "defaultValue": "sloth",
+      "description": "分布式 ID 前缀。"
     }
   ]
 }

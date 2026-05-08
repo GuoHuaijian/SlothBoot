@@ -13,6 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "sloth.job")
 public class JobProperties {
 
+    /**
+     * 是否启用 Job Starter。
+     */
+    private boolean enabled = true;
+
     private String adminAddresses;
     private String accessToken;
     private String appname;

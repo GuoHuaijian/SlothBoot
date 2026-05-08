@@ -27,6 +27,12 @@
       "name": "sloth.mybatis.encrypt-key",
       "type": "java.lang.String",
       "description": "AES key used by EncryptTypeHandler."
+    },
+    {
+      "name": "sloth.mybatis.tenant-auto-fill",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "INSERT 时是否自动填充 tenantId 字段（从 UserContext 获取）。"
     }
   ]
 }

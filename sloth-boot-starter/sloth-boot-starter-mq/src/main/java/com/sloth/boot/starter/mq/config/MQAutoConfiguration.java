@@ -48,4 +48,17 @@ public class MQAutoConfiguration {
     public MQHealthIndicator slothMqHealthIndicator(RocketMQTemplate rocketMQTemplate) {
         return new MQHealthIndicator(rocketMQTemplate);
     }
+
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册消息消费失败日志监听器（监听 MessageFailureLogEvent）。
+     *
+     * @return 消息失败日志监听器
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "messageFailureLogListener")
+    public com.sloth.boot.starter.mq.event.MessageFailureLogListener messageFailureLogListener() {
+        return new com.sloth.boot.starter.mq.event.MessageFailureLogListener();
+    }
 }

@@ -1,7 +1,10 @@
 package com.sloth.boot.starter.web.config;
 
+import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.security.xss.XssProperties;
 import com.sloth.boot.common.security.xss.wrapper.XssHttpServletRequestWrapper;
+import com.sloth.boot.starter.web.event.AccessLogEvent;
+import com.sloth.boot.starter.web.filter.CachedBodyHttpServletRequestWrapper;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
@@ -12,8 +15,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.AntPathMatcher;
 
@@ -142,5 +147,90 @@ public class WebAutoConfiguration {
             }
         }
         return false;
+    }
+
+    // ==================== 新增特性 ====================
+
+    /**
+     * 注册请求体缓存过滤器（支持多次读取 @RequestBody）。
+     *
+     * @return 请求体缓存过滤器注册器
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "slothBodyCacheFilterRegistration")
+    @ConditionalOnProperty(prefix = "sloth.web", name = "body-cache-enabled", havingValue = "true")
+    public FilterRegistrationBean<OncePerRequestFilter> slothBodyCacheFilterRegistration() {
+        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                             FilterChain filterChain) throws ServletException, IOException {
+                CachedBodyHttpServletRequestWrapper wrappedRequest = new CachedBodyHttpServletRequestWrapper(request);
+                filterChain.doFilter(wrappedRequest, response);
+            }
+        });
+        registration.addUrlPatterns("/*");
+        registration.setName("slothBodyCacheFilter");
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
+        return registration;
+    }
+
+    /**
+     * 注册 API 访问日志过滤器（发布 AccessLogEvent 事件）。
+     *
+     * @param eventPublisher   事件发布器
+     * @param webProperties    Web 配置
+     * @return 访问日志过滤器注册器
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "slothAccessLogFilterRegistration")
+    @ConditionalOnProperty(prefix = "sloth.web", name = "access-log-enabled", havingValue = "true", matchIfMissing = true)
+    public FilterRegistrationBean<OncePerRequestFilter> slothAccessLogFilterRegistration(
+            ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
+        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                             FilterChain filterChain) throws ServletException, IOException {
+                long start = System.currentTimeMillis();
+                try {
+                    filterChain.doFilter(request, response);
+                } finally {
+                    long elapsed = System.currentTimeMillis() - start;
+                    String requestBody = null;
+                    if (webProperties.isBodyCacheEnabled()
+                        && request instanceof CachedBodyHttpServletRequestWrapper cached) {
+                        requestBody = cached.getCachedBodyAsString();
+                    }
+                    String clientIp = getClientIp(request);
+                    Long userId = null;
+                    try {
+                        userId = UserContext.getUserId();
+                    } catch (Exception ignored) {
+                    }
+                    AccessLogEvent event = new AccessLogEvent(this,
+                        request.getMethod(), request.getRequestURI(), request.getQueryString(),
+                        clientIp, request.getHeader("User-Agent"), userId,
+                        response.getStatus(), elapsed, requestBody);
+                    eventPublisher.publishEvent(event);
+                }
+            }
+        });
+        registration.addUrlPatterns("/*");
+        registration.setName("slothAccessLogFilter");
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE);
+        return registration;
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+            return ip.split(",")[0].trim();
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return request.getRemoteAddr();
     }
 }
