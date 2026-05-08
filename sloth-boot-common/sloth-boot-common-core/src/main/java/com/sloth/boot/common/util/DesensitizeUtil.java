@@ -8,7 +8,11 @@ import cn.hutool.core.util.StrUtil;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class DesensitizeUtil {
+public final class DesensitizeUtil {
+
+    private DesensitizeUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 手机号脱敏（保留前3后4）

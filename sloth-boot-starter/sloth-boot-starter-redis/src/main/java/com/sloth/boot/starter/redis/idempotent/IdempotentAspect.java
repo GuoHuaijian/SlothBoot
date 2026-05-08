@@ -5,9 +5,10 @@ import com.sloth.boot.common.annotation.Idempotent;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
+import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
-import com.sloth.boot.starter.redis.support.SpelExpressionSupport;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -58,11 +59,10 @@ public class IdempotentAspect {
     }
 
     private String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
-        String suffix = SpelExpressionSupport.parse(
-                joinPoint,
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String suffix = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
                 idempotent.key(),
-                joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId()
-        );
+                joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId());
         return redisProperties.getKeyPrefix() + "idempotent:" + suffix;
     }
 }

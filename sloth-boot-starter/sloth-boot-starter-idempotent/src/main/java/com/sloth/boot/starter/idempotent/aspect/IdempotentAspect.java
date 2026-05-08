@@ -5,9 +5,10 @@ import com.sloth.boot.common.annotation.Idempotent;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
+import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;
-import com.sloth.boot.starter.idempotent.support.SpelKeyResolver;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,7 +29,6 @@ public class IdempotentAspect {
 
     private final StringRedisTemplate stringRedisTemplate;
     private final IdempotentProperties idempotentProperties;
-    private final SpelKeyResolver spelKeyResolver;
 
     /**
      * 执行幂等逻辑。
@@ -60,7 +60,9 @@ public class IdempotentAspect {
 
     private String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
         String defaultKey = joinPoint.getSignature().toShortString() + ":" + UserContext.getUserId();
-        String resolved = spelKeyResolver.resolve(joinPoint, idempotent.key(), defaultKey);
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String resolved = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
+                idempotent.key(), defaultKey);
         return idempotentProperties.getKeyPrefix() + resolved;
     }
 }

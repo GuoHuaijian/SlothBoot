@@ -3,9 +3,10 @@ package com.sloth.boot.starter.redis.lock;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
+import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
-import com.sloth.boot.starter.redis.support.SpelExpressionSupport;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -37,7 +38,9 @@ public class DistributedLockAspect {
     public Object around(ProceedingJoinPoint joinPoint,
                          com.sloth.boot.common.annotation.DistributedLock distributedLockAnnotation) throws Throwable {
         String defaultKey = joinPoint.getSignature().toShortString();
-        String key = SpelExpressionSupport.parse(joinPoint, distributedLockAnnotation.key(), defaultKey);
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String key = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
+                distributedLockAnnotation.key(), defaultKey);
         if (StrUtil.isBlank(key)) {
             key = defaultKey;
         }

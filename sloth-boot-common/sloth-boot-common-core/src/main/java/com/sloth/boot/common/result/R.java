@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sloth.boot.common.constant.CommonConstant;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.exception.ErrorCode;
+import com.sloth.boot.common.exception.GlobalErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -156,5 +157,38 @@ public class R<T> implements Serializable {
      */
     public boolean isSuccess() {
         return CommonConstant.SUCCESS == this.code;
+    }
+
+    /**
+     * 从 ErrorCode 构建失败响应
+     *
+     * @param errorCode 错误码
+     * @param <T>       数据类型
+     * @return 统一响应
+     */
+    public static <T> R<T> build(ErrorCode errorCode) {
+        R<T> r = new R<>();
+        r.setCode(errorCode.getCode());
+        r.setMsg(errorCode.getMsg());
+        return r;
+    }
+
+    /**
+     * 从异常构建失败响应
+     *
+     * @param throwable 异常
+     * @param <T>       数据类型
+     * @return 统一响应
+     */
+    public static <T> R<T> from(Throwable throwable) {
+        R<T> r = new R<>();
+        if (throwable instanceof com.sloth.boot.common.exception.BaseException baseEx) {
+            r.setCode(baseEx.getErrorCode().getCode());
+            r.setMsg(baseEx.getMessage());
+        } else {
+            r.setCode(GlobalErrorCode.INTERNAL_ERROR.getCode());
+            r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : "系统内部错误");
+        }
+        return r;
     }
 }

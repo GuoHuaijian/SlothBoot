@@ -27,7 +27,9 @@ public class IdempotentAutoConfiguration {
      * 注册 SpEL Key 解析器。
      *
      * @return SpEL Key 解析器
+     * @deprecated 请使用 {@link com.sloth.boot.common.util.SpelUtil} 代替
      */
+    @Deprecated(forRemoval = true)
     @Bean
     @ConditionalOnMissingBean
     public SpelKeyResolver spelKeyResolver() {
@@ -53,14 +55,12 @@ public class IdempotentAutoConfiguration {
      *
      * @param stringRedisTemplate Redis 模板
      * @param idempotentProperties 幂等配置
-     * @param spelKeyResolver SpEL 解析器
      * @return 幂等切面
      */
     @Bean
     @ConditionalOnMissingBean
     public IdempotentAspect enhancedIdempotentAspect(StringRedisTemplate stringRedisTemplate,
-                                                     IdempotentProperties idempotentProperties,
-                                                     SpelKeyResolver spelKeyResolver) {
-        return new IdempotentAspect(stringRedisTemplate, idempotentProperties, spelKeyResolver);
+                                                     IdempotentProperties idempotentProperties) {
+        return new IdempotentAspect(stringRedisTemplate, idempotentProperties);
     }
 }

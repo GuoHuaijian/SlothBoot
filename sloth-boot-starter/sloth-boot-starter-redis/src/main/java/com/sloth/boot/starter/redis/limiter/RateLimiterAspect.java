@@ -8,9 +8,10 @@ import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.ServletUtil;
+import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
-import com.sloth.boot.starter.redis.support.SpelExpressionSupport;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -69,7 +70,9 @@ public class RateLimiterAspect {
         } else if (rateLimit.type() == LimitType.USER) {
             suffix = String.valueOf(UserContext.getUserId());
         } else if (StrUtil.isNotBlank(rateLimit.key())) {
-            suffix = SpelExpressionSupport.parse(joinPoint, rateLimit.key(), joinPoint.getSignature().toShortString());
+            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+            suffix = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),
+                    rateLimit.key(), joinPoint.getSignature().toShortString());
         } else {
             suffix = joinPoint.getSignature().toShortString();
         }

@@ -14,7 +14,11 @@ import java.util.stream.Collectors;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class TreeUtil {
+public final class TreeUtil {
+
+    private TreeUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 构建树形结构

@@ -1,10 +1,13 @@
 package com.sloth.boot.common.util;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +21,7 @@ import java.util.Map;
 public final class ServletUtil {
 
     private ServletUtil() {
+        throw new UnsupportedOperationException("Utility class");
     }
 
     /**
@@ -47,24 +51,7 @@ public final class ServletUtil {
      * @return 客户端 IP 地址
      */
     public static String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Real-IP");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("X-Forwarded-For");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        // 处理多级代理的情况
-        if (ip != null && ip.contains(",")) {
-            ip = ip.split(",")[0];
-        }
-        return ip;
+        return IpUtil.getClientIp(request);
     }
 
     /**
@@ -116,5 +103,149 @@ public final class ServletUtil {
             headers.put(headerName, request.getHeader(headerName));
         }
         return headers;
+    }
+
+    /**
+     * 获取请求参数值
+     *
+     * @param name 参数名
+     * @return 参数值
+     */
+    public static String getRequestParam(String name) {
+        HttpServletRequest request = getRequest();
+        return request == null ? null : request.getParameter(name);
+    }
+
+    /**
+     * 获取请求参数值（带默认值）
+     *
+     * @param name         参数名
+     * @param defaultValue 默认值
+     * @return 参数值
+     */
+    public static String getRequestParam(String name, String defaultValue) {
+        String value = getRequestParam(name);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * 获取所有请求参数
+     *
+     * @return 参数 Map
+     */
+    public static Map<String, String[]> getAllRequestParams() {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            return new HashMap<>();
+        }
+        return new HashMap<>(request.getParameterMap());
+    }
+
+    /**
+     * 获取 Cookie 值
+     *
+     * @param name Cookie 名称
+     * @return Cookie 值
+     */
+    public static String getCookie(String name) {
+        return getCookie(getRequest(), name);
+    }
+
+    /**
+     * 获取 Cookie 值
+     *
+     * @param request HttpServletRequest
+     * @param name    Cookie 名称
+     * @return Cookie 值
+     */
+    public static String getCookie(HttpServletRequest request, String name) {
+        if (request == null || name == null) {
+            return null;
+        }
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取请求 Content-Type
+     *
+     * @return Content-Type
+     */
+    public static String getContentType() {
+        HttpServletRequest request = getRequest();
+        return request == null ? null : request.getContentType();
+    }
+
+    /**
+     * 获取请求 URI
+     *
+     * @return 请求 URI
+     */
+    public static String getRequestUri() {
+        HttpServletRequest request = getRequest();
+        return request == null ? null : request.getRequestURI();
+    }
+
+    /**
+     * 获取请求 HTTP 方法
+     *
+     * @return HTTP 方法（GET/POST/PUT/DELETE 等）
+     */
+    public static String getRequestMethod() {
+        HttpServletRequest request = getRequest();
+        return request == null ? null : request.getMethod();
+    }
+
+    /**
+     * 从 Authorization 请求头获取 Bearer Token
+     *
+     * @return Bearer Token，未找到返回 null
+     */
+    public static String getBearerToken() {
+        String authorization = getHeader("Authorization");
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+        return null;
+    }
+
+    /**
+     * 向响应写入 JSON（UTF-8, application/json）
+     *
+     * @param response HttpServletResponse
+     * @param data     数据对象
+     */
+    public static void writeJson(HttpServletResponse response, Object data) {
+        writeJson(response, HttpServletResponse.SC_OK, data);
+    }
+
+    /**
+     * 向响应写入 JSON（UTF-8, application/json）
+     *
+     * @param response HttpServletResponse
+     * @param status   HTTP 状态码
+     * @param data     数据对象
+     */
+    public static void writeJson(HttpServletResponse response, int status, Object data) {
+        if (response == null) {
+            return;
+        }
+        response.setStatus(status);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType("application/json;charset=UTF-8");
+        try {
+            response.getWriter().write(JsonUtil.toJson(data));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            throw new RuntimeException("写入 JSON 响应失败", e);
+        }
     }
 }

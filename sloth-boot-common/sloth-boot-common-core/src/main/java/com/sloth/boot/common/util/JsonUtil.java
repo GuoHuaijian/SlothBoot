@@ -3,10 +3,12 @@ package com.sloth.boot.common.util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -18,8 +20,13 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Slf4j
-public class JsonUtil {
+public final class JsonUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
+
+    private JsonUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     private static final ObjectMapper OBJECT_MAPPER;
 
@@ -54,6 +61,36 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             log.error("对象转 JSON 失败", e);
             throw new RuntimeException("对象转 JSON 失败", e);
+        }
+    }
+
+    /**
+     * 对象转格式化的 JSON 字符串
+     *
+     * @param obj 对象
+     * @return 格式化的 JSON 字符串
+     */
+    public static String toJsonPretty(Object obj) {
+        try {
+            return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("对象转格式化 JSON 失败", e);
+            throw new RuntimeException("对象转格式化 JSON 失败", e);
+        }
+    }
+
+    /**
+     * 对象转 JSON 字节数组
+     *
+     * @param obj 对象
+     * @return JSON 字节数组
+     */
+    public static byte[] toBytes(Object obj) {
+        try {
+            return OBJECT_MAPPER.writeValueAsBytes(obj);
+        } catch (JsonProcessingException e) {
+            log.error("对象转 JSON 字节数组失败", e);
+            throw new RuntimeException("对象转 JSON 字节数组失败", e);
         }
     }
 
@@ -105,6 +142,71 @@ public class JsonUtil {
         } catch (IOException e) {
             log.error("JSON 转列表失败", e);
             throw new RuntimeException("JSON 转列表失败", e);
+        }
+    }
+
+    /**
+     * 解析 JSON 字符串为 JsonNode 树
+     *
+     * @param json JSON 字符串
+     * @return JsonNode
+     */
+    public static JsonNode readTree(String json) {
+        try {
+            return OBJECT_MAPPER.readTree(json);
+        } catch (IOException e) {
+            log.error("JSON 解析为 JsonNode 失败", e);
+            throw new RuntimeException("JSON 解析为 JsonNode 失败", e);
+        }
+    }
+
+    /**
+     * 校验字符串是否为有效 JSON
+     *
+     * @param json 字符串
+     * @return 是否为有效 JSON
+     */
+    public static boolean isValidJson(String json) {
+        if (json == null || json.isEmpty()) {
+            return false;
+        }
+        try {
+            OBJECT_MAPPER.readTree(json);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 对象类型转换（通过 JSON 序列化/反序列化）
+     *
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T>       目标类型
+     * @return 转换后的对象
+     */
+    public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
+        return OBJECT_MAPPER.convertValue(fromValue, toValueType);
+    }
+
+    /**
+     * 合并两个 JSON 对象（后者覆盖前者）
+     *
+     * @param baseJson   基础 JSON 字符串
+     * @param overlayJson 覆盖 JSON 字符串
+     * @return 合并后的 JSON 字符串
+     */
+    public static String mergeJson(String baseJson, String overlayJson) {
+        try {
+            JsonNode baseNode = OBJECT_MAPPER.readTree(baseJson);
+            JsonNode overlayNode = OBJECT_MAPPER.readTree(overlayJson);
+            JsonNode merged = baseNode.deepCopy();
+            merged = OBJECT_MAPPER.readerForUpdating(merged).readValue(overlayNode);
+            return OBJECT_MAPPER.writeValueAsString(merged);
+        } catch (IOException e) {
+            log.error("JSON 合并失败", e);
+            throw new RuntimeException("JSON 合并失败", e);
         }
     }
 

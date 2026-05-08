@@ -8,7 +8,11 @@ import cn.hutool.core.lang.Snowflake;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class IdUtil {
+public final class IdUtil {
+
+    private IdUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 雪花算法实例

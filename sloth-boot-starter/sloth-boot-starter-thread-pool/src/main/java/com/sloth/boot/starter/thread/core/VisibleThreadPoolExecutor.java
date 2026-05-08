@@ -2,12 +2,8 @@ package com.sloth.boot.starter.thread.core;
 
 import com.alibaba.ttl.TtlCallable;
 import com.alibaba.ttl.TtlRunnable;
-import com.sloth.boot.common.context.TraceContext;
-import com.sloth.boot.common.context.UserContext;
+import com.sloth.boot.common.util.ContextSnapshot;
 import lombok.Getter;
-import org.slf4j.MDC;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -183,104 +179,12 @@ public class VisibleThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     private Runnable wrap(Runnable runnable) {
-        Map<String, String> mdcContext = MDC.getCopyOfContextMap();
-        UserContext.UserInfo userInfo = UserContext.get();
-        TraceContext.TraceInfo traceInfo = TraceContext.get();
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        return () -> {
-            Map<String, String> oldMdc = MDC.getCopyOfContextMap();
-            UserContext.UserInfo oldUser = UserContext.get();
-            TraceContext.TraceInfo oldTrace = TraceContext.get();
-            RequestAttributes oldRequestAttributes = RequestContextHolder.getRequestAttributes();
-            try {
-                if (mdcContext != null) {
-                    MDC.setContextMap(mdcContext);
-                } else {
-                    MDC.clear();
-                }
-                if (userInfo != null) {
-                    UserContext.set(userInfo);
-                }
-                if (traceInfo != null) {
-                    TraceContext.set(traceInfo);
-                }
-                if (requestAttributes != null) {
-                    RequestContextHolder.setRequestAttributes(requestAttributes);
-                }
-                runnable.run();
-            } finally {
-                if (oldMdc != null) {
-                    MDC.setContextMap(oldMdc);
-                } else {
-                    MDC.clear();
-                }
-                if (oldUser != null) {
-                    UserContext.set(oldUser);
-                } else {
-                    UserContext.clear();
-                }
-                if (oldTrace != null) {
-                    TraceContext.set(oldTrace);
-                } else {
-                    TraceContext.clear();
-                }
-                if (oldRequestAttributes != null) {
-                    RequestContextHolder.setRequestAttributes(oldRequestAttributes);
-                } else {
-                    RequestContextHolder.resetRequestAttributes();
-                }
-            }
-        };
+        ContextSnapshot snapshot = ContextSnapshot.capture();
+        return snapshot.decorate(runnable);
     }
 
     private <T> Callable<T> wrap(Callable<T> callable) {
-        Map<String, String> mdcContext = MDC.getCopyOfContextMap();
-        UserContext.UserInfo userInfo = UserContext.get();
-        TraceContext.TraceInfo traceInfo = TraceContext.get();
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        return () -> {
-            Map<String, String> oldMdc = MDC.getCopyOfContextMap();
-            UserContext.UserInfo oldUser = UserContext.get();
-            TraceContext.TraceInfo oldTrace = TraceContext.get();
-            RequestAttributes oldRequestAttributes = RequestContextHolder.getRequestAttributes();
-            try {
-                if (mdcContext != null) {
-                    MDC.setContextMap(mdcContext);
-                } else {
-                    MDC.clear();
-                }
-                if (userInfo != null) {
-                    UserContext.set(userInfo);
-                }
-                if (traceInfo != null) {
-                    TraceContext.set(traceInfo);
-                }
-                if (requestAttributes != null) {
-                    RequestContextHolder.setRequestAttributes(requestAttributes);
-                }
-                return callable.call();
-            } finally {
-                if (oldMdc != null) {
-                    MDC.setContextMap(oldMdc);
-                } else {
-                    MDC.clear();
-                }
-                if (oldUser != null) {
-                    UserContext.set(oldUser);
-                } else {
-                    UserContext.clear();
-                }
-                if (oldTrace != null) {
-                    TraceContext.set(oldTrace);
-                } else {
-                    TraceContext.clear();
-                }
-                if (oldRequestAttributes != null) {
-                    RequestContextHolder.setRequestAttributes(oldRequestAttributes);
-                } else {
-                    RequestContextHolder.resetRequestAttributes();
-                }
-            }
-        };
+        ContextSnapshot snapshot = ContextSnapshot.capture();
+        return snapshot.decorate(callable);
     }
 }
