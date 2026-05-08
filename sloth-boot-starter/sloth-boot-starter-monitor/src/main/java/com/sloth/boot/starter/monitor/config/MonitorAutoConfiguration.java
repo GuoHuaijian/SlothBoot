@@ -11,7 +11,6 @@ import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
 import com.sloth.boot.starter.monitor.metrics.JvmMetricsConfig;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -108,9 +107,9 @@ public class MonitorAutoConfiguration {
      * @return 健康检查器
      */
     @Bean
-    @ConditionalOnClass(RocketMQTemplate.class)
+    @ConditionalOnClass(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
     @ConditionalOnMissingBean(name = "rocketMQHealthIndicator")
-    public RocketMQHealthIndicator rocketMQHealthIndicator(RocketMQTemplate rocketMQTemplate) {
+    public RocketMQHealthIndicator rocketMQHealthIndicator(Object rocketMQTemplate) {
         return new RocketMQHealthIndicator(rocketMQTemplate);
     }
 

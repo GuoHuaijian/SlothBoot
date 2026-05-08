@@ -11,6 +11,14 @@ spring:
     name: sloth-example
   profiles:
     active: dev
+  autoconfigure:
+    exclude:
+      - com.sloth.boot.starter.ai.config.AiEmbeddingAutoConfiguration
+      - com.sloth.boot.starter.ai.config.AiImageAutoConfiguration
+      - com.sloth.boot.starter.ai.config.AiObservabilityAutoConfiguration
+      - com.sloth.boot.starter.mybatis.config.MybatisPlusAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
   main:
     allow-bean-definition-overriding: false
   servlet:
@@ -22,7 +30,7 @@ spring:
       chat: openai
     openai:
       base-url: https://api.openai.com
-      api-key: ${OPENAI_API_KEY:}
+      api-key: ${OPENAI_API_KEY:sk-placeholder}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/sloth_boot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
@@ -64,7 +72,8 @@ sloth:
     xss-enabled: true
     xss-exclude-urls:
       - /actuator/**
-      - /auth/login
+      - /api/security/**
+      - /api/system/login
     cors:
       allowed-origins:
         - "http://localhost:3000"
@@ -95,6 +104,12 @@ sloth:
     key-prefix: "example:"
     lock-wait-time: 3
     lock-lease-time: 30
+    bloom:
+      enabled: true
+      expected-insertions: 10000
+      false-positive-probability: 0.01
+    pubsub:
+      enabled: true
 
   # MyBatis 能力配置
   mybatis:
@@ -175,7 +190,12 @@ sloth:
     token-timeout: 7200
     white-list:
       - /health
-      - /auth/login
+      - /api/system/**
+      - /api/product/**
+      - /api/order/**
+      - /api/security/**
+      - /api/monitor/**
+      - /api/ai/**
       - /doc.html
       - /swagger-ui/**
       - /v3/api-docs/**
