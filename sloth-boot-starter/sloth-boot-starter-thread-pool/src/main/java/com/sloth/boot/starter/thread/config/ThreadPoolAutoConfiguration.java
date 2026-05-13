@@ -13,6 +13,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -156,6 +157,7 @@ public class ThreadPoolAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public ThreadPoolMetrics threadPoolMetrics(MeterRegistry meterRegistry, ThreadPoolRegistry threadPoolRegistry) {
         return new ThreadPoolMetrics(meterRegistry, threadPoolRegistry);

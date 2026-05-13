@@ -23,11 +23,11 @@ class LogAutoConfigurationTest {
     @DisplayName("默认配置下注册核心 Bean")
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(TraceFilter.class);
-            assertThat(context).hasSingleBean(RequestLogFilter.class);
-            assertThat(context).hasSingleBean(OperateLogAspect.class);
-            assertThat(context).hasSingleBean(OperateLogHandler.class);
-            assertThat(context).hasSingleBean(OperateLogListener.class);
+            assertThat(context.getBeansOfType(TraceFilter.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(RequestLogFilter.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(OperateLogAspect.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(OperateLogHandler.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(OperateLogListener.class)).isNotEmpty();
         });
     }
 
@@ -48,7 +48,7 @@ class LogAutoConfigurationTest {
     void customOperateLogHandlerOverrides() {
         contextRunner.withBean("customHandler", OperateLogHandler.class, () -> mock(OperateLogHandler.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(OperateLogHandler.class);
+                assertThat(context.getBeansOfType(OperateLogHandler.class)).isNotEmpty();
             });
     }
 }

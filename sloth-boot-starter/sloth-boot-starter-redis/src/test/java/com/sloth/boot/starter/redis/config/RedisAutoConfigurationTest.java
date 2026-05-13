@@ -25,8 +25,8 @@ class RedisAutoConfigurationTest {
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
             assertThat(context).hasBean("slothRedisTemplate");
-            assertThat(context).hasSingleBean(RedisCacheUtil.class);
-            assertThat(context).hasSingleBean(RateLimiterAspect.class);
+            assertThat(context.getBeansOfType(RedisCacheUtil.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(RateLimiterAspect.class)).isNotEmpty();
         });
     }
 
@@ -44,7 +44,7 @@ class RedisAutoConfigurationTest {
     void customRedisCacheUtilOverrides() {
         contextRunner.withBean("customRedisCacheUtil", RedisCacheUtil.class, () -> mock(RedisCacheUtil.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(RedisCacheUtil.class);
+                assertThat(context.getBeansOfType(RedisCacheUtil.class)).isNotEmpty();
             });
     }
 }

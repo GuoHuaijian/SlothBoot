@@ -17,6 +17,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -95,6 +96,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(RedisConnectionFactory.class)
+    @ConditionalOnBean(RedisConnectionFactory.class)
     @ConditionalOnMissingBean(name = "monitorRedisHealthIndicator")
     public RedisHealthIndicator monitorRedisHealthIndicator(RedisConnectionFactory redisConnectionFactory) {
         return new RedisHealthIndicator(redisConnectionFactory);
@@ -108,6 +110,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
+    @ConditionalOnBean(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
     @ConditionalOnMissingBean(name = "rocketMQHealthIndicator")
     public RocketMQHealthIndicator rocketMQHealthIndicator(Object rocketMQTemplate) {
         return new RocketMQHealthIndicator(rocketMQTemplate);

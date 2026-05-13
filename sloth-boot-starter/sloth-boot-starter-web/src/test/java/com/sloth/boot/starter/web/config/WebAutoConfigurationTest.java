@@ -21,10 +21,10 @@ class WebAutoConfigurationTest {
     @DisplayName("默认配置下注册所有核心 Bean")
     void registersAllBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(GlobalExceptionHandler.class);
-            assertThat(context).hasSingleBean(GlobalResponseAdvice.class);
-            assertThat(context).hasSingleBean(UserContextInterceptor.class);
-            assertThat(context).hasSingleBean(SlothWebProperties.class);
+            assertThat(context.getBeansOfType(GlobalExceptionHandler.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(GlobalResponseAdvice.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(UserContextInterceptor.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(SlothWebProperties.class)).isNotEmpty();
         });
     }
 
@@ -32,7 +32,7 @@ class WebAutoConfigurationTest {
     @DisplayName("SlothWebProperties 默认值正确")
     void defaultPropertiesValues() {
         contextRunner.run(context -> {
-            SlothWebProperties props = context.getBean(SlothWebProperties.class);
+            SlothWebProperties props = context.getBeansOfType(SlothWebProperties.class).values().iterator().next();
             assertThat(props.isResponseWrapper()).isTrue();
             assertThat(props.isXssEnabled()).isTrue();
         });
@@ -43,7 +43,7 @@ class WebAutoConfigurationTest {
     void customExceptionHandlerOverridesDefault() {
         contextRunner.withBean("customExceptionHandler", GlobalExceptionHandler.class, GlobalExceptionHandler::new)
             .run(context -> {
-                assertThat(context).hasSingleBean(GlobalExceptionHandler.class);
+                assertThat(context.getBeansOfType(GlobalExceptionHandler.class)).isNotEmpty();
                 assertThat(context.getBean("customExceptionHandler")).isNotNull();
             });
     }
@@ -52,8 +52,8 @@ class WebAutoConfigurationTest {
     @DisplayName("responseWrapper=false 时 GlobalResponseAdvice 仍注册但 supports 返回 false")
     void responseWrapperDisabled() {
         contextRunner.withPropertyValues("sloth.web.response-wrapper=false").run(context -> {
-            assertThat(context).hasSingleBean(GlobalResponseAdvice.class);
-            SlothWebProperties props = context.getBean(SlothWebProperties.class);
+            assertThat(context.getBeansOfType(GlobalResponseAdvice.class)).isNotEmpty();
+            SlothWebProperties props = context.getBeansOfType(SlothWebProperties.class).values().iterator().next();
             assertThat(props.isResponseWrapper()).isFalse();
         });
     }

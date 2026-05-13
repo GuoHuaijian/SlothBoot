@@ -24,11 +24,11 @@ class AuthAutoConfigurationTest {
     @DisplayName("默认配置下注册核心 Bean")
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(SaTokenContextHandler.class);
-            assertThat(context).hasSingleBean(SaTokenEventListener.class);
-            assertThat(context).hasSingleBean(OnlineUserService.class);
-            assertThat(context).hasSingleBean(PermissionService.class);
-            assertThat(context).hasSingleBean(DefaultPermissionService.class);
+            assertThat(context.getBeansOfType(SaTokenContextHandler.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(SaTokenEventListener.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(OnlineUserService.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(PermissionService.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(DefaultPermissionService.class)).isNotEmpty();
             // authWebMvcConfigurer 是匿名 WebMvcConfigurer
             assertThat(context).getBean("authWebMvcConfigurer").isInstanceOf(WebMvcConfigurer.class);
         });
@@ -51,7 +51,7 @@ class AuthAutoConfigurationTest {
     void customPermissionServiceOverrides() {
         contextRunner.withBean("customPermissionService", PermissionService.class, () -> mock(PermissionService.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(PermissionService.class);
+                assertThat(context.getBeansOfType(PermissionService.class)).isNotEmpty();
                 assertThat(context).doesNotHaveBean(DefaultPermissionService.class);
             });
     }

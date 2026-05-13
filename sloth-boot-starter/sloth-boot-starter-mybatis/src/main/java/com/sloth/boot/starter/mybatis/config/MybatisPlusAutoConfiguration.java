@@ -16,7 +16,6 @@ import net.sf.jsqlparser.expression.StringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +32,6 @@ import java.sql.SQLException;
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnClass(MybatisPlusInterceptor.class)
 @EnableConfigurationProperties(MybatisPlusProperties.class)
 public class MybatisPlusAutoConfiguration {
 

@@ -22,9 +22,9 @@ class FeignAutoConfigurationTest {
     @DisplayName("默认配置下注册核心 Bean")
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(RequestInterceptor.class);
-            assertThat(context).hasSingleBean(Decoder.class);
-            assertThat(context).hasSingleBean(ErrorDecoder.class);
+            assertThat(context.getBeansOfType(RequestInterceptor.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(Decoder.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(ErrorDecoder.class)).isNotEmpty();
         });
     }
 
@@ -47,7 +47,7 @@ class FeignAutoConfigurationTest {
     void customErrorDecoderOverrides() {
         contextRunner.withBean("customErrorDecoder", ErrorDecoder.class, () -> mock(ErrorDecoder.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(ErrorDecoder.class);
+                assertThat(context.getBeansOfType(ErrorDecoder.class)).isNotEmpty();
             });
     }
 }

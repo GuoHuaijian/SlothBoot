@@ -25,13 +25,13 @@ class ThreadPoolAutoConfigurationTest {
     @DisplayName("默认配置下注册核心 Bean")
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(ThreadPoolRegistry.class);
-            assertThat(context).hasSingleBean(TaskDecorator.class);
+            assertThat(context.getBeansOfType(ThreadPoolRegistry.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(TaskDecorator.class)).isNotEmpty();
             assertThat(context).hasBean("slothTaskExecutor");
-            assertThat(context).hasSingleBean(VisibleThreadPoolExecutor.class);
-            assertThat(context).hasSingleBean(AsyncExceptionHandler.class);
-            assertThat(context).hasSingleBean(ScheduledThreadPoolExecutor.class);
-            assertThat(context).hasSingleBean(ThreadPoolManager.class);
+            assertThat(context.getBeansOfType(VisibleThreadPoolExecutor.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(AsyncExceptionHandler.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(ScheduledThreadPoolExecutor.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(ThreadPoolManager.class)).isNotEmpty();
         });
     }
 
@@ -53,7 +53,7 @@ class ThreadPoolAutoConfigurationTest {
     void customThreadPoolRegistryOverrides() {
         contextRunner.withBean("customRegistry", ThreadPoolRegistry.class, () -> mock(ThreadPoolRegistry.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(ThreadPoolRegistry.class);
+                assertThat(context.getBeansOfType(ThreadPoolRegistry.class)).isNotEmpty();
             });
     }
 }

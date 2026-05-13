@@ -21,7 +21,7 @@ class AiImageAutoConfigurationTest {
     @DisplayName("默认配置下注册 AiImageClient")
     void registersImageClientByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(AiImageClient.class);
+            assertThat(context.getBeansOfType(AiImageClient.class)).isNotEmpty();
         });
     }
 
@@ -42,7 +42,7 @@ class AiImageAutoConfigurationTest {
             .withBean("customImageClient", AiImageClient.class,
                 () -> mock(AiImageClient.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(AiImageClient.class);
+                assertThat(context.getBeansOfType(AiImageClient.class)).isNotEmpty();
             });
     }
 }

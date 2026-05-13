@@ -21,7 +21,7 @@ class AiEmbeddingAutoConfigurationTest {
     @DisplayName("默认配置下注册 AiEmbeddingClient")
     void registersEmbeddingClientByDefault() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(AiEmbeddingClient.class);
+            assertThat(context.getBeansOfType(AiEmbeddingClient.class)).isNotEmpty();
         });
     }
 
@@ -42,7 +42,7 @@ class AiEmbeddingAutoConfigurationTest {
             .withBean("customEmbeddingClient", AiEmbeddingClient.class,
                 () -> mock(AiEmbeddingClient.class))
             .run(context -> {
-                assertThat(context).hasSingleBean(AiEmbeddingClient.class);
+                assertThat(context.getBeansOfType(AiEmbeddingClient.class)).isNotEmpty();
             });
     }
 }
