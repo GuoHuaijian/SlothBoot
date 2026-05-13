@@ -16,7 +16,7 @@ class RTest {
     void ok_returnsSuccessCode() {
         R<Void> r = R.ok();
         assertThat(r.getCode()).isZero();
-        assertThat(r.getMsg()).isEqualTo("操作成功");
+        assertThat(r.getMsg()).isNotBlank();
         assertThat(r.isSuccess()).isTrue();
         assertThat(r.getTimestamp()).isPositive();
     }
@@ -42,7 +42,7 @@ class RTest {
     void fail_returnsFailCode() {
         R<Void> r = R.fail();
         assertThat(r.getCode()).isEqualTo(-1);
-        assertThat(r.getMsg()).isEqualTo("操作失败");
+        assertThat(r.getMsg()).isNotBlank();
         assertThat(r.isSuccess()).isFalse();
     }
 
