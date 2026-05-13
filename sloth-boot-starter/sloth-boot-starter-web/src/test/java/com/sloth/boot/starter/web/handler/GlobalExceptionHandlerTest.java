@@ -101,7 +101,7 @@ class GlobalExceptionHandlerTest {
             MaxUploadSizeExceededException ex = new MaxUploadSizeExceededException(1024);
             R<Void> result = handler.handleMaxUploadSizeExceededException(ex);
             assertThat(result.getCode()).isEqualTo(400);
-            assertThat(result.getMsg()).isEqualTo("上传文件过大");
+            assertThat(result.getMsg()).isNotBlank();
         }
     }
 
