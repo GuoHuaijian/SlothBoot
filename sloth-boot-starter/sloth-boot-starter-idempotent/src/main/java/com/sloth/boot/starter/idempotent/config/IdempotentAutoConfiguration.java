@@ -2,7 +2,6 @@ package com.sloth.boot.starter.idempotent.config;
 
 import com.sloth.boot.starter.idempotent.aspect.IdempotentAspect;
 import com.sloth.boot.starter.idempotent.core.TokenIdempotentService;
-import com.sloth.boot.starter.idempotent.support.SpelKeyResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -22,19 +21,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @ConditionalOnProperty(prefix = "sloth.idempotent", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(IdempotentProperties.class)
 public class IdempotentAutoConfiguration {
-
-    /**
-     * 注册 SpEL Key 解析器。
-     *
-     * @return SpEL Key 解析器
-     * @deprecated 请使用 {@link com.sloth.boot.common.util.SpelUtil} 代替
-     */
-    @Deprecated(forRemoval = true)
-    @Bean
-    @ConditionalOnMissingBean
-    public SpelKeyResolver spelKeyResolver() {
-        return new SpelKeyResolver();
-    }
 
     /**
      * 注册 Token 幂等服务。

@@ -35,6 +35,11 @@ public class ThreadPoolProperties {
     private boolean virtualEnabled = false;
 
     /**
+     * 告警配置。
+     */
+    private AlarmConfig alarm = new AlarmConfig();
+
+    /**
      * 多线程池配置。
      */
     private Map<String, PoolConfig> pools = buildDefaultPools();
@@ -99,5 +104,20 @@ public class ThreadPoolProperties {
          * 拒绝策略。
          */
         private String rejectedPolicy = "CALLER_RUNS";
+    }
+
+    /**
+     * 告警配置。
+     *
+     * @author sloth-boot
+     * @since 1.0.0
+     */
+    @Data
+    public static class AlarmConfig {
+
+        /**
+         * 队列使用率告警阈值（百分比）。
+         */
+        private double threshold = 80.0;
     }
 }

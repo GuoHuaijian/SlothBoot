@@ -218,7 +218,7 @@ public class RedisAutoConfiguration {
     @ConditionalOnProperty(prefix = "sloth.redis.bloom", name = "enabled", havingValue = "true")
     public RedisBloomFilter<?> redisBloomFilter(RedissonClient redissonClient, RedisProperties redisProperties) {
         RedisProperties.BloomFilter config = redisProperties.getBloomFilter();
-        return new RedisBloomFilter<>(redissonClient, config.getExpectedInsertions(),
+        return new RedisBloomFilter<>(redissonClient, config.getName(), config.getExpectedInsertions(),
             config.getFalsePositiveProbability());
     }
 

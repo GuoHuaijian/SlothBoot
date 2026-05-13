@@ -35,11 +35,4 @@ class PageResultTest {
         PageResult<String> result = PageResult.of(List.of(), 0, 1, 10);
         assertThat(result.getTotalPages()).isZero();
     }
-
-    @Test
-    @DisplayName("isSuccess 始终返回 true")
-    void isSuccessAlwaysTrue() {
-        PageResult<String> result = PageResult.of(List.of(), 0, 1, 10);
-        assertThat(result.isSuccess()).isTrue();
-    }
 }

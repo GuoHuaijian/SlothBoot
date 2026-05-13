@@ -5,6 +5,7 @@ import com.sloth.boot.starter.thread.core.ThreadPoolManager;
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
 import com.sloth.boot.starter.thread.decorator.TtlTaskDecorator;
+import com.sloth.boot.starter.thread.monitor.ThreadPoolAlarmTask;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolEndpoint;
 import com.sloth.boot.starter.thread.monitor.ThreadPoolMetrics;
 import com.sloth.boot.starter.thread.reject.LogRejectedExecutionHandler;
@@ -202,6 +203,7 @@ public class ThreadPoolAutoConfiguration {
         return runnable -> {
             Thread thread = new Thread(runnable);
             thread.setName(prefix + counter.getAndIncrement());
+            thread.setDaemon(true);
             return thread;
         };
     }
@@ -218,5 +220,21 @@ public class ThreadPoolAutoConfiguration {
     @ConditionalOnMissingBean
     public ThreadPoolManager threadPoolManager(ThreadPoolRegistry threadPoolRegistry) {
         return new ThreadPoolManager(threadPoolRegistry);
+    }
+
+    /**
+     * 注册线程池队列使用率告警任务。
+     *
+     * @param threadPoolRegistry 线程池注册表
+     * @param eventPublisher     事件发布器
+     * @return 告警任务
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.thread-pool", name = "alarm-enabled", havingValue = "true")
+    public ThreadPoolAlarmTask threadPoolAlarmTask(ThreadPoolRegistry threadPoolRegistry,
+                                                    org.springframework.context.ApplicationEventPublisher eventPublisher,
+                                                    ThreadPoolProperties properties) {
+        return new ThreadPoolAlarmTask(threadPoolRegistry, eventPublisher, properties.getAlarm().getThreshold());
     }
 }

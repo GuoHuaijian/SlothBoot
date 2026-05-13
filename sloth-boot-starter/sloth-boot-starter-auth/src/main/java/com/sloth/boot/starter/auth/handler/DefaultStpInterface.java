@@ -2,7 +2,6 @@ package com.sloth.boot.starter.auth.handler;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.sloth.boot.common.context.UserContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Set;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Component
 public class DefaultStpInterface implements StpInterface {
 
     /**

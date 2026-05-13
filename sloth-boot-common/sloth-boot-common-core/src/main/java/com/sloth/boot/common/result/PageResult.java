@@ -1,6 +1,5 @@
 package com.sloth.boot.common.result;
 
-import com.sloth.boot.common.constant.CommonConstant;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -68,12 +67,4 @@ public class PageResult<T> implements Serializable {
         return result;
     }
 
-    /**
-     * 判断是否成功
-     *
-     * @return 是否成功
-     */
-    public boolean isSuccess() {
-        return CommonConstant.SUCCESS == 0;
-    }
 }

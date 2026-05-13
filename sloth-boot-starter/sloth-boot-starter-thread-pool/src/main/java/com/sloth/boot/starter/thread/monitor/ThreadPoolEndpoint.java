@@ -2,6 +2,7 @@ package com.sloth.boot.starter.thread.monitor;
 
 import com.sloth.boot.starter.thread.core.ThreadPoolManager;
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.thread.core.ThreadPoolSnapshot;
 import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -43,7 +44,7 @@ public class ThreadPoolEndpoint {
      * @return 线程池状态
      */
     @ReadOperation
-    public Map<String, Map<String, Object>> pools() {
+    public Map<String, ThreadPoolSnapshot> pools() {
         return threadPoolRegistry.getAllSnapshots();
     }
 
@@ -54,12 +55,10 @@ public class ThreadPoolEndpoint {
      * @return 线程池快照信息，不存在时返回错误提示
      */
     @ReadOperation
-    public Map<String, Object> pool(@Selector String poolName) {
+    public ThreadPoolSnapshot pool(@Selector String poolName) {
         VisibleThreadPoolExecutor executor = threadPoolRegistry.getPool(poolName);
         if (executor == null) {
-            Map<String, Object> error = new LinkedHashMap<>();
-            error.put("error", "线程池不存在: " + poolName);
-            return error;
+            return null;
         }
         return executor.snapshot();
     }

@@ -41,32 +41,39 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
      */
     @Override
     public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        return rs.getString(columnName);
+        return parseJson(rs.getString(columnName));
     }
 
     /**
-     * 根据列索引获取 JSON 字符串。
+     * 根据列索引获取反序列化后的 JSON 对象。
      *
      * @param rs          结果集
      * @param columnIndex 列索引
-     * @return JSON 字符串
+     * @return 反序列化后的对象
      * @throws SQLException SQL 异常
      */
     @Override
     public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        return rs.getString(columnIndex);
+        return parseJson(rs.getString(columnIndex));
     }
 
     /**
-     * 从存储过程获取 JSON 字符串。
+     * 从存储过程获取反序列化后的 JSON 对象。
      *
      * @param cs          CallableStatement
      * @param columnIndex 列索引
-     * @return JSON 字符串
+     * @return 反序列化后的对象
      * @throws SQLException SQL 异常
      */
     @Override
     public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return cs.getString(columnIndex);
+        return parseJson(cs.getString(columnIndex));
+    }
+
+    private Object parseJson(String json) {
+        if (json == null || json.isEmpty()) {
+            return null;
+        }
+        return JsonUtil.parseObject(json, Object.class);
     }
 }

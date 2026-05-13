@@ -20,7 +20,7 @@ import java.sql.SQLException;
  */
 public class EncryptTypeHandler extends BaseTypeHandler<String> {
 
-    private static final String DEFAULT_KEY = "sloth-boot-aes!";
+    private volatile AES aesInstance;
 
     /**
      * 设置非空参数。
@@ -79,19 +79,33 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
         if (StrUtil.isBlank(plaintext)) {
             return plaintext;
         }
-        return new AES(resolveKey()).encryptHex(plaintext);
+        return getAes().encryptHex(plaintext);
     }
 
     private String decrypt(String ciphertext) {
         if (StrUtil.isBlank(ciphertext)) {
             return ciphertext;
         }
-        return new AES(resolveKey()).decryptStr(ciphertext);
+        return getAes().decryptStr(ciphertext);
+    }
+
+    private AES getAes() {
+        if (aesInstance == null) {
+            synchronized (this) {
+                if (aesInstance == null) {
+                    aesInstance = new AES(resolveKey());
+                }
+            }
+        }
+        return aesInstance;
     }
 
     private byte[] resolveKey() {
         String configuredKey = SpringContextUtil.getProperty("sloth.mybatis.encrypt-key");
-        String key = StrUtil.isBlank(configuredKey) ? DEFAULT_KEY : configuredKey;
-        return StrUtil.fillAfter(key, '0', 16).substring(0, 16).getBytes(StandardCharsets.UTF_8);
+        if (StrUtil.isBlank(configuredKey)) {
+            throw new IllegalStateException("sloth.mybatis.encrypt-key 未配置。"
+                + "使用加密字段处理器必须在配置文件中设置 sloth.mybatis.encrypt-key");
+        }
+        return StrUtil.fillAfter(configuredKey, '0', 16).substring(0, 16).getBytes(StandardCharsets.UTF_8);
     }
 }

@@ -15,12 +15,12 @@ public class BaseQuery {
     /**
      * 当前页码
      */
-    private Integer pageNum = 1;
+    private int pageNum = 1;
 
     /**
      * 每页大小
      */
-    private Integer pageSize = 10;
+    private int pageSize = 10;
 
     /**
      * 排序字段

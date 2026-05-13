@@ -110,24 +110,24 @@ public class DataScopeInterceptor implements Interceptor {
             return null;
         }
 
+        String safeUserId = String.valueOf(userId);
         return switch (dataScopeType) {
             case SCOPE_SELF -> {
                 String userAlias = dataScope.userAlias();
                 if (userAlias.isEmpty()) {
-                    yield "create_by = '" + userId + "'";
+                    yield "create_by = " + safeUserId;
                 }
-                yield userAlias + ".create_by = '" + userId + "'";
+                yield userAlias + ".create_by = " + safeUserId;
             }
             case SCOPE_DEPT -> {
                 String deptAlias = dataScope.deptAlias();
                 String userAlias = dataScope.userAlias();
-                String tenantId = UserContext.getTenantId();
                 if (deptAlias.isEmpty()) {
                     yield null;
                 }
                 yield userAlias.isEmpty()
-                    ? "dept_id IN (SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "')"
-                    : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = '" + userId + "'";
+                    ? "dept_id IN (SELECT dept_id FROM sys_user WHERE user_id = " + safeUserId + ")"
+                    : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = " + safeUserId;
             }
             case SCOPE_DEPT_AND_BELOW -> {
                 String deptAlias = dataScope.deptAlias();
@@ -135,9 +135,9 @@ public class DataScopeInterceptor implements Interceptor {
                     yield null;
                 }
                 yield deptAlias + ".dept_id IN (SELECT dept_id FROM sys_dept WHERE dept_id = "
-                    + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "') "
+                    + "(SELECT dept_id FROM sys_user WHERE user_id = " + safeUserId + ") "
                     + "OR find_in_set(dept_id, (SELECT ancestors FROM sys_dept WHERE dept_id = "
-                    + "(SELECT dept_id FROM sys_user WHERE user_id = '" + userId + "'))))";
+                    + "(SELECT dept_id FROM sys_user WHERE user_id = " + safeUserId + "))))";
             }
             default -> null;
         };

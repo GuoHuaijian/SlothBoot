@@ -44,12 +44,12 @@ public class ThreadPoolRegistry {
     }
 
     /**
-     * 获取全部线程池运行时信息。
+     * 获取全部线程池运行时快照。
      *
-     * @return 运行时信息
+     * @return 运行时快照
      */
-    public Map<String, Map<String, Object>> getAllSnapshots() {
-        Map<String, Map<String, Object>> result = new ConcurrentHashMap<>();
+    public Map<String, ThreadPoolSnapshot> getAllSnapshots() {
+        Map<String, ThreadPoolSnapshot> result = new ConcurrentHashMap<>();
         pools.forEach((name, executor) -> result.put(name, executor.snapshot()));
         return result;
     }

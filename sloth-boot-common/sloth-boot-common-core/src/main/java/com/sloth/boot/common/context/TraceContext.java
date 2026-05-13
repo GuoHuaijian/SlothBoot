@@ -31,33 +31,11 @@ public class TraceContext implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * 追踪ID
-         */
+        /** 追踪ID */
         private String traceId;
 
-        /**
-         * 跨度ID
-         */
+        /** 跨度ID */
         private String spanId;
-
-        /**
-         * 获取追踪ID
-         *
-         * @return 追踪ID
-         */
-        public String getTraceId() {
-            return traceId;
-        }
-
-        /**
-         * 获取跨度ID
-         *
-         * @return 跨度ID
-         */
-        public String getSpanId() {
-            return spanId;
-        }
     }
 
     /**

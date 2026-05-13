@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.DisposableBean;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RedisDelayQueue {
+public class RedisDelayQueue implements DisposableBean {
 
     private final RedissonClient redissonClient;
     private final Map<String, ExecutorService> consumers = new ConcurrentHashMap<>();
@@ -73,5 +74,14 @@ public class RedisDelayQueue {
                 log.error("处理延迟消息失败, queueName={}", queueName, ex);
             }
         }
+    }
+
+    @Override
+    public void destroy() {
+        consumers.forEach((name, executor) -> {
+            executor.shutdownNow();
+            log.info("延迟队列消费者已关闭, queueName={}", name);
+        });
+        consumers.clear();
     }
 }

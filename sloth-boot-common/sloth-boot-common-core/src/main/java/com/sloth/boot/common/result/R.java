@@ -5,6 +5,7 @@ import com.sloth.boot.common.constant.CommonConstant;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.exception.ErrorCode;
 import com.sloth.boot.common.exception.GlobalErrorCode;
+import com.sloth.boot.common.util.I18nUtil;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -63,7 +64,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> ok() {
         R<T> r = new R<>();
         r.setCode(CommonConstant.SUCCESS);
-        r.setMsg("操作成功");
+        r.setMsg(I18nUtil.getMessage("sloth.success"));
         return r;
     }
 
@@ -104,7 +105,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> fail() {
         R<T> r = new R<>();
         r.setCode(CommonConstant.FAIL);
-        r.setMsg("操作失败");
+        r.setMsg(I18nUtil.getMessage("sloth.fail"));
         return r;
     }
 
@@ -187,7 +188,7 @@ public class R<T> implements Serializable {
             r.setMsg(baseEx.getMessage());
         } else {
             r.setCode(GlobalErrorCode.INTERNAL_ERROR.getCode());
-            r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : "系统内部错误");
+            r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : I18nUtil.getMessage("sloth.error.internal"));
         }
         return r;
     }

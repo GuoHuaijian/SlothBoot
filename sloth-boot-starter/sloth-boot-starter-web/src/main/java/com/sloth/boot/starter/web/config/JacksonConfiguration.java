@@ -3,7 +3,6 @@ package com.sloth.boot.starter.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.common.util.jackson.JacksonConfigUtil;
-import com.sloth.boot.starter.web.properties.SlothWebProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +15,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 public class JacksonConfiguration {
-
-    /**
-     * 构造函数。
-     *
-     * @param slothWebProperties Web 配置
-     */
-    public JacksonConfiguration(SlothWebProperties slothWebProperties) {
-        // 预留后续基于配置切换序列化行为。
-    }
 
     /**
      * 注册 ObjectMapper。

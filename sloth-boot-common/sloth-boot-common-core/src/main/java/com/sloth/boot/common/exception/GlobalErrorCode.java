@@ -47,6 +47,11 @@ public enum GlobalErrorCode implements ErrorCode {
     METHOD_NOT_ALLOWED(405, "请求方法不支持"),
 
     /**
+     * 不支持的媒体类型
+     */
+    UNSUPPORTED_MEDIA_TYPE(415, "不支持的媒体类型"),
+
+    /**
      * 请求过于频繁
      */
     TOO_MANY_REQUESTS(429, "请求过于频繁"),

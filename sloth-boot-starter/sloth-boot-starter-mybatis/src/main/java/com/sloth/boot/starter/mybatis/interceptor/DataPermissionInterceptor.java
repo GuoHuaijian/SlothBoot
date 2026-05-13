@@ -99,10 +99,10 @@ public class DataPermissionInterceptor implements Interceptor {
                 case "userId" -> userInfo.getUserId() != null ? String.valueOf(userInfo.getUserId()) : "";
                 case "deptId" -> {
                     Object deptId = userInfo.getExtra() != null ? userInfo.getExtra().get("deptId") : null;
-                    yield deptId != null ? deptId.toString() : "";
+                    yield deptId != null ? String.valueOf(deptId) : "";
                 }
-                case "username" -> userInfo.getUsername() != null ? userInfo.getUsername() : "";
-                case "tenantId" -> userInfo.getTenantId() != null ? userInfo.getTenantId() : "";
+                case "username" -> escapeSql(userInfo.getUsername());
+                case "tenantId" -> escapeSql(userInfo.getTenantId());
                 default -> "";
             };
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
@@ -141,6 +141,16 @@ public class DataPermissionInterceptor implements Interceptor {
             }
             return sql + " WHERE " + condition;
         }
+    }
+
+    /**
+     * 转义 SQL 字符串中的单引号，防止 SQL 注入。
+     */
+    private static String escapeSql(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("'", "''");
     }
 
     private int findOrderByIndex(String sql) {

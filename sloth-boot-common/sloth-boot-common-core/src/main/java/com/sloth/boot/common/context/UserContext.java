@@ -59,64 +59,8 @@ public class UserContext implements Serializable {
          */
         private String dataScope;
 
-        /**
-         * 扩展信息
-         */
+        /** 扩展信息 */
         private Map<String, Object> extra;
-
-        /**
-         * 获取用户ID
-         *
-         * @return 用户ID
-         */
-        public Long getUserId() {
-            return userId;
-        }
-
-        /**
-         * 获取用户名
-         *
-         * @return 用户名
-         */
-        public String getUsername() {
-            return username;
-        }
-
-        /**
-         * 获取租户ID
-         *
-         * @return 租户ID
-         */
-        public String getTenantId() {
-            return tenantId;
-        }
-
-        /**
-         * 获取角色集合
-         *
-         * @return 角色集合
-         */
-        public Set<String> getRoles() {
-            return roles;
-        }
-
-        /**
-         * 获取数据范围
-         *
-         * @return 数据范围
-         */
-        public String getDataScope() {
-            return dataScope;
-        }
-
-        /**
-         * 获取扩展信息
-         *
-         * @return 扩展信息
-         */
-        public Map<String, Object> getExtra() {
-            return extra;
-        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.thread.monitor;
 
 import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.thread.core.ThreadPoolSnapshot;
 import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,29 +33,19 @@ public class ThreadPoolAlarmTask {
     /**
      * 检查所有线程池队列使用率。
      */
-    @SuppressWarnings("unchecked")
     public void check() {
         Map<String, VisibleThreadPoolExecutor> pools = threadPoolRegistry.getAllPools();
-        for (Map.Entry<String, VisibleThreadPoolExecutor> entry : pools.entrySet()) {
-            String poolName = entry.getKey();
-            VisibleThreadPoolExecutor executor = entry.getValue();
-            Map<String, Object> snapshot = executor.snapshot();
+        for (VisibleThreadPoolExecutor executor : pools.values()) {
+            ThreadPoolSnapshot snapshot = executor.snapshot();
+            double usagePercent = snapshot.queueUsagePercent();
 
-            int queueCapacity = ((Number) snapshot.getOrDefault("queueRemainingCapacity", 0)).intValue();
-            int queueSize = ((Number) snapshot.getOrDefault("queueSize", 0)).intValue();
-
-            if (queueCapacity <= 0) {
-                continue;
-            }
-
-            double usagePercent = (double) queueSize / queueCapacity * 100;
             if (usagePercent >= alarmThreshold) {
-                log.warn("[ThreadPool] 线程池 {} 队列使用率告警: {}% ({}/{})", poolName, String.format("%.1f", usagePercent),
-                    queueSize, queueCapacity);
+                log.warn("[ThreadPool] 线程池 {} 队列使用率告警: {}% ({}/{})", snapshot.poolName(),
+                    String.format("%.1f", usagePercent), snapshot.queueSize(), snapshot.queueTotalCapacity());
 
-                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(this, poolName,
-                    ((Number) snapshot.getOrDefault("activeCount", 0)).intValue(), queueSize, queueCapacity,
-                    usagePercent, ((Number) snapshot.getOrDefault("completedTaskCount", 0L)).longValue());
+                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(this, snapshot.poolName(),
+                    snapshot.activeCount(), snapshot.queueSize(), snapshot.queueTotalCapacity(),
+                    usagePercent, snapshot.completedTaskCount());
                 eventPublisher.publishEvent(event);
             }
         }

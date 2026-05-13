@@ -20,7 +20,7 @@ public class DocProperties {
     private static final String DEFAULT_VERSION = "1.0.0";
     private static final String DEFAULT_CONTACT_NAME = "sloth-boot";
     private static final String DEFAULT_CONTACT_EMAIL = "sloth-boot@example.com";
-    private static final String DEFAULT_CONTACT_URL = "https://github.com/your-github-id/sloth-boot";
+    private static final String DEFAULT_CONTACT_URL = "https://github.com/GuoHuaijian/SlothBoot";
     private static final String DEFAULT_LICENSE = "Apache 2.0";
     private static final List<String> DEFAULT_BASE_PACKAGES = List.of("com.sloth.boot");
 

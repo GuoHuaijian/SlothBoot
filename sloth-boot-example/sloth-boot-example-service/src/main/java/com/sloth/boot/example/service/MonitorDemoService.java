@@ -104,14 +104,14 @@ public class MonitorDemoService {
     /**
      * 获取所有线程池快照。
      */
-    public Map<String, Map<String, Object>> getThreadPoolSnapshots() {
+    public Map<String, com.sloth.boot.starter.thread.core.ThreadPoolSnapshot> getThreadPoolSnapshots() {
         return threadPoolRegistry.getAllSnapshots();
     }
 
     /**
      * 获取指定线程池快照。
      */
-    public Map<String, Object> getThreadPoolSnapshot(String name) {
+    public com.sloth.boot.starter.thread.core.ThreadPoolSnapshot getThreadPoolSnapshot(String name) {
         return threadPoolManager.getSnapshot(name);
     }
 

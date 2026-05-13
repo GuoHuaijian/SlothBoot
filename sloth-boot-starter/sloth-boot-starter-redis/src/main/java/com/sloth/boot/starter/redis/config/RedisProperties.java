@@ -119,6 +119,11 @@ public class RedisProperties {
         private boolean enabled = false;
 
         /**
+         * 布隆过滤器名称（对应 Redis key）。
+         */
+        private String name = "sloth:bloom:default";
+
+        /**
          * 预期插入元素数量。
          */
         private long expectedInsertions = 1000000L;

@@ -2,7 +2,7 @@ package com.sloth.boot.starter.redis.id;
 
 import com.sloth.boot.starter.redis.config.RedisProperties;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
@@ -24,7 +24,7 @@ import java.util.Collections;
  * @author sloth-boot
  * @since 1.0.0
  */
-@RequiredArgsConstructor
+@Slf4j
 public class RedisIdGenerator {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -33,7 +33,14 @@ public class RedisIdGenerator {
 
     private final StringRedisTemplate stringRedisTemplate;
     private final RedisProperties redisProperties;
-    private final ResourceScriptSource idGeneratorScriptSource;
+    private final DefaultRedisScript<Long> incrScript;
+
+    public RedisIdGenerator(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties,
+                            ResourceScriptSource idGeneratorScriptSource) {
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.redisProperties = redisProperties;
+        this.incrScript = buildRedisScript(idGeneratorScriptSource);
+    }
 
     /**
      * 生成下一个分布式 ID。
@@ -78,7 +85,7 @@ public class RedisIdGenerator {
      * @return 递增后的序列号
      */
     private Long executeIncrScript(String key) {
-        Long sequence = stringRedisTemplate.execute(buildRedisScript(), Collections.singletonList(key),
+        Long sequence = stringRedisTemplate.execute(incrScript, Collections.singletonList(key),
             String.valueOf(EXPIRE_SECONDS));
         return sequence != null ? sequence : 1L;
     }
@@ -93,11 +100,11 @@ public class RedisIdGenerator {
         return ((sequence - 1) % SEQ_MODULO) + 1;
     }
 
-    private DefaultRedisScript<Long> buildRedisScript() {
+    private static DefaultRedisScript<Long> buildRedisScript(ResourceScriptSource scriptSource) {
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
         redisScript.setResultType(Long.class);
         try {
-            redisScript.setScriptText(idGeneratorScriptSource.getScriptAsString());
+            redisScript.setScriptText(scriptSource.getScriptAsString());
         } catch (IOException ex) {
             throw new IllegalStateException("加载 ID 生成器脚本失败", ex);
         }

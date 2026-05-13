@@ -27,13 +27,13 @@ public class MonitorController {
     }
 
     @GetMapping("/thread-pools")
-    public R<Map<String, Map<String, Object>>> threadPools() {
+    public R<?> threadPools() {
         return R.ok(monitorService.getThreadPoolSnapshots());
     }
 
     @GetMapping("/thread-pool/{name}")
-    public R<Map<String, Object>> threadPool(@PathVariable String name) {
-        Map<String, Object> snapshot = monitorService.getThreadPoolSnapshot(name);
+    public R<?> threadPool(@PathVariable String name) {
+        var snapshot = monitorService.getThreadPoolSnapshot(name);
         if (snapshot == null) {
             return R.fail("线程池不存在: " + name);
         }

@@ -5,8 +5,6 @@ import com.alibaba.ttl.TtlRunnable;
 import com.sloth.boot.common.util.ContextSnapshot;
 import lombok.Getter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -153,23 +151,23 @@ public class VisibleThreadPoolExecutor extends ThreadPoolExecutor {
     /**
      * 获取线程池快照。
      *
-     * @return 线程池运行状态
+     * @return 线程池运行状态快照
      */
-    public Map<String, Object> snapshot() {
-        Map<String, Object> snapshot = new LinkedHashMap<>(16);
-        snapshot.put("poolName", poolName);
-        snapshot.put("corePoolSize", getCorePoolSize());
-        snapshot.put("maximumPoolSize", getMaximumPoolSize());
-        snapshot.put("poolSize", getPoolSize());
-        snapshot.put("activeCount", getActiveCount());
-        snapshot.put("completedTaskCount", getCompletedTaskCount());
-        snapshot.put("taskCount", getTaskCount());
-        snapshot.put("queueSize", getQueueSize());
-        snapshot.put("queueRemainingCapacity", getQueueRemainingCapacity());
-        snapshot.put("rejectedCount", rejectedCount.get());
-        snapshot.put("maxCostTime", maxCostTime.get());
-        snapshot.put("avgCostTime", getAvgCostTime());
-        return snapshot;
+    public ThreadPoolSnapshot snapshot() {
+        return new ThreadPoolSnapshot(
+            poolName,
+            getCorePoolSize(),
+            getMaximumPoolSize(),
+            getPoolSize(),
+            getActiveCount(),
+            getCompletedTaskCount(),
+            getTaskCount(),
+            getQueueSize(),
+            getQueueRemainingCapacity(),
+            rejectedCount.get(),
+            maxCostTime.get(),
+            getAvgCostTime()
+        );
     }
 
     private Runnable wrap(Runnable runnable) {

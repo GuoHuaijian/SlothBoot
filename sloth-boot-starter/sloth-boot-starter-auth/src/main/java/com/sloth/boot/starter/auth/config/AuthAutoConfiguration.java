@@ -5,6 +5,7 @@ import cn.dev33.satoken.listener.SaTokenEventCenter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
+import com.sloth.boot.starter.auth.handler.DefaultStpInterface;
 import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
 import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
 import com.sloth.boot.starter.auth.properties.AuthProperties;
@@ -20,7 +21,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -36,8 +36,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnClass(name = "cn.dev33.satoken.stp.StpUtil")
 @ConditionalOnProperty(prefix = "sloth.auth", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(AuthProperties.class)
-@ComponentScan(basePackages = "com.sloth.boot.starter.auth.handler")
 public class AuthAutoConfiguration {
+
+    /**
+     * 注册 Sa-Token 权限/角色查询默认实现。
+     *
+     * @return 权限接口实现
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public DefaultStpInterface defaultStpInterface() {
+        return new DefaultStpInterface();
+    }
 
     /**
      * 注册 Sa-Token 上下文处理器。

@@ -7,6 +7,7 @@ import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.common.result.R;
+import com.sloth.boot.common.util.I18nUtil;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -108,7 +109,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public R<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
-        return handleBadRequest(ex, "缺少请求参数: " + ex.getParameterName());
+        return handleBadRequest(ex, I18nUtil.getMessage("sloth.error.missing_param", ex.getParameterName()));
     }
 
     /**
@@ -132,7 +133,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public R<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
         log.warn("媒体类型不支持, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
-        return R.fail(415, "不支持的媒体类型");
+        return R.fail(GlobalErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
+            I18nUtil.getMessage("sloth.error.media_type_not_supported"));
     }
 
     /**
@@ -155,7 +157,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public R<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return handleBadRequest(ex, "请求体解析失败");
+        return handleBadRequest(ex, I18nUtil.getMessage("sloth.error.body_parse_failed"));
     }
 
     /**
@@ -167,7 +169,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public R<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.warn("上传文件过大, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
-        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), "上传文件过大");
+        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.file_too_large"));
     }
 
     /**
@@ -180,7 +182,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleException(Exception ex) {
         if (isDuplicateKeyException(ex)) {
             log.warn("数据重复, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
-            return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), "数据已存在");
+            return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.data_duplicate"));
         }
         if (isAccessDeniedException(ex)) {
             log.warn("权限不足, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
@@ -209,26 +211,32 @@ public class GlobalExceptionHandler {
     }
 
     private boolean isDuplicateKeyException(Throwable throwable) {
-        return hasExceptionName(throwable, "org.springframework.dao.DuplicateKeyException");
+        return isInstanceOf(throwable, "org.springframework.dao.DuplicateKeyException");
     }
 
     private boolean isAccessDeniedException(Throwable throwable) {
-        return hasExceptionName(throwable, "org.springframework.security.access.AccessDeniedException");
+        return isInstanceOf(throwable, "org.springframework.security.access.AccessDeniedException");
     }
 
     private boolean isBlockException(Throwable throwable) {
-        return hasExceptionName(throwable, "com.alibaba.csp.sentinel.slots.block.BlockException");
+        return isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.BlockException");
     }
 
-    private boolean hasExceptionName(Throwable throwable, String className) {
+    /**
+     * 沿异常链检查是否存在指定类（或其子类）的异常实例。
+     * 使用 {@code Class.isAssignableFrom} 进行类型检查，避免字符串硬编码。
+     */
+    private boolean isInstanceOf(Throwable throwable, String className) {
+        Class<?> targetClass;
+        try {
+            targetClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
         Throwable current = throwable;
         while (current != null) {
-            Class<?> type = current.getClass();
-            while (type != null) {
-                if (className.equals(type.getName())) {
-                    return true;
-                }
-                type = type.getSuperclass();
+            if (targetClass.isAssignableFrom(current.getClass())) {
+                return true;
             }
             current = current.getCause();
         }
@@ -236,18 +244,17 @@ public class GlobalExceptionHandler {
     }
 
     private R<Void> buildBlockExceptionResponse(Throwable throwable) {
-        String exceptionName = throwable.getClass().getName();
-        if ("com.alibaba.csp.sentinel.slots.block.flow.FlowException".equals(exceptionName)
-            || "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException".equals(exceptionName)) {
-            return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), "请求过于频繁，请稍后再试");
+        if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.flow.FlowException")
+            || isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException")) {
+            return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nUtil.getMessage("sloth.error.sentinel_flow"));
         }
-        if ("com.alibaba.csp.sentinel.slots.block.degrade.DegradeException".equals(exceptionName)
-            || "com.alibaba.csp.sentinel.slots.system.SystemBlockException".equals(exceptionName)) {
-            return R.fail(503, "服务暂时不可用，请稍后再试");
+        if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.degrade.DegradeException")
+            || isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.system.SystemBlockException")) {
+            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
         }
-        if ("com.alibaba.csp.sentinel.slots.block.authority.AuthorityException".equals(exceptionName)) {
-            return R.fail(GlobalErrorCode.FORBIDDEN.getCode(), "授权规则不通过");
+        if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.authority.AuthorityException")) {
+            return R.fail(GlobalErrorCode.FORBIDDEN.getCode(), I18nUtil.getMessage("sloth.error.sentinel_authority"));
         }
-        return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), "请求被限流，请稍后重试");
+        return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nUtil.getMessage("sloth.error.sentinel_blocked"));
     }
 }

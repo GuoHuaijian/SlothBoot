@@ -26,16 +26,18 @@ public class RedisBloomFilter<T> {
      * 创建布隆过滤器。
      *
      * @param redissonClient           Redisson 客户端
+     * @param name                     布隆过滤器名称（对应 Redis key）
      * @param expectedInsertions       预期插入元素数量
      * @param falsePositiveProbability 误判概率
      */
-    public RedisBloomFilter(RedissonClient redissonClient, long expectedInsertions, double falsePositiveProbability) {
+    public RedisBloomFilter(RedissonClient redissonClient, String name, long expectedInsertions,
+                            double falsePositiveProbability) {
         this.expectedInsertions = expectedInsertions;
         this.falsePositiveProbability = falsePositiveProbability;
-        this.bloomFilter = redissonClient.getBloomFilter("sloth:bloom:default");
+        this.bloomFilter = redissonClient.getBloomFilter(name);
         this.bloomFilter.tryInit(expectedInsertions, falsePositiveProbability);
-        log.info("Redis 布隆过滤器已初始化, expectedInsertions={}, falsePositiveProbability={}", expectedInsertions,
-            falsePositiveProbability);
+        log.info("Redis 布隆过滤器已初始化, name={}, expectedInsertions={}, falsePositiveProbability={}", name,
+            expectedInsertions, falsePositiveProbability);
     }
 
     /**
