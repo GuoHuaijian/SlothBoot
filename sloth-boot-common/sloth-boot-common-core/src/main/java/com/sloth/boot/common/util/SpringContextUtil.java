@@ -16,6 +16,7 @@ public class SpringContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
+    @SuppressWarnings("findbugs:ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringContextUtil.applicationContext = applicationContext;
