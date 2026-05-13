@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import AppNavbar from '@/components/common/AppNavbar.vue'
 import AppFooter from '@/components/common/AppFooter.vue'
-import { Document, Setting, Warning } from '@element-plus/icons-vue'
+import { Document, Setting, Warning, Promotion, QuestionFilled, Finished, List, InfoFilled } from '@element-plus/icons-vue'
 
 const route = useRoute()
 </script>
@@ -16,6 +16,14 @@ const route = useRoute()
           <span class="sidebar-label">文档中心</span>
         </div>
         <el-menu :default-active="route.path" router>
+          <el-menu-item index="/docs/introduction">
+            <el-icon><InfoFilled /></el-icon>
+            <span>项目简介</span>
+          </el-menu-item>
+          <el-menu-item index="/docs/getting-started">
+            <el-icon><Promotion /></el-icon>
+            <span>快速开始</span>
+          </el-menu-item>
           <el-menu-item index="/docs/architecture">
             <el-icon><Document /></el-icon>
             <span>架构文档</span>
@@ -27,6 +35,18 @@ const route = useRoute()
           <el-menu-item index="/docs/error-codes">
             <el-icon><Warning /></el-icon>
             <span>错误码注册表</span>
+          </el-menu-item>
+          <el-menu-item index="/docs/testing">
+            <el-icon><Finished /></el-icon>
+            <span>测试指南</span>
+          </el-menu-item>
+          <el-menu-item index="/docs/faq">
+            <el-icon><QuestionFilled /></el-icon>
+            <span>常见问题</span>
+          </el-menu-item>
+          <el-menu-item index="/docs/changelog">
+            <el-icon><List /></el-icon>
+            <span>更新日志</span>
           </el-menu-item>
         </el-menu>
       </aside>

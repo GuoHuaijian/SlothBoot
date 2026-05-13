@@ -5,7 +5,7 @@
       <template #header>
         <span class="section-title">登录面板</span>
       </template>
-      <el-form :inline="true" :model="loginForm" label-width="80px">
+      <el-form :inline="true" :model="loginForm" :rules="loginRules" ref="loginFormRef" label-width="80px">
         <el-form-item label="用户ID">
           <el-input-number v-model="loginForm.userId" :min="1" />
         </el-form-item>
@@ -53,20 +53,32 @@
       <el-button type="primary" :loading="usersLoading" @click="fetchUsers" class="mb-16">
         加载用户列表
       </el-button>
-      <el-table :data="users" border stripe v-loading="usersLoading">
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="username" label="用户名" />
-        <el-table-column prop="phone" label="手机号" />
-        <el-table-column prop="idCard" label="身份证" />
-        <el-table-column prop="email" label="邮箱" />
-        <el-table-column label="角色">
-          <template #default="{ row }">
-            <el-tag v-for="role in row.roles" :key="role" size="small" class="mr-8">
-              {{ role }}
-            </el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-skeleton :rows="5" animated :loading="usersLoading">
+        <template #default>
+          <el-table :data="paginatedUsers" border stripe empty-text="暂无用户数据，点击上方按钮加载">
+            <el-table-column prop="id" label="ID" width="80" />
+            <el-table-column prop="username" label="用户名" />
+            <el-table-column prop="phone" label="手机号" />
+            <el-table-column prop="idCard" label="身份证" />
+            <el-table-column prop="email" label="邮箱" />
+            <el-table-column label="角色">
+              <template #default="{ row }">
+                <el-tag v-for="role in row.roles" :key="role" size="small" class="mr-8">
+                  {{ role }}
+                </el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            v-if="users.length > 10"
+            v-model:current-page="userPage"
+            :page-size="10"
+            :total="users.length"
+            layout="prev, pager, next"
+            class="mt-16"
+          />
+        </template>
+      </el-skeleton>
     </el-card>
 
     <!-- 权限测试 -->
@@ -95,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { systemApi } from '@/api/system'
 import { useAuthStore } from '@/stores/auth'
@@ -104,11 +116,19 @@ import type { UserVO, LoginResponse } from '@/api/types'
 const authStore = useAuthStore()
 
 // 登录面板
+const loginFormRef = ref()
+const loginRules = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }]
+}
 const loginForm = reactive({ userId: 1, username: 'admin' })
 const loginLoading = ref(false)
 const loginResult = ref<LoginResponse | null>(null)
 
 async function handleLogin() {
+  if (!loginForm.username.trim()) {
+    ElMessage.warning('请输入用户名')
+    return
+  }
   loginLoading.value = true
   try {
     const res = await systemApi.login(loginForm.userId, loginForm.username)
@@ -140,6 +160,11 @@ async function fetchCurrentUser() {
 // 用户列表
 const usersLoading = ref(false)
 const users = ref<UserVO[]>([])
+const userPage = ref(1)
+const paginatedUsers = computed(() => {
+  const start = (userPage.value - 1) * 10
+  return users.value.slice(start, start + 10)
+})
 
 async function fetchUsers() {
   usersLoading.value = true
@@ -229,5 +254,9 @@ async function handleLogout() {
 }
 .mr-8 {
   margin-right: 8px;
+}
+:deep(.el-pagination) {
+  margin-top: 16px;
+  justify-content: flex-end;
 }
 </style>

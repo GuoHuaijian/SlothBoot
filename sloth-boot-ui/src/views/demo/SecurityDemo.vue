@@ -14,8 +14,12 @@
             </el-button>
           </el-form-item>
         </el-form>
+        <el-empty v-if="!aesResult && !aesLoading" description="输入明文点击加密" :image-size="60" />
         <el-descriptions v-if="aesResult" :column="1" border class="mt-16">
-          <el-descriptions-item label="加密结果">{{ aesResult }}</el-descriptions-item>
+          <el-descriptions-item label="加密结果">
+            {{ aesResult }}
+            <el-button type="primary" link size="small" @click="copyText(aesResult)" style="margin-left: 8px">复制</el-button>
+          </el-descriptions-item>
           <el-descriptions-item v-if="aesDecrypted" label="解密结果">{{ aesDecrypted }}</el-descriptions-item>
         </el-descriptions>
       </el-tab-pane>
@@ -28,9 +32,11 @@
         <el-descriptions v-if="rsaPublicKey" :column="1" border class="mb-16">
           <el-descriptions-item label="公钥">
             <el-input v-model="rsaPublicKey" type="textarea" :rows="2" readonly />
+            <el-button type="primary" link size="small" @click="copyText(rsaPublicKey)" class="mt-8">复制公钥</el-button>
           </el-descriptions-item>
           <el-descriptions-item label="私钥">
             <el-input v-model="rsaPrivateKey" type="textarea" :rows="2" readonly />
+            <el-button type="primary" link size="small" @click="copyText(rsaPrivateKey)" class="mt-8">复制私钥</el-button>
           </el-descriptions-item>
         </el-descriptions>
         <el-form label-width="80px" style="max-width: 600px">
@@ -49,9 +55,15 @@
           </el-form-item>
         </el-form>
         <el-descriptions v-if="rsaEncrypted || rsaSigned" :column="1" border class="mt-16">
-          <el-descriptions-item v-if="rsaEncrypted" label="加密结果">{{ rsaEncrypted }}</el-descriptions-item>
+          <el-descriptions-item v-if="rsaEncrypted" label="加密结果">
+            {{ rsaEncrypted }}
+            <el-button type="primary" link size="small" @click="copyText(rsaEncrypted)" style="margin-left: 8px">复制</el-button>
+          </el-descriptions-item>
           <el-descriptions-item v-if="rsaDecrypted" label="解密结果">{{ rsaDecrypted }}</el-descriptions-item>
-          <el-descriptions-item v-if="rsaSigned" label="签名">{{ rsaSigned }}</el-descriptions-item>
+          <el-descriptions-item v-if="rsaSigned" label="签名">
+            {{ rsaSigned }}
+            <el-button type="primary" link size="small" @click="copyText(rsaSigned)" style="margin-left: 8px">复制</el-button>
+          </el-descriptions-item>
           <el-descriptions-item v-if="rsaVerified !== null" label="验签结果">
             <el-tag :type="rsaVerified ? 'success' : 'danger'">{{ rsaVerified ? '通过' : '失败' }}</el-tag>
           </el-descriptions-item>
@@ -72,6 +84,7 @@
         <el-descriptions v-if="hashResult" :column="1" border class="mt-16">
           <el-descriptions-item label="哈希值">
             <el-text class="hash-text" truncated>{{ hashResult }}</el-text>
+            <el-button type="primary" link size="small" @click="copyText(hashResult)" style="margin-left: 8px">复制</el-button>
           </el-descriptions-item>
           <el-descriptions-item v-if="hashCostMs !== null" label="耗时">
             {{ hashCostMs }}ms
@@ -132,7 +145,10 @@
           </el-form-item>
         </el-form>
         <el-descriptions v-if="generatedSign" :column="1" border class="mt-16">
-          <el-descriptions-item label="签名">{{ generatedSign }}</el-descriptions-item>
+          <el-descriptions-item label="签名">
+            {{ generatedSign }}
+            <el-button type="primary" link size="small" @click="copyText(generatedSign)" style="margin-left: 8px">复制</el-button>
+          </el-descriptions-item>
           <el-descriptions-item label="时间戳">{{ generatedTimestamp }}</el-descriptions-item>
           <el-descriptions-item label="随机数">{{ generatedNonce }}</el-descriptions-item>
           <el-descriptions-item v-if="signVerified !== null" label="验证结果">
@@ -148,6 +164,11 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { securityApi } from '@/api/security'
+
+async function copyText(text: string) {
+  await navigator.clipboard.writeText(text)
+  ElMessage.success('已复制')
+}
 
 const activeTab = ref('aes')
 
@@ -381,6 +402,9 @@ async function handleVerifySign() {
 .security-demo {
   padding: 0;
   font-family: var(--font-body);
+}
+.mt-8 {
+  margin-top: 8px;
 }
 .mt-16 {
   margin-top: 16px;

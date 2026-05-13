@@ -34,39 +34,51 @@
       <el-button type="primary" :loading="listLoading" @click="fetchOrders" class="mb-16">
         刷新订单
       </el-button>
-      <el-table :data="orders" border stripe v-loading="listLoading">
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="productName" label="商品" />
-        <el-table-column prop="amount" label="金额" width="100">
-          <template #default="{ row }">¥{{ row.amount }}</template>
-        </el-table-column>
-        <el-table-column prop="quantity" label="数量" width="80" />
-        <el-table-column label="状态" width="100">
-          <template #default="{ row }">
-            <el-tag :type="statusTagType(row.status)">{{ row.status }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="160">
-          <template #default="{ row }">
-            <el-button
-              v-if="row.status === 'CREATED'"
-              type="success"
-              link
-              @click="handlePay(row.id)"
-            >
-              支付
-            </el-button>
-            <el-button
-              v-if="row.status === 'CREATED'"
-              type="danger"
-              link
-              @click="handleCancel(row.id)"
-            >
-              取消
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-skeleton :rows="5" animated :loading="listLoading">
+        <template #default>
+          <el-table :data="paginatedOrders" border stripe empty-text="暂无订单数据">
+            <el-table-column prop="id" label="ID" width="80" />
+            <el-table-column prop="productName" label="商品" />
+            <el-table-column prop="amount" label="金额" width="100">
+              <template #default="{ row }">¥{{ row.amount }}</template>
+            </el-table-column>
+            <el-table-column prop="quantity" label="数量" width="80" />
+            <el-table-column label="状态" width="100">
+              <template #default="{ row }">
+                <el-tag :type="statusTagType(row.status)">{{ row.status }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="160">
+              <template #default="{ row }">
+                <el-button
+                  v-if="row.status === 'CREATED'"
+                  type="success"
+                  link
+                  @click="handlePay(row.id)"
+                >
+                  支付
+                </el-button>
+                <el-button
+                  v-if="row.status === 'CREATED'"
+                  type="danger"
+                  link
+                  @click="handleCancel(row.id)"
+                >
+                  取消
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            v-if="orders.length > 10"
+            v-model:current-page="orderPage"
+            :page-size="10"
+            :total="orders.length"
+            layout="prev, pager, next"
+            class="mt-16"
+          />
+        </template>
+      </el-skeleton>
     </el-card>
 
     <!-- 限流测试 -->
@@ -121,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { orderApi } from '@/api/order'
 import { productApi } from '@/api/product'
@@ -160,6 +172,12 @@ async function handleCreate() {
 // 订单列表
 const listLoading = ref(false)
 const orders = ref<OrderDTO[]>([])
+
+const orderPage = ref(1)
+const paginatedOrders = computed(() => {
+  const start = (orderPage.value - 1) * 10
+  return orders.value.slice(start, start + 10)
+})
 
 async function fetchOrders() {
   listLoading.value = true
@@ -296,5 +314,9 @@ onMounted(() => {
 }
 .mb-16 {
   margin-bottom: 16px;
+}
+:deep(.el-pagination) {
+  margin-top: 16px;
+  justify-content: flex-end;
 }
 </style>

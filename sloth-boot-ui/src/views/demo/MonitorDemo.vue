@@ -16,12 +16,16 @@
           <!-- 应用信息卡片 -->
           <div class="info-card">
             <div class="info-card-title">应用信息</div>
-            <div class="info-grid" v-loading="appInfoLoading">
-              <div class="info-item" v-for="(value, key) in appInfoDisplay" :key="key">
-                <span class="info-label">{{ key }}</span>
-                <span class="info-value">{{ value }}</span>
-              </div>
-            </div>
+            <el-skeleton :rows="4" animated :loading="appInfoLoading">
+              <template #default>
+                <div class="info-grid">
+                  <div class="info-item" v-for="(value, key) in appInfoDisplay" :key="key">
+                    <span class="info-label">{{ key }}</span>
+                    <span class="info-value">{{ value }}</span>
+                  </div>
+                </div>
+              </template>
+            </el-skeleton>
           </div>
 
           <!-- JVM 内存卡片 -->
@@ -30,7 +34,8 @@
               JVM 内存
               <el-tag size="small" type="info" class="auto-tag">自动刷新</el-tag>
             </div>
-            <div v-loading="jvmLoading">
+            <el-skeleton :rows="8" animated :loading="jvmLoading">
+              <template #default>
               <div class="heap-section">
                 <div class="heap-header">
                   <span class="heap-label">堆内存</span>
@@ -87,7 +92,8 @@
                   </div>
                 </div>
               </div>
-            </div>
+              </template>
+            </el-skeleton>
           </div>
         </div>
       </el-tab-pane>
@@ -97,7 +103,9 @@
         <div class="tab-toolbar">
           <el-button type="primary" size="small" @click="fetchThreadPools" :loading="poolLoading">刷新</el-button>
         </div>
-        <div class="pool-cards" v-loading="poolLoading">
+        <el-skeleton :rows="6" animated :loading="poolLoading">
+          <template #default>
+        <div class="pool-cards">
           <div class="pool-card" v-for="pool in threadPoolList" :key="pool.name">
             <div class="pool-card-header">
               <span class="pool-name">{{ pool.name }}</span>
@@ -156,6 +164,8 @@
           </div>
           <el-empty v-if="!poolLoading && threadPoolList.length === 0" description="暂无线程池数据" />
         </div>
+          </template>
+        </el-skeleton>
       </el-tab-pane>
 
       <!-- Tab 3: 业务指标 -->
@@ -229,7 +239,9 @@
         <div class="tab-toolbar">
           <el-button type="primary" size="small" @click="fetchHealth" :loading="healthLoading">刷新</el-button>
         </div>
-        <div v-loading="healthLoading" v-if="healthData">
+        <el-skeleton :rows="4" animated :loading="healthLoading">
+          <template #default>
+        <div v-if="healthData">
           <div class="health-status">
             <span class="health-icon" :class="healthData.status === 'UP' ? 'up' : 'down'"></span>
             <span class="health-text">{{ healthData.status === 'UP' ? '服务正常' : '服务异常' }}</span>
@@ -250,6 +262,8 @@
             </div>
           </div>
         </div>
+          </template>
+        </el-skeleton>
         <el-empty v-if="!healthLoading && !healthData" description="点击刷新加载健康数据" />
       </el-tab-pane>
     </el-tabs>
@@ -294,7 +308,7 @@ const appInfoDisplay = computed(() => {
 
 async function fetchAppInfo() {
   appInfoLoading.value = true
-  try { appInfo.value = await monitorApi.getAppInfo() } catch {} finally { appInfoLoading.value = false }
+  try { appInfo.value = await monitorApi.getAppInfo() } catch (e: any) { ElMessage.error('获取应用信息失败') } finally { appInfoLoading.value = false }
 }
 
 // JVM
@@ -303,7 +317,7 @@ const jvmInfo = ref<JvmInfo | null>(null)
 
 async function fetchJvmInfo() {
   jvmLoading.value = true
-  try { jvmInfo.value = await monitorApi.getJvmInfo() } catch {} finally { jvmLoading.value = false }
+  try { jvmInfo.value = await monitorApi.getJvmInfo() } catch (e: any) { ElMessage.error('获取JVM信息失败') } finally { jvmLoading.value = false }
 }
 
 // 线程池
@@ -424,22 +438,22 @@ const slowApiLoading = ref(false)
 
 async function fetchMetrics() {
   metricsLoading.value = true
-  try { metrics.value = await monitorApi.getMetricsSummary() } catch {} finally { metricsLoading.value = false }
+  try { metrics.value = await monitorApi.getMetricsSummary() } catch (e: any) { ElMessage.error('获取指标失败') } finally { metricsLoading.value = false }
 }
 
 async function handleIncrementCounter() {
   counterLoading.value = true
-  try { await monitorApi.incrementCounter(); ElMessage.success('计数器已递增'); fetchMetrics() } catch {} finally { counterLoading.value = false }
+  try { await monitorApi.incrementCounter(); ElMessage.success('计数器已递增'); fetchMetrics() } catch (e: any) { ElMessage.error('递增失败') } finally { counterLoading.value = false }
 }
 
 async function handleRecordTimer() {
   timerLoading.value = true
-  try { await monitorApi.recordTimer(); ElMessage.success('耗时已记录'); fetchMetrics() } catch {} finally { timerLoading.value = false }
+  try { await monitorApi.recordTimer(); ElMessage.success('耗时已记录'); fetchMetrics() } catch (e: any) { ElMessage.error('记录失败') } finally { timerLoading.value = false }
 }
 
 async function handleSlowApi() {
   slowApiLoading.value = true
-  try { const res = await monitorApi.triggerSlowApi(); ElMessage.info(res); fetchMetrics() } catch {} finally { slowApiLoading.value = false }
+  try { const res = await monitorApi.triggerSlowApi(); ElMessage.info(res); fetchMetrics() } catch (e: any) { ElMessage.error('触发失败') } finally { slowApiLoading.value = false }
 }
 
 // 健康检查
@@ -448,7 +462,7 @@ const healthData = ref<any>(null)
 
 async function fetchHealth() {
   healthLoading.value = true
-  try { healthData.value = await monitorApi.getHealth() } catch {} finally { healthLoading.value = false }
+  try { healthData.value = await monitorApi.getHealth() } catch (e: any) { ElMessage.error('获取健康数据失败') } finally { healthLoading.value = false }
 }
 
 // 全部刷新

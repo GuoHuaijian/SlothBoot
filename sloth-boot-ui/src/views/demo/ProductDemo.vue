@@ -8,25 +8,37 @@
       <el-button type="primary" :loading="listLoading" @click="fetchProducts" class="mb-16">
         刷新列表
       </el-button>
-      <el-table :data="products" border stripe v-loading="listLoading">
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="price" label="价格" width="100">
-          <template #default="{ row }">¥{{ row.price }}</template>
-        </el-table-column>
-        <el-table-column prop="stock" label="库存" width="80" />
-        <el-table-column prop="category" label="分类" width="120" />
-        <el-table-column label="操作" width="160">
-          <template #default="{ row }">
-            <el-button type="primary" link @click="viewProduct(row.id)">查看</el-button>
-            <el-popconfirm title="确认删除该商品？" @confirm="deleteProduct(row.id)">
-              <template #reference>
-                <el-button type="danger" link>删除</el-button>
+      <el-skeleton :rows="5" animated :loading="listLoading">
+        <template #default>
+          <el-table :data="paginatedProducts" border stripe empty-text="暂无商品数据，点击上方按钮加载">
+            <el-table-column prop="id" label="ID" width="80" />
+            <el-table-column prop="name" label="名称" />
+            <el-table-column prop="price" label="价格" width="100">
+              <template #default="{ row }">¥{{ row.price }}</template>
+            </el-table-column>
+            <el-table-column prop="stock" label="库存" width="80" />
+            <el-table-column prop="category" label="分类" width="120" />
+            <el-table-column label="操作" width="160">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="viewProduct(row.id)">查看</el-button>
+                <el-popconfirm title="确认删除该商品？" @confirm="deleteProduct(row.id)">
+                  <template #reference>
+                    <el-button type="danger" link>删除</el-button>
+                  </template>
+                </el-popconfirm>
               </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            v-if="products.length > 10"
+            v-model:current-page="productPage"
+            :page-size="10"
+            :total="products.length"
+            layout="prev, pager, next"
+            class="mt-16"
+          />
+        </template>
+      </el-skeleton>
     </el-card>
 
     <!-- 商品详情对话框 -->
@@ -116,23 +128,27 @@
       <el-button type="primary" :loading="rankLoading" @click="fetchRank" class="mb-16">
         刷新排行榜
       </el-button>
-      <el-table :data="rankList" border stripe v-loading="rankLoading">
-        <el-table-column prop="productName" label="商品名称" />
-        <el-table-column prop="score" label="票数" width="100" />
-        <el-table-column label="操作" width="120">
-          <template #default="{ row }">
-            <el-button type="primary" size="small" :loading="voteLoading" @click="handleVote(row.productId)">
-              投票
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-skeleton :rows="3" animated :loading="rankLoading">
+        <template #default>
+          <el-table :data="rankList" border stripe empty-text="暂无排行数据">
+            <el-table-column prop="productName" label="商品名称" />
+            <el-table-column prop="score" label="票数" width="100" />
+            <el-table-column label="操作" width="120">
+              <template #default="{ row }">
+                <el-button type="primary" size="small" :loading="voteLoading" @click="handleVote(row.productId)">
+                  投票
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-skeleton>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { productApi } from '@/api/product'
 import type { ProductDTO, ProductCreateRequest } from '@/api/types'
@@ -140,6 +156,12 @@ import type { ProductDTO, ProductCreateRequest } from '@/api/types'
 // 商品列表
 const listLoading = ref(false)
 const products = ref<ProductDTO[]>([])
+
+const productPage = ref(1)
+const paginatedProducts = computed(() => {
+  const start = (productPage.value - 1) * 10
+  return products.value.slice(start, start + 10)
+})
 
 async function fetchProducts() {
   listLoading.value = true
@@ -187,6 +209,10 @@ const createForm = reactive<ProductCreateRequest>({
 })
 
 async function handleCreate() {
+  if (!createForm.name.trim()) {
+    ElMessage.warning('请输入商品名称')
+    return
+  }
   createLoading.value = true
   try {
     await productApi.createProduct(createForm)
@@ -320,5 +346,9 @@ async function handleVote(productId: number) {
 }
 .mr-8 {
   margin-right: 8px;
+}
+:deep(.el-pagination) {
+  margin-top: 16px;
+  justify-content: flex-end;
 }
 </style>

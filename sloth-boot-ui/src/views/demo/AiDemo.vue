@@ -17,6 +17,7 @@
         >
           发送
         </el-button>
+        <el-empty v-if="!syncResponse && !syncLoading" description="输入问题开始对话" :image-size="60" />
         <el-card v-if="syncResponse" shadow="never" class="mt-16">
           <pre class="response-text">{{ syncResponse }}</pre>
         </el-card>
@@ -26,12 +27,25 @@
       <el-tab-pane label="流式对话" name="stream">
         <div class="chat-container">
           <div class="chat-messages" ref="streamMessagesRef">
+            <div v-if="streamMessages.length === 0" class="chat-empty">
+              发送消息开始对话
+            </div>
             <div
               v-for="(msg, i) in streamMessages"
               :key="i"
               :class="['chat-bubble', msg.role === 'user' ? 'bubble-right' : 'bubble-left']"
             >
-              <div class="bubble-role">{{ msg.role === 'user' ? '我' : 'AI' }}</div>
+              <div class="bubble-header">
+                <span class="bubble-role">{{ msg.role === 'user' ? '我' : 'AI' }}</span>
+                <el-button
+                  v-if="msg.role === 'ai' && msg.content"
+                  type="primary"
+                  link
+                  size="small"
+                  class="bubble-copy"
+                  @click="copyText(msg.content)"
+                >复制</el-button>
+              </div>
               <div class="bubble-content">{{ msg.content }}</div>
             </div>
           </div>
@@ -56,12 +70,25 @@
       <el-tab-pane label="多轮对话" name="conversation">
         <div class="chat-container">
           <div class="chat-messages" ref="convMessagesRef">
+            <div v-if="convMessages.length === 0" class="chat-empty">
+              发送消息开始多轮对话
+            </div>
             <div
               v-for="(msg, i) in convMessages"
               :key="i"
               :class="['chat-bubble', msg.role === 'user' ? 'bubble-right' : 'bubble-left']"
             >
-              <div class="bubble-role">{{ msg.role === 'user' ? '我' : 'AI' }}</div>
+              <div class="bubble-header">
+                <span class="bubble-role">{{ msg.role === 'user' ? '我' : 'AI' }}</span>
+                <el-button
+                  v-if="msg.role === 'ai' && msg.content"
+                  type="primary"
+                  link
+                  size="small"
+                  class="bubble-copy"
+                  @click="copyText(msg.content)"
+                >复制</el-button>
+              </div>
               <div class="bubble-content">{{ msg.content }}</div>
             </div>
           </div>
@@ -94,6 +121,11 @@
 import { ref, reactive, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { aiApi } from '@/api/ai'
+
+async function copyText(text: string) {
+  await navigator.clipboard.writeText(text)
+  ElMessage.success('已复制')
+}
 
 const activeTab = ref('sync')
 
@@ -260,11 +292,31 @@ function scrollToBottom(el: HTMLElement | null) {
   color: var(--text-primary);
   border-bottom-left-radius: var(--radius-sm);
 }
+.bubble-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.bubble-copy {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.chat-bubble:hover .bubble-copy {
+  opacity: 1;
+}
+.chat-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 14px;
+}
 .bubble-role {
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
-  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.7;
