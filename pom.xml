@@ -86,7 +86,7 @@
         <aliyun-oss.version>3.17.4</aliyun-oss.version>
 
         <!-- Security -->
-        <sa-token.version>1.37.0</sa-token.version>
+        <sa-token.version>1.45.0</sa-token.version>
         <ip2region.version>2.7.0</ip2region.version>
         <mica-xss.version>3.1.6</mica-xss.version>
         <bouncycastle.version>1.70</bouncycastle.version>
