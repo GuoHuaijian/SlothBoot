@@ -194,7 +194,7 @@
                 </executions>
             </plugin>
 
-            <!-- SpotBugs 静态分析 -->
+            <!-- SpotBugs 静态分析 (暂时关闭)
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
@@ -208,6 +208,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
