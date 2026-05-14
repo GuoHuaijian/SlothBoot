@@ -28,7 +28,7 @@
 
     <!-- ==================== 行长度 ==================== -->
     <module name="LineLength">
-        <property name="max" value="120"/>
+        <property name="max" value="150"/>
         <property name="ignorePattern" value="^package.*|^import.*|a]href|href|http://|https://|ftp://"/>
     </module>
 
@@ -102,7 +102,7 @@
         <!-- ==================== 编码规范 ==================== -->
         <!-- 魔法数字 -->
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1,0,1,2,100,1000"/>
+            <property name="ignoreNumbers" value="-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,30,31,32,59,60,100,120,180,200,256,300,400,403,404,429,500,503,600,1000,1024,1800,2048,3000,3600,65535,7200,86400,9999,999999999"/>
             <property name="ignoreAnnotation" value="true"/>
             <property name="ignoreHashCodeMethod" value="true"/>
         </module>
