@@ -254,9 +254,9 @@
               <div class="health-pool-item" v-for="(info, name) in healthData.threadPools" :key="name">
                 <div class="health-pool-name">{{ name }}</div>
                 <div class="health-pool-detail">
-                  <span>活跃: {{ (info as any).activeCount }}/{{ (info as any).maximumPoolSize }}</span>
-                  <span>队列: {{ (info as any).queueSize }}</span>
-                  <span>拒绝: {{ (info as any).rejectedCount }}</span>
+                  <span>活跃: {{ info.activeCount }}/{{ info.maximumPoolSize }}</span>
+                  <span>队列: {{ info.queueSize }}</span>
+                  <span>拒绝: {{ info.rejectedCount }}</span>
                 </div>
               </div>
             </div>
@@ -295,6 +295,33 @@ import { ElMessage } from 'element-plus'
 import { monitorApi } from '@/api/monitor'
 import type { JvmInfo, MetricSummary } from '@/api/types'
 
+interface ThreadPoolInfo {
+  name: string
+  corePoolSize: number
+  maximumPoolSize: number
+  activeCount: number
+  poolSize: number
+  queueSize: number
+  queueRemainingCapacity: number
+  completedTaskCount: number
+  rejectedCount: number
+  avgCostTime?: number
+  maxCostTime?: number
+}
+
+interface HealthPoolInfo {
+  activeCount: number
+  maximumPoolSize: number
+  queueSize: number
+  rejectedCount: number
+}
+
+interface HealthData {
+  status: string
+  timestamp: string
+  threadPools?: Record<string, HealthPoolInfo>
+}
+
 const activeTab = ref('overview')
 const refreshing = ref(false)
 
@@ -322,17 +349,17 @@ async function fetchJvmInfo() {
 
 // 线程池
 const poolLoading = ref(false)
-const threadPoolList = ref<any[]>([])
+const threadPoolList = ref<ThreadPoolInfo[]>([])
 
 async function fetchThreadPools() {
   poolLoading.value = true
   try {
     const map = await monitorApi.getThreadPools()
-    threadPoolList.value = Object.entries(map).map(([name, info]) => ({ name, ...(info as any) }))
+    threadPoolList.value = Object.entries(map).map(([name, info]) => ({ name, ...(info as Omit<ThreadPoolInfo, 'name'>) }))
   } catch (e: any) { ElMessage.error('获取线程池失败') } finally { poolLoading.value = false }
 }
 
-function queueUsage(pool: any): number {
+function queueUsage(pool: ThreadPoolInfo): number {
   const total = (pool.queueSize ?? 0) + (pool.queueRemainingCapacity ?? 1)
   return total > 0 ? ((pool.queueSize ?? 0) / total) * 100 : 0
 }
@@ -350,7 +377,7 @@ const resizeDialogVisible = ref(false)
 const resizeLoading = ref(false)
 const resizeForm = reactive({ poolName: '', coreSize: 1, maxSize: 4 })
 
-function openResizeDialog(row: any) {
+function openResizeDialog(row: ThreadPoolInfo) {
   resizeForm.poolName = row.name
   resizeForm.coreSize = row.corePoolSize ?? 1
   resizeForm.maxSize = row.maximumPoolSize ?? 4
@@ -458,7 +485,7 @@ async function handleSlowApi() {
 
 // 健康检查
 const healthLoading = ref(false)
-const healthData = ref<any>(null)
+const healthData = ref<HealthData | null>(null)
 
 async function fetchHealth() {
   healthLoading.value = true
