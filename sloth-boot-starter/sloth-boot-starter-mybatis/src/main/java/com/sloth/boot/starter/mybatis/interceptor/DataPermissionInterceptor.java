@@ -150,7 +150,7 @@ public class DataPermissionInterceptor implements Interceptor {
         if (value == null) {
             return "";
         }
-        return value.replace("'", "''");
+        return value.replace("\\", "\\\\").replace("'", "''");
     }
 
     private int findOrderByIndex(String sql) {

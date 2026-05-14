@@ -342,7 +342,7 @@ async function handleSubmitTask(poolName: string) {
     const res = await monitorApi.submitTasks(poolName)
     ElMessage.success('任务已提交')
     fetchThreadPools()
-  } catch { ElMessage.error('提交失败') }
+  } catch (e: any) { ElMessage.error('提交任务到 ' + poolName + ' 失败') }
 }
 
 // 动态调参

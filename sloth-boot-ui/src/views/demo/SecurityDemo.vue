@@ -100,7 +100,7 @@
               v-model="xssInput"
               type="textarea"
               :rows="4"
-              placeholder="输入包含 HTML 的内容..."
+              placeholder='<img src=x onerror=alert("xss")> <script>alert(1)</script> 正常文本'
             />
           </el-form-item>
           <el-form-item>

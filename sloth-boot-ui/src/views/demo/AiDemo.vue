@@ -47,6 +47,13 @@
                 >复制</el-button>
               </div>
               <div class="bubble-content">{{ msg.content }}</div>
+              <el-button
+                v-if="msg.role === 'ai' && msg.content.includes('[请求中断]')"
+                type="warning"
+                size="small"
+                class="retry-btn"
+                @click="retryStreamMessage(i)"
+              >重试</el-button>
             </div>
           </div>
           <div class="chat-input">
@@ -226,6 +233,24 @@ async function handleConversation() {
   }
 }
 
+function retryStreamMessage(index: number) {
+  // Find the user message before this AI message
+  const aiMsg = streamMessages.value[index]
+  if (!aiMsg || aiMsg.role !== 'ai') return
+
+  // Remove the failed AI message
+  streamMessages.value.splice(index, 1)
+
+  // Find the preceding user message
+  const userMsg = streamMessages.value[index - 1]
+  if (!userMsg || userMsg.role !== 'user') return
+
+  // Set the prompt and trigger stream chat
+  streamPrompt.value = userMsg.content
+  streamMessages.value.splice(index - 1, 1)
+  handleStreamChat()
+}
+
 function scrollToBottom(el: HTMLElement | null) {
   if (el) el.scrollTop = el.scrollHeight
 }
@@ -325,6 +350,9 @@ function scrollToBottom(el: HTMLElement | null) {
   white-space: pre-wrap;
   line-height: 1.6;
   font-size: 14px;
+}
+.retry-btn {
+  margin-top: 8px;
 }
 .chat-input {
   flex-shrink: 0;
