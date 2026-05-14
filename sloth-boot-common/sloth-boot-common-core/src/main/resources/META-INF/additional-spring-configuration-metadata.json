@@ -33,8 +33,8 @@
     {
       "name": "sloth.web.cors.allow-credentials",
       "type": "java.lang.Boolean",
-      "description": "是否允许携带凭证。",
-      "defaultValue": false
+      "description": "是否允许携带 Cookie。",
+      "defaultValue": true
     },
     {
       "name": "sloth.auth.enabled",
@@ -69,8 +69,98 @@
     {
       "name": "sloth.redis.key-prefix",
       "type": "java.lang.String",
-      "description": "Redis Key 全局前缀。",
-      "defaultValue": ""
+      "description": "统一业务 key 前缀。",
+      "defaultValue": "sloth:"
+    },
+    {
+      "name": "sloth.redis.lock-wait-time",
+      "type": "java.lang.Long",
+      "description": "分布式锁默认等待时间，单位秒。",
+      "defaultValue": 3
+    },
+    {
+      "name": "sloth.redis.lock-lease-time",
+      "type": "java.lang.Long",
+      "description": "分布式锁默认租约时间，单位秒。",
+      "defaultValue": 30
+    },
+    {
+      "name": "sloth.redis.enable-type-info",
+      "type": "java.lang.Boolean",
+      "description": "是否携带类型信息进行 JSON 序列化。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.redis.null-value-expire-seconds",
+      "type": "java.lang.Long",
+      "description": "空值缓存时间，单位秒。",
+      "defaultValue": 60
+    },
+    {
+      "name": "sloth.redis.multi-cache.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用多级缓存（Caffeine + Redis）。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.redis.multi-cache.l1-max-size",
+      "type": "java.lang.Integer",
+      "description": "L1 Caffeine 缓存最大条目数。",
+      "defaultValue": 1000
+    },
+    {
+      "name": "sloth.redis.multi-cache.l1-ttl-seconds",
+      "type": "java.lang.Long",
+      "description": "L1 Caffeine 缓存过期时间（秒）。",
+      "defaultValue": 300
+    },
+    {
+      "name": "sloth.redis.id-generator.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用分布式 ID 生成器。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.redis.id-generator.worker-id",
+      "type": "java.lang.Integer",
+      "description": "机器号（0-1023）。",
+      "defaultValue": 0
+    },
+    {
+      "name": "sloth.redis.id-generator.prefix",
+      "type": "java.lang.String",
+      "description": "ID 前缀。",
+      "defaultValue": "sloth"
+    },
+    {
+      "name": "sloth.redis.bloom-filter.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用布隆过滤器。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.redis.bloom-filter.name",
+      "type": "java.lang.String",
+      "description": "布隆过滤器名称（对应 Redis key）。",
+      "defaultValue": "sloth:bloom:default"
+    },
+    {
+      "name": "sloth.redis.bloom-filter.expected-insertions",
+      "type": "java.lang.Long",
+      "description": "预期插入元素数量。",
+      "defaultValue": 1000000
+    },
+    {
+      "name": "sloth.redis.bloom-filter.false-positive-probability",
+      "type": "java.lang.Double",
+      "description": "误判概率。",
+      "defaultValue": 0.01
+    },
+    {
+      "name": "sloth.redis.pub-sub.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Pub/Sub 模板。",
+      "defaultValue": false
     },
     {
       "name": "sloth.mybatis.enabled",
@@ -85,10 +175,28 @@
       "defaultValue": false
     },
     {
+      "name": "sloth.mybatis.tenant-column",
+      "type": "java.lang.String",
+      "description": "租户字段名。",
+      "defaultValue": "tenant_id"
+    },
+    {
+      "name": "sloth.mybatis.tenant-ignore-tables",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "忽略租户过滤的表。",
+      "defaultValue": []
+    },
+    {
       "name": "sloth.mybatis.slow-sql-threshold",
       "type": "java.lang.Long",
-      "description": "慢 SQL 阈值（毫秒）。",
+      "description": "慢 SQL 阈值，单位毫秒。",
       "defaultValue": 1000
+    },
+    {
+      "name": "sloth.mybatis.tenant-auto-fill",
+      "type": "java.lang.Boolean",
+      "description": "INSERT 时是否自动填充 tenantId 字段（从 UserContext 获取）。",
+      "defaultValue": true
     },
     {
       "name": "sloth.thread-pool.enabled",
@@ -103,22 +211,87 @@
       "defaultValue": false
     },
     {
+      "name": "sloth.thread-pool.dynamic",
+      "type": "java.lang.Boolean",
+      "description": "是否启用动态配置。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.thread-pool.alarm.threshold",
+      "type": "java.lang.Double",
+      "description": "队列使用率告警阈值（百分比）。",
+      "defaultValue": 80.0
+    },
+    {
       "name": "sloth.ai.enabled",
       "type": "java.lang.Boolean",
-      "description": "是否启用 AI 能力。",
-      "defaultValue": false
+      "description": "是否启用 AI Starter。",
+      "defaultValue": true
     },
     {
       "name": "sloth.ai.model",
       "type": "java.lang.String",
-      "description": "AI 模型名称（如 gpt-4o-mini、deepseek-chat）。",
+      "description": "默认模型名称（如 gpt-4o-mini、deepseek-chat）。",
       "defaultValue": "gpt-4o-mini"
     },
     {
       "name": "sloth.ai.temperature",
       "type": "java.lang.Double",
-      "description": "AI 生成温度（0.0-2.0）。",
+      "description": "默认温度参数（0.0-2.0）。",
       "defaultValue": 0.7
+    },
+    {
+      "name": "sloth.ai.top-p",
+      "type": "java.lang.Double",
+      "description": "默认 topP 参数。",
+      "defaultValue": 1.0
+    },
+    {
+      "name": "sloth.ai.max-tokens",
+      "type": "java.lang.Integer",
+      "description": "默认最大输出 Token 数。",
+      "defaultValue": 2048
+    },
+    {
+      "name": "sloth.ai.default-system-prompt",
+      "type": "java.lang.String",
+      "description": "默认系统提示词。"
+    },
+    {
+      "name": "sloth.ai.memory.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用对话记忆。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.ai.memory.max-messages",
+      "type": "java.lang.Integer",
+      "description": "滑动窗口最大消息数。",
+      "defaultValue": 20
+    },
+    {
+      "name": "sloth.ai.embedding.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用向量嵌入客户端。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.ai.image.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用图像生成客户端。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.ai.observability.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 AI 可观测性装饰器。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.ai.observability.slow-threshold-ms",
+      "type": "java.lang.Long",
+      "description": "慢调用阈值（毫秒）。",
+      "defaultValue": 3000
     },
     {
       "name": "sloth.monitor.enabled",
@@ -127,10 +300,38 @@
       "defaultValue": true
     },
     {
+      "name": "sloth.monitor.slow-api-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用慢接口监控。",
+      "defaultValue": true
+    },
+    {
       "name": "sloth.monitor.slow-api-threshold",
       "type": "java.lang.Long",
-      "description": "慢 API 阈值（毫秒）。",
-      "defaultValue": 1000
+      "description": "慢接口阈值，单位毫秒。",
+      "defaultValue": 3000
+    },
+    {
+      "name": "sloth.monitor.alarm.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用告警。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.monitor.alarm.type",
+      "type": "java.lang.String",
+      "description": "告警类型（如 dingtalk）。",
+      "defaultValue": "dingtalk"
+    },
+    {
+      "name": "sloth.monitor.alarm.webhook",
+      "type": "java.lang.String",
+      "description": "Webhook 地址。"
+    },
+    {
+      "name": "sloth.monitor.alarm.secret",
+      "type": "java.lang.String",
+      "description": "Webhook 签名密钥。"
     },
     {
       "name": "sloth.monitor.alarm.cpu-threshold",
@@ -151,9 +352,33 @@
       "defaultValue": 90.0
     },
     {
+      "name": "sloth.gateway.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Gateway Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.gateway.white-list",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "白名单路径。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.gateway.dynamic-route-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用动态路由。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.gateway.black-list",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "IP 黑名单。",
+      "defaultValue": []
+    },
+    {
       "name": "sloth.gateway.retry.enabled",
       "type": "java.lang.Boolean",
-      "description": "是否启用网关请求重试。",
+      "description": "是否启用重试。",
       "defaultValue": false
     },
     {
@@ -171,8 +396,91 @@
     {
       "name": "sloth.doc.enabled",
       "type": "java.lang.Boolean",
-      "description": "是否启用 API 文档（Knife4j/OpenAPI 3）。",
+      "description": "是否启用接口文档。",
       "defaultValue": true
+    },
+    {
+      "name": "sloth.doc.title",
+      "type": "java.lang.String",
+      "description": "接口文档标题。",
+      "defaultValue": "Sloth Boot API"
+    },
+    {
+      "name": "sloth.doc.description",
+      "type": "java.lang.String",
+      "description": "接口文档描述。",
+      "defaultValue": "Sloth Boot 接口文档"
+    },
+    {
+      "name": "sloth.doc.version",
+      "type": "java.lang.String",
+      "description": "接口文档版本。",
+      "defaultValue": "1.0.0"
+    },
+    {
+      "name": "sloth.doc.contact-name",
+      "type": "java.lang.String",
+      "description": "联系人名称。",
+      "defaultValue": "sloth-boot"
+    },
+    {
+      "name": "sloth.doc.contact-email",
+      "type": "java.lang.String",
+      "description": "联系人邮箱。",
+      "defaultValue": "sloth-boot@example.com"
+    },
+    {
+      "name": "sloth.doc.contact-url",
+      "type": "java.lang.String",
+      "description": "联系人主页或仓库地址。",
+      "defaultValue": "https://github.com/GuoHuaijian/SlothBoot"
+    },
+    {
+      "name": "sloth.doc.license",
+      "type": "java.lang.String",
+      "description": "开源许可证名称。",
+      "defaultValue": "Apache 2.0"
+    },
+    {
+      "name": "sloth.doc.base-packages",
+      "type": "java.util.List<java.lang.String>",
+      "description": "扫描的基础包。",
+      "defaultValue": ["com.sloth.boot"]
+    },
+    {
+      "name": "sloth.doc.security-scheme-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Bearer Token 安全方案。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.doc.security-scheme-name",
+      "type": "java.lang.String",
+      "description": "安全方案名称。",
+      "defaultValue": "Bearer"
+    },
+    {
+      "name": "sloth.doc.security-bearer-format",
+      "type": "java.lang.String",
+      "description": "Bearer Token 格式。",
+      "defaultValue": "JWT"
+    },
+    {
+      "name": "sloth.doc.security-description",
+      "type": "java.lang.String",
+      "description": "安全方案描述。",
+      "defaultValue": "请输入 Token（无需 Bearer 前缀）"
+    },
+    {
+      "name": "sloth.doc.server-url",
+      "type": "java.lang.String",
+      "description": "服务器地址（不配置则自动检测）。"
+    },
+    {
+      "name": "sloth.doc.server-description",
+      "type": "java.lang.String",
+      "description": "服务器描述。",
+      "defaultValue": "默认服务器"
     },
     {
       "name": "sloth.log.enabled",
@@ -191,6 +499,474 @@
       "type": "java.lang.Boolean",
       "description": "是否打印响应日志。",
       "defaultValue": false
+    },
+    {
+      "name": "sloth.log.exclude-urls",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "排除的 URL。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.log.max-body-length",
+      "type": "java.lang.Integer",
+      "description": "请求/响应体最大打印长度。",
+      "defaultValue": 2048
+    },
+    {
+      "name": "sloth.auth.active-timeout",
+      "type": "java.lang.Long",
+      "description": "Token 最低活跃频率（秒），-1 表示不限。",
+      "defaultValue": -1
+    },
+    {
+      "name": "sloth.auth.is-concurrent",
+      "type": "java.lang.Boolean",
+      "description": "是否允许同一账号并发登录。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.auth.is-share",
+      "type": "java.lang.Boolean",
+      "description": "在多人登录同一账号时，是否共用同一个 Token。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.auth.token-prefix",
+      "type": "java.lang.String",
+      "description": "Token 前缀。",
+      "defaultValue": "Bearer"
+    },
+    {
+      "name": "sloth.auth.is-read-cookie",
+      "type": "java.lang.Boolean",
+      "description": "是否从 Cookie 中读取 Token。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.auth.is-read-body",
+      "type": "java.lang.Boolean",
+      "description": "是否从 Body 中读取 Token。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.auth.black-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "黑名单路径（禁止访问）。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.auth.device-strategy",
+      "type": "com.sloth.boot.starter.auth.enums.DeviceStrategy",
+      "description": "多设备登录策略：ALLOW_MULTI / REPLACED / PROHIBIT。",
+      "defaultValue": "ALLOW_MULTI"
+    },
+    {
+      "name": "sloth.web.body-cache-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用请求体缓存（支持多次读取 @RequestBody）。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.web.access-log-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 API 访问日志事件发布。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.web.cors.allowed-methods",
+      "type": "java.util.List<java.lang.String>",
+      "description": "CORS 允许的请求方法。",
+      "defaultValue": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    },
+    {
+      "name": "sloth.web.cors.allowed-headers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "CORS 允许的请求头。",
+      "defaultValue": ["*"]
+    },
+    {
+      "name": "sloth.web.cors.max-age",
+      "type": "java.lang.Long",
+      "description": "CORS 预检请求缓存时间（秒）。",
+      "defaultValue": 3600
+    },
+    {
+      "name": "sloth.web.gzip.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Gzip 压缩。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.web.gzip.min-size",
+      "type": "java.lang.Integer",
+      "description": "启用压缩的最小响应体大小（字节）。",
+      "defaultValue": 1024
+    },
+    {
+      "name": "sloth.web.gzip.mime-types",
+      "type": "java.lang.String[]",
+      "description": "启用压缩的 MIME 类型。",
+      "defaultValue": ["text/html", "text/xml", "text/plain", "text/css", "application/json", "application/javascript"]
+    },
+    {
+      "name": "sloth.xss.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 XSS 过滤。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.exclude-urls",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "XSS 过滤排除的 URL。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.xss.clean-html",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 HTML 标签。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-java-script",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 JavaScript。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-css",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 CSS。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-event-attributes",
+      "type": "java.lang.Boolean",
+      "description": "是否清理事件属性。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.sign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用签名验证。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.sign.secret-key",
+      "type": "java.lang.String",
+      "description": "密钥。"
+    },
+    {
+      "name": "sloth.sign.valid-time",
+      "type": "java.lang.Integer",
+      "description": "有效时间（秒）。",
+      "defaultValue": 300
+    },
+    {
+      "name": "sloth.sign.exclude-paths",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "排除的路径。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.monitor.tracing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用链路追踪。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.monitor.tracing.sampler-rate",
+      "type": "java.lang.Double",
+      "description": "链路采样率，范围 0.0 ~ 1.0。",
+      "defaultValue": 1.0
+    },
+    {
+      "name": "sloth.mq.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 MQ Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.mq.idempotent-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用消费幂等。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.mq.max-retry",
+      "type": "java.lang.Integer",
+      "description": "最大重试次数。",
+      "defaultValue": 3
+    },
+    {
+      "name": "sloth.mq.transaction-producer-group",
+      "type": "java.lang.String",
+      "description": "默认事务生产者组。",
+      "defaultValue": "sloth-tx-producer-group"
+    },
+    {
+      "name": "sloth.mq.consume-idempotent-key-prefix",
+      "type": "java.lang.String",
+      "description": "消费幂等键前缀。",
+      "defaultValue": "sloth:mq:consume:"
+    },
+    {
+      "name": "sloth.mq.dlq.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用死信队列处理。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.mq.dlq.max-retries",
+      "type": "java.lang.Integer",
+      "description": "死信队列最大重试次数。",
+      "defaultValue": 3
+    },
+    {
+      "name": "sloth.mq.dlq.delay-seconds",
+      "type": "java.lang.Integer",
+      "description": "死信队列重试延迟时间（秒）。",
+      "defaultValue": 60
+    },
+    {
+      "name": "sloth.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Sentinel Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.sentinel.datasource",
+      "type": "java.lang.String",
+      "description": "数据源类型。",
+      "defaultValue": "nacos"
+    },
+    {
+      "name": "sloth.sentinel.nacos-group-id",
+      "type": "java.lang.String",
+      "description": "Nacos Group ID。",
+      "defaultValue": "SENTINEL_GROUP"
+    },
+    {
+      "name": "sloth.sentinel.nacos-data-id",
+      "type": "java.lang.String",
+      "description": "Nacos Data ID（限流规则配置文件名）。"
+    },
+    {
+      "name": "sloth.sentinel.nacos-namespace",
+      "type": "java.lang.String",
+      "description": "Nacos 命名空间。"
+    },
+    {
+      "name": "sloth.feign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Feign Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.feign.connect-timeout",
+      "type": "java.lang.Long",
+      "description": "连接超时时间（秒）。",
+      "defaultValue": 5
+    },
+    {
+      "name": "sloth.feign.read-timeout",
+      "type": "java.lang.Long",
+      "description": "读取超时时间（秒）。",
+      "defaultValue": 10
+    },
+    {
+      "name": "sloth.feign.write-timeout",
+      "type": "java.lang.Long",
+      "description": "写入超时时间（秒）。",
+      "defaultValue": 10
+    },
+    {
+      "name": "sloth.feign.max-idle-connections",
+      "type": "java.lang.Integer",
+      "description": "连接池最大空闲连接数。",
+      "defaultValue": 200
+    },
+    {
+      "name": "sloth.feign.keep-alive-minutes",
+      "type": "java.lang.Long",
+      "description": "连接池空闲连接存活时间（分钟）。",
+      "defaultValue": 5
+    },
+    {
+      "name": "sloth.feign.sentinel-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Sentinel 集成。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.job.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Job Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.job.admin-addresses",
+      "type": "java.lang.String",
+      "description": "XXL-Job Admin 地址。"
+    },
+    {
+      "name": "sloth.job.access-token",
+      "type": "java.lang.String",
+      "description": "XXL-Job 访问令牌。"
+    },
+    {
+      "name": "sloth.job.appname",
+      "type": "java.lang.String",
+      "description": "执行器 AppName。"
+    },
+    {
+      "name": "sloth.job.address",
+      "type": "java.lang.String",
+      "description": "执行器地址。"
+    },
+    {
+      "name": "sloth.job.ip",
+      "type": "java.lang.String",
+      "description": "执行器 IP。"
+    },
+    {
+      "name": "sloth.job.port",
+      "type": "java.lang.Integer",
+      "description": "执行器端口。",
+      "defaultValue": 9999
+    },
+    {
+      "name": "sloth.job.log-path",
+      "type": "java.lang.String",
+      "description": "日志路径。",
+      "defaultValue": "./logs/xxl-job"
+    },
+    {
+      "name": "sloth.job.log-retention-days",
+      "type": "java.lang.Integer",
+      "description": "日志保留天数。",
+      "defaultValue": 30
+    },
+    {
+      "name": "sloth.sms.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用短信 Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.sms.type",
+      "type": "java.lang.String",
+      "description": "短信供应商类型。",
+      "defaultValue": "aliyun"
+    },
+    {
+      "name": "sloth.sms.access-key-id",
+      "type": "java.lang.String",
+      "description": "访问 Key Id。"
+    },
+    {
+      "name": "sloth.sms.access-key-secret",
+      "type": "java.lang.String",
+      "description": "访问 Key Secret。"
+    },
+    {
+      "name": "sloth.sms.sign-name",
+      "type": "java.lang.String",
+      "description": "短信签名。"
+    },
+    {
+      "name": "sloth.sms.region-id",
+      "type": "java.lang.String",
+      "description": "区域 ID。",
+      "defaultValue": "cn-hangzhou"
+    },
+    {
+      "name": "sloth.seata.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Seata 分布式事务。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.seata.tx-service-group",
+      "type": "java.lang.String",
+      "description": "事务分组。",
+      "defaultValue": "${spring.application.name}-tx-group"
+    },
+    {
+      "name": "sloth.seata.mode",
+      "type": "java.lang.String",
+      "description": "事务模式。",
+      "defaultValue": "AT"
+    },
+    {
+      "name": "sloth.oss.type",
+      "type": "java.lang.String",
+      "description": "OSS 类型。",
+      "defaultValue": "minio"
+    },
+    {
+      "name": "sloth.oss.endpoint",
+      "type": "java.lang.String",
+      "description": "服务端点。"
+    },
+    {
+      "name": "sloth.oss.access-key",
+      "type": "java.lang.String",
+      "description": "AccessKey。"
+    },
+    {
+      "name": "sloth.oss.secret-key",
+      "type": "java.lang.String",
+      "description": "SecretKey。"
+    },
+    {
+      "name": "sloth.oss.bucket-name",
+      "type": "java.lang.String",
+      "description": "Bucket 名称。"
+    },
+    {
+      "name": "sloth.oss.region",
+      "type": "java.lang.String",
+      "description": "区域。"
+    },
+    {
+      "name": "sloth.oss.domain",
+      "type": "java.lang.String",
+      "description": "访问域名。"
+    },
+    {
+      "name": "sloth.idempotent.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用幂等组件。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.idempotent.timeout",
+      "type": "java.lang.Integer",
+      "description": "超时时间，单位秒。",
+      "defaultValue": 10
+    },
+    {
+      "name": "sloth.idempotent.key-prefix",
+      "type": "java.lang.String",
+      "description": "Key 前缀。",
+      "defaultValue": "idempotent:"
+    },
+    {
+      "name": "sloth.es.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 Elasticsearch Starter。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.es.default-index",
+      "type": "java.lang.String",
+      "description": "默认索引。"
+    },
+    {
+      "name": "sloth.es.timeout",
+      "type": "java.lang.Long",
+      "description": "查询超时时间，单位秒。",
+      "defaultValue": 5
     }
   ],
   "hints": [

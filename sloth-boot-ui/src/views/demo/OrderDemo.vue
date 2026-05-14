@@ -215,7 +215,7 @@ async function handleCancel(id: number) {
     ElMessage.success('取消成功')
     fetchOrders()
   } catch (e: any) {
-    ElMessage.error('取消失败: ' + (e.message || e))
+    ElMessage.error('取消订单失败: ' + (e.message || e))
   }
 }
 
