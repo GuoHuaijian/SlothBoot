@@ -2,6 +2,7 @@ package com.sloth.boot.starter.idempotent.config;
 
 import com.sloth.boot.starter.idempotent.aspect.IdempotentAspect;
 import com.sloth.boot.starter.idempotent.core.TokenIdempotentService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,8 +46,9 @@ public class IdempotentAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public IdempotentAspect enhancedIdempotentAspect(StringRedisTemplate stringRedisTemplate,
-                                                     IdempotentProperties idempotentProperties) {
-        return new IdempotentAspect(stringRedisTemplate, idempotentProperties);
+    public IdempotentAspect idempotentAspect(StringRedisTemplate stringRedisTemplate,
+                                              IdempotentProperties idempotentProperties,
+                                              ObjectProvider<TokenIdempotentService> tokenServiceProvider) {
+        return new IdempotentAspect(stringRedisTemplate, idempotentProperties, tokenServiceProvider.getIfAvailable());
     }
 }

@@ -1,8 +1,10 @@
 package com.sloth.boot.starter.idempotent.core;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -14,6 +16,7 @@ import java.time.Duration;
  * @since 1.0.0
  */
 @RequiredArgsConstructor
+@Slf4j
 public class TokenIdempotentService {
 
     private static final String TOKEN_PREFIX = "token:";
@@ -33,6 +36,7 @@ public class TokenIdempotentService {
             "1",
             Duration.ofSeconds(idempotentProperties.getTimeout())
         );
+        log.debug("幂等令牌创建: token={}", token);
         return token;
     }
 
@@ -43,7 +47,13 @@ public class TokenIdempotentService {
      * @return 是否通过
      */
     public boolean checkToken(String token) {
-        return Boolean.TRUE.equals(stringRedisTemplate.delete(buildTokenKey(token)));
+        if (StrUtil.isBlank(token)) {
+            return false;
+        }
+        String key = buildTokenKey(token);
+        Boolean result = stringRedisTemplate.delete(key);
+        log.debug("幂等令牌消费: token={}, result={}", token, result);
+        return result;
     }
 
     private String buildTokenKey(String token) {

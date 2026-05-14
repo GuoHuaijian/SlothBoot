@@ -1,7 +1,9 @@
 package com.sloth.boot.starter.idempotent.config;
 
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * 幂等配置属性。
@@ -10,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.idempotent")
 public class IdempotentProperties {
 
@@ -21,6 +24,7 @@ public class IdempotentProperties {
     /**
      * 超时时间，单位秒。
      */
+    @Min(1)
     private int timeout = 10;
 
     /**

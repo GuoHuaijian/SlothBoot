@@ -1,5 +1,7 @@
 package com.sloth.boot.common.annotation;
 
+import com.sloth.boot.common.enums.IdempotentType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,4 +31,19 @@ public @interface Idempotent {
      * 幂等 key
      */
     String key() default "";
+
+    /**
+     * 幂等模式
+     */
+    IdempotentType type() default IdempotentType.LOCK;
+
+    /**
+     * 等待锁的时间，单位秒
+     */
+    int waitTime() default 0;
+
+    /**
+     * Token 参数名
+     */
+    String tokenParam() default "idempotentToken";
 }
