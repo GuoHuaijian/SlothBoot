@@ -1,7 +1,8 @@
 package com.sloth.boot.starter.auth.event;
 
-import com.sloth.boot.common.event.BaseEvent;
 import lombok.Getter;
+
+import com.sloth.boot.common.event.BaseEvent;
 
 /**
  * 登录/登出事件。

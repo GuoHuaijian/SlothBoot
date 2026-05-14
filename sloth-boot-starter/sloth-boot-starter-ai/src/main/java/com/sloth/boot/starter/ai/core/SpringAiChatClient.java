@@ -1,12 +1,9 @@
 package com.sloth.boot.starter.ai.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sloth.boot.common.exception.BizException;
-import com.sloth.boot.starter.ai.dto.ChatRequest;
-import com.sloth.boot.starter.ai.dto.ChatResponse;
-import com.sloth.boot.starter.ai.support.AiErrorCode;
-import com.sloth.boot.starter.ai.support.AiPromptTemplate;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.metadata.Usage;
@@ -14,6 +11,12 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
+
+import com.sloth.boot.common.exception.BizException;
+import com.sloth.boot.starter.ai.dto.ChatRequest;
+import com.sloth.boot.starter.ai.dto.ChatResponse;
+import com.sloth.boot.starter.ai.support.AiErrorCode;
+import com.sloth.boot.starter.ai.support.AiPromptTemplate;
 
 /**
  * 基于 Spring AI ChatClient 的统一对话客户端。

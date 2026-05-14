@@ -1,10 +1,10 @@
 package com.sloth.boot.starter.ai.dto;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.util.List;
 import java.util.Map;
+
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * 统一 AI 对话请求。

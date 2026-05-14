@@ -1,15 +1,17 @@
 package com.sloth.boot.starter.auth.filter;
 
-import cn.dev33.satoken.stp.StpUtil;
-import com.sloth.boot.starter.auth.properties.AuthProperties;
+import java.io.IOException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import com.sloth.boot.starter.auth.properties.AuthProperties;
 
 /**
  * Token 续期过滤器。

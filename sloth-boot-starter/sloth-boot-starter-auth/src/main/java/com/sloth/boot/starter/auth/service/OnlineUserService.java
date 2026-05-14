@@ -1,9 +1,9 @@
 package com.sloth.boot.starter.auth.service;
 
+import java.util.List;
+
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 /**
  * 在线用户管理服务。

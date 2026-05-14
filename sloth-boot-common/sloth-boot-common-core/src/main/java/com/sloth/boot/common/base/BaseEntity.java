@@ -1,10 +1,10 @@
 package com.sloth.boot.common.base;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 基础实体类（纯 POJO，不含持久化框架注解）

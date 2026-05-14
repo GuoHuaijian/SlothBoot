@@ -1,11 +1,11 @@
 package com.sloth.boot.common.context;
 
+import java.io.Serializable;
+
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serializable;
 
 /**
  * 追踪上下文

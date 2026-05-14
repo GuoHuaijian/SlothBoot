@@ -4,14 +4,7 @@ import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.listener.SaTokenEventCenter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
-import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
-import com.sloth.boot.starter.auth.handler.DefaultStpInterface;
-import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
-import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
-import com.sloth.boot.starter.auth.properties.AuthProperties;
-import com.sloth.boot.starter.auth.service.DefaultPermissionService;
-import com.sloth.boot.starter.auth.service.OnlineUserService;
-import com.sloth.boot.starter.auth.service.PermissionService;
+
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,6 +17,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
+import com.sloth.boot.starter.auth.handler.DefaultStpInterface;
+import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
+import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
+import com.sloth.boot.starter.auth.properties.AuthProperties;
+import com.sloth.boot.starter.auth.service.DefaultPermissionService;
+import com.sloth.boot.starter.auth.service.OnlineUserService;
+import com.sloth.boot.starter.auth.service.PermissionService;
 
 /**
  * Sa-Token 认证授权自动配置。

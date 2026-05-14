@@ -1,9 +1,7 @@
 package com.sloth.boot.starter.ai.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sloth.boot.starter.ai.core.AiChatClient;
-import com.sloth.boot.starter.ai.core.SpringAiChatClient;
-import com.sloth.boot.starter.ai.function.AiFunctionRegistry;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
@@ -17,6 +15,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.StringUtils;
+
+import com.sloth.boot.starter.ai.core.AiChatClient;
+import com.sloth.boot.starter.ai.core.SpringAiChatClient;
+import com.sloth.boot.starter.ai.function.AiFunctionRegistry;
 
 /**
  * AI Starter 自动配置。

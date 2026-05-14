@@ -1,14 +1,15 @@
 package com.sloth.boot.generator.core;
 
-import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
-import com.sloth.boot.generator.config.GeneratorConfig;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
+
+import com.sloth.boot.generator.config.GeneratorConfig;
 
 /**
  * Sloth Boot 代码生成器。
