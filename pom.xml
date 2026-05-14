@@ -268,8 +268,8 @@
                     <configuration>
                         <configLocation>${maven.multiModuleProjectDirectory}/config/checkstyle/checkstyle.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
-                        <failsOnError>false</failsOnError>
-                        <failOnViolation>false</failOnViolation>
+                        <failsOnError>true</failsOnError>
+                        <failOnViolation>true</failOnViolation>
                         <violationSeverity>warning</violationSeverity>
                         <includeTestSourceRoots>false</includeTestSourceRoots>
                     </configuration>
@@ -284,7 +284,7 @@
                         <effort>Max</effort>
                         <threshold>High</threshold>
                         <excludeFilterFile>${maven.multiModuleProjectDirectory}/config/spotbugs/exclude.xml</excludeFilterFile>
-                        <failOnError>false</failOnError>
+                        <failOnError>true</failOnError>
                     </configuration>
                 </plugin>
             </plugins>
