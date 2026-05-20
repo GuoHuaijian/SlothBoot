@@ -52,11 +52,7 @@ public class RedissonDistributedLock implements DistributedLock {
     public void unlock(String key) {
         RLock lock = redissonClient.getLock(key);
         if (lock.isHeldByCurrentThread()) {
-            try {
-                lock.unlock();
-            } catch (IllegalMonitorStateException e) {
-                log.warn("释放分布式锁失败, 锁可能已过期或已释放, key={}", key, e);
-            }
+            lock.unlock();
         }
     }
 
