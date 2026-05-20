@@ -90,7 +90,7 @@
         <!-- Security -->
         <sa-token.version>1.37.0</sa-token.version>
         <ip2region.version>2.7.0</ip2region.version>
-        <mica-xss.version>3.1.6</mica-xss.version>
+        <mica-xss.version>4.0.2</mica-xss.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
         <jbcrypt.version>0.4</jbcrypt.version>
 
