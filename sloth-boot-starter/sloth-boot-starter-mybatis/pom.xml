@@ -44,5 +44,11 @@
             <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- EncryptTypeHandler 需要 hutool-crypto -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
     </dependencies>
 </project>

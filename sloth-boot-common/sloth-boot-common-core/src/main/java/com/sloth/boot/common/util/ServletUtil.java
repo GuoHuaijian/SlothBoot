@@ -136,7 +136,7 @@ public final class ServletUtil {
     public static Map<String, String[]> getAllRequestParams() {
         HttpServletRequest request = getRequest();
         if (request == null) {
-            return new HashMap<>();
+            return new HashMap<>(2);
         }
         return new HashMap<>(request.getParameterMap());
     }

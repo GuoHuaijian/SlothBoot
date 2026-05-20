@@ -88,7 +88,7 @@
         <!-- 工具类 -->
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
+            <artifactId>hutool-core</artifactId>
         </dependency>
 
         <dependency>

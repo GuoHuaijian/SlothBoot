@@ -8,9 +8,10 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.DisposableBean;
 
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,12 +51,17 @@ public class RedisDelayQueue implements DisposableBean {
      */
     public <T> void subscribe(String queueName, DelayedMessageHandler<T> handler) {
         consumers.computeIfAbsent(queueName, key -> {
-            ExecutorService executorService = Executors.newSingleThreadExecutor(runnable -> {
-                Thread thread = new Thread(runnable);
-                thread.setName("sloth-redis-delay-" + key);
-                thread.setDaemon(true);
-                return thread;
-            });
+            ExecutorService executorService = new ThreadPoolExecutor(
+                    1, 1, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>(1),
+                    runnable -> {
+                        Thread thread = new Thread(runnable);
+                        thread.setName("sloth-redis-delay-" + key);
+                        thread.setDaemon(true);
+                        return thread;
+                    },
+                    new ThreadPoolExecutor.DiscardPolicy()
+            );
             executorService.submit(() -> consume(queueName, handler));
             return executorService;
         });

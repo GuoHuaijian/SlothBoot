@@ -43,5 +43,5 @@ public class BaseMessage implements Serializable {
     /**
      * 扩展头。
      */
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers = new HashMap<>(4);
 }

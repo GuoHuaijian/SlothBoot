@@ -136,7 +136,7 @@ public class DocAutoConfiguration {
      * @return 服务器地址列表
      */
     private List<Server> buildServers(DocProperties docProperties, Environment environment) {
-        List<Server> servers = new ArrayList<>();
+        List<Server> servers = new ArrayList<>(1);
 
         // 优先使用显式配置的 URL
         if (StringUtils.hasText(docProperties.getServerUrl())) {

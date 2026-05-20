@@ -26,9 +26,9 @@ public class WeChatAlarmService extends AbstractWebhookAlarmService {
 
     @Override
     protected Object buildPayload(AlarmMessage message) {
-        Map<String, Object> payload = new HashMap<>();
+        Map<String, Object> payload = new HashMap<>(2);
         payload.put("msgtype", "markdown");
-        Map<String, Object> markdown = new HashMap<>();
+        Map<String, Object> markdown = new HashMap<>(2);
         markdown.put("content", "## " + message.getTitle() + "\n"
             + "> 级别: " + message.getLevel() + "\n"
             + "> 时间: " + message.getTime() + "\n"

@@ -70,7 +70,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
                 log.info("RequestLog: {}", JsonUtil.toJson(buildRequestLog(requestWrapper)));
             }
             if (logProperties.isPrintResponseLog()) {
-                Map<String, Object> responseLog = new HashMap<>(4);
+                Map<String, Object> responseLog = new HashMap<>(2);
                 responseLog.put("status", response.getStatus());
                 responseLog.put("costTime", costTime);
                 responseLog.put("traceId", TraceContext.getTraceId());

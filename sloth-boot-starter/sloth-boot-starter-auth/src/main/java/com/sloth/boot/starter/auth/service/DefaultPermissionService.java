@@ -17,7 +17,7 @@ import java.util.List;
 public class DefaultPermissionService implements PermissionService {
 
     public DefaultPermissionService() {
-        log.warn("[Auth] 未检测到 PermissionService 自定义实现，已使用默认空实现。" + "请实现 PermissionService 接口以启用 RBAC 权限校验。");
+        log.warn("[Auth] 未检测到 PermissionService 自定义实现，已使用默认空实现。请实现 PermissionService 接口以启用 RBAC 权限校验。");
     }
 
     /**

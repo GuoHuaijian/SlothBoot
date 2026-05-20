@@ -148,7 +148,7 @@ public class EsTemplate {
         SearchHits<T> searchHits = elasticsearchOperations.search(nativeQuery, clazz);
         return searchHits.getSearchHits().stream()
             .map(hit -> {
-                Map<String, Object> result = new HashMap<>(4);
+                Map<String, Object> result = new HashMap<>(2);
                 result.put("content", hit.getContent());
                 result.put("highlightFields", hit.getHighlightFields());
                 result.put("score", hit.getScore());
