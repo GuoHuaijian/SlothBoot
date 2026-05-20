@@ -1,5 +1,6 @@
 package com.sloth.boot.common.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,9 +17,8 @@ public class SpringContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    @SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         SpringContextUtil.applicationContext = applicationContext;
     }
 
