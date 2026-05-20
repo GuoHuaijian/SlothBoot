@@ -5,7 +5,7 @@
         <Source name="~.*\$.*"/>
     </Match>
 
-    <!-- 全局排除 EI_EXPOSE_REP / EI_EXPOSE_REP2 -- Spring 项目普遍存储可变对象引用 -->
+    <!-- 全局排除 EI_EXPOSE_REP and EI_EXPOSE_REP2 (Spring 项目普遍存储可变对象引用) -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
     </Match>
@@ -21,24 +21,24 @@
         <Class name="~.*Test\$.*"/>
     </Match>
 
-    <!-- AbstractDecorator: 构造器参数校验抛异常是设计意图 -->
+    <!-- AbstractDecorator: constructor parameter validation throwing is by design -->
     <Match>
         <Bug pattern="CT_CONSTRUCTOR_THROW"/>
         <Class name="com.sloth.boot.common.decorator.AbstractDecorator"/>
     </Match>
 
-    <!-- JsonUtil: 共享 ObjectMapper 单例是有意为之 -->
+    <!-- JsonUtil: shared ObjectMapper singleton is intentional -->
     <Match>
         <Bug pattern="MS_EXPOSE_REP"/>
         <Class name="com.sloth.boot.common.util.JsonUtil"/>
     </Match>
 
-    <!-- Spring ApplicationContext 持有者: 写入 static 字段是标准模式 -->
+    <!-- Spring ApplicationContext holder: writing static field is standard pattern -->
     <Match>
         <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
     </Match>
 
-    <!-- TemplateUtil: 模板属性访问需要宽泛异常捕获 -->
+    <!-- TemplateUtil: template property access requires broad exception catch -->
     <Match>
         <Bug pattern="REC_CATCH_EXCEPTION"/>
         <Class name="com.sloth.boot.common.util.TemplateUtil"/>
