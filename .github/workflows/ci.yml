@@ -22,14 +22,8 @@ jobs:
           java-version: 21
           cache: maven
 
-      - name: Build and Test
+      - name: Build, Test, and Static Analysis
         run: mvn -B -U clean verify
-
-      - name: Checkstyle
-        run: mvn -B checkstyle:check -DskipTests -pl '!sloth-boot-example,!sloth-boot-generator'
-
-      - name: SpotBugs
-        run: mvn -B spotbugs:check -DskipTests -pl '!sloth-boot-example,!sloth-boot-generator'
 
       - name: Upload test results
         if: always()

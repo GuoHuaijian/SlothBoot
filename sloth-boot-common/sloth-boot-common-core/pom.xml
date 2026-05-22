@@ -18,9 +18,9 @@
 
     <parent>
         <groupId>com.sloth.boot</groupId>
-        <artifactId>sloth-boot-common</artifactId>
+        <artifactId>sloth-boot-parent</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../sloth-boot-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>sloth-boot-common-core</artifactId>
