@@ -1,7 +1,7 @@
 /**
  * Excel 数据模型。
  * <p>
- * 定义 Sheet 数据等 Excel 导入导出的数据传输对象。
+ * 提供导入结果、错误详情、Sheet 数据、导出构建器等模型对象。
  *
  * @author sloth-boot
  * @since 1.0.0
