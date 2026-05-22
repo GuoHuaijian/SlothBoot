@@ -8,7 +8,7 @@
 <br/>
 
 [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.1-0A6CFF?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.6-FF6F00?style=flat-square&logo=spring&logoColor=white)](https://spring.io/projects/spring-ai)
 [![Maven](https://img.shields.io/badge/Maven-3.8.1+-C71A36?style=flat-square&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
@@ -88,7 +88,7 @@
 | 层次 | 技术选型 |
 |------|---------|
 | **语言 & 运行时** | Java 21 · Maven 3.8.1+ |
-| **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.1.1 |
+| **核心框架** | Spring Boot 4.0.6 · Spring Cloud 2025.1.1 |
 | **微服务生态** | Spring Cloud Alibaba 2025.1.0.0 · Nacos · Sentinel · Seata |
 | **AI 能力** | Spring AI 1.1.6 · OpenAI · 通义千问 · DeepSeek · Ollama |
 | **数据层** | MyBatis-Plus · MySQL · Elasticsearch |

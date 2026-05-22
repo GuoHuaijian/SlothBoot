@@ -4,7 +4,7 @@ This file applies to the whole repository.
 
 ## Project Context
 
-Sloth Boot is a Java 21, Spring Boot 3, Spring Cloud Alibaba multi-module Maven project. It is a reusable foundation library and starter set, not a business application.
+Sloth Boot is a Java 21, Spring Boot 4, Spring Cloud Alibaba multi-module Maven project. It is a reusable foundation library and starter set, not a business application.
 
 Main module roles:
 
@@ -22,7 +22,7 @@ Main module roles:
 - Do not put business-specific behavior into `common` or generic starters.
 - Public starter behavior must be override-friendly through `@ConditionalOnMissingBean`.
 - All custom configuration properties must use the `sloth.*` namespace.
-- Every Spring Boot 3 auto-configuration class must be registered through `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`.
+- Every Spring Boot 4 auto-configuration class must be registered through `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`.
 - Add or update `spring-configuration-metadata-additional.json` when adding public configuration keys.
 - Avoid hard-coded secrets, tokens, credentials, URLs, tenant IDs, or environment-specific values in source code.
 
