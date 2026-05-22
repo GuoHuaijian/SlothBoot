@@ -1,8 +1,10 @@
 package com.sloth.boot.starter.excel.config;
 
+import com.sloth.boot.starter.excel.properties.ExcelProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * Excel 自动配置。
@@ -13,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
  * @since 1.0.0
  */
 @AutoConfiguration
+@EnableConfigurationProperties(ExcelProperties.class)
 @ConditionalOnClass(name = "com.alibaba.excel.EasyExcel")
 @ConditionalOnProperty(prefix = "sloth.excel", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ExcelAutoConfiguration {

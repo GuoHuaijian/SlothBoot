@@ -1,3 +1,70 @@
 {
-  "properties": []
+  "properties": [
+    {
+      "name": "sloth.excel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用 Excel Starter。"
+    },
+    {
+      "name": "sloth.excel.import-config.batch-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 1000,
+      "description": "每批处理的行数。"
+    },
+    {
+      "name": "sloth.excel.import-config.ignore-errors",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "读取时是否忽略解析异常继续处理。"
+    },
+    {
+      "name": "sloth.excel.import-config.validate",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "是否启用数据校验（集成 Bean Validation）。"
+    },
+    {
+      "name": "sloth.excel.import-config.head-row-number",
+      "type": "java.lang.Integer",
+      "defaultValue": 1,
+      "description": "表头行号（从 1 开始），用于跳过非数据行。"
+    },
+    {
+      "name": "sloth.excel.export-config.default-sheet-name",
+      "type": "java.lang.String",
+      "defaultValue": "Sheet1",
+      "description": "默认 Sheet 名称。"
+    },
+    {
+      "name": "sloth.excel.export-config.auto-size-column",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否自动调整列宽。"
+    },
+    {
+      "name": "sloth.excel.export-config.style.header-background-color",
+      "type": "java.lang.String",
+      "defaultValue": "#F2F2F2",
+      "description": "表头背景色（十六进制 RGB）。"
+    },
+    {
+      "name": "sloth.excel.export-config.style.header-font-color",
+      "type": "java.lang.String",
+      "defaultValue": "#000000",
+      "description": "表头字体颜色（十六进制 RGB）。"
+    },
+    {
+      "name": "sloth.excel.export-config.style.header-font-bold",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "表头字体是否加粗。"
+    },
+    {
+      "name": "sloth.excel.export-config.style.header-font-size",
+      "type": "java.lang.Short",
+      "defaultValue": 11,
+      "description": "表头字体大小。"
+    }
+  ]
 }
