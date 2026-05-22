@@ -24,9 +24,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Getter
-public class EsPageQuery<T> implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class EsPageQuery<T> {
 
     private EsQueryBuilder query;
     private EsQueryBuilder filter;

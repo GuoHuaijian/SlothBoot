@@ -9,7 +9,6 @@ import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.json.JsonData;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,9 +30,7 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 @Getter
-public class EsQueryBuilder implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class EsQueryBuilder {
 
     private final Query query;
 
