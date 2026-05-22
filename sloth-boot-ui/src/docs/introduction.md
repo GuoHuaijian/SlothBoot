@@ -2,7 +2,7 @@
 
 ## Sloth Boot 是什么？
 
-Sloth Boot 是基于 **Spring Boot 3.5 + Spring Cloud 2025 + Spring Cloud Alibaba** 的企业级微服务开发脚手架。
+Sloth Boot 是基于 **Spring Boot 4.0 + Spring Cloud 2025 + Spring Cloud Alibaba** 的企业级微服务开发脚手架。
 
 > **慢工出细活。** 不造平台，只沉淀高频、可复用的工程化基础能力。
 
@@ -19,7 +19,7 @@ Sloth Boot 是基于 **Spring Boot 3.5 + Spring Cloud 2025 + Spring Cloud Alibab
 | 层次 | 技术选型 |
 |------|---------|
 | **语言 & 运行时** | Java 21 · Maven 3.8.1+ |
-| **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.1.1 |
+| **核心框架** | Spring Boot 4.0.6 · Spring Cloud 2025.1.1 |
 | **微服务生态** | Spring Cloud Alibaba 2025.1.0.0 · Nacos · Sentinel · Seata |
 | **AI 能力** | Spring AI 1.1.6 · OpenAI · 通义千问 · DeepSeek · Ollama |
 | **数据层** | MyBatis-Plus · MySQL · Elasticsearch |
@@ -113,7 +113,7 @@ spring:
 
 ### 自动装配
 
-基于 Spring Boot 3.x 的 `AutoConfiguration.imports` 机制：
+基于 Spring Boot 4.x 的 `AutoConfiguration.imports` 机制：
 
 - 每个 starter 都有独立的自动配置类
 - 使用 `@ConditionalOnMissingBean` 允许业务侧覆盖默认实现

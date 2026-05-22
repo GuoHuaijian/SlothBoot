@@ -177,7 +177,7 @@ Sa-Token 登录态校验
 ### 3.1 装配机制
 
 ```text
-Spring Boot 3.x 自动装配
+Spring Boot 4.x 自动装配
        │
        ▼
 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports

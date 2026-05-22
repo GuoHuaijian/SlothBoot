@@ -4,11 +4,11 @@
 
 ### Q: SlothBoot 和 Spring Boot 是什么关系？
 
-SlothBoot 是基于 Spring Boot 3.x + Spring Cloud Alibaba 的企业级开发脚手架，不是 Spring Boot 的替代品。它在 Spring Boot 基础上提供了开箱即用的企业级组件（认证、日志、监控、分布式锁等），减少重复配置。
+SlothBoot 是基于 Spring Boot 4.x + Spring Cloud Alibaba 的企业级开发脚手架，不是 Spring Boot 的替代品。它在 Spring Boot 基础上提供了开箱即用的企业级组件（认证、日志、监控、分布式锁等），减少重复配置。
 
 ### Q: 支持哪些 Java 版本？
 
-SlothBoot 要求 Java 21+。基于 Spring Boot 3.5.x 的最低要求，并利用了 Java 21 的虚拟线程等新特性。
+SlothBoot 要求 Java 21+。基于 Spring Boot 4.0.x 的最低要求，并利用了 Java 21 的虚拟线程等新特性。
 
 ### Q: 如何只使用部分模块？
 
