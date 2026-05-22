@@ -42,7 +42,7 @@ mvn -pl sloth-boot-example/sloth-boot-example-service spring-boot:run
 - `application-dev.yml`
   - 放开发环境数据库和 Redis 配置
 - `bootstrap.yml`
-  - 提供 Spring Boot 3.5 / SCA 2025.x 下的 Nacos 迁移说明模板，不再作为实际加载入口
+  - 提供 Spring Boot 4.0 / SCA 2025.x 下的 Nacos 迁移说明模板，不再作为实际加载入口
 - `logback-spring.xml`
   - 提供控制台、文件和生产环境 JSON 风格日志输出配置
 
