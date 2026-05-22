@@ -5,7 +5,7 @@ import com.sloth.boot.starter.mq.monitor.MQHealthIndicator;
 import com.sloth.boot.starter.mq.producer.MessageProducer;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

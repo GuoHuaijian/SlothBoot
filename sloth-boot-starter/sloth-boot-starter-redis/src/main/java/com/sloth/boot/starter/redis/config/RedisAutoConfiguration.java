@@ -35,7 +35,7 @@ import org.springframework.scripting.support.ResourceScriptSource;
  * @author sloth-boot
  * @since 1.0.0
  */
-@AutoConfiguration(after = org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class)
+@AutoConfiguration(after = org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration.class)
 @ConditionalOnClass({RedisTemplate.class, StringRedisTemplate.class})
 @ConditionalOnProperty(prefix = "sloth.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(RedisProperties.class)

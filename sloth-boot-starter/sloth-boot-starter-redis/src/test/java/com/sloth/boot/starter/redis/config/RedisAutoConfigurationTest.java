@@ -16,7 +16,7 @@ class RedisAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withConfiguration(
-            AutoConfigurations.of(org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
+            AutoConfigurations.of(org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration.class,
                 RedisAutoConfiguration.class))
         .withBean(RedisConnectionFactory.class, () -> mock(RedisConnectionFactory.class));
 

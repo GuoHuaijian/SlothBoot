@@ -2,8 +2,8 @@ package com.sloth.boot.starter.es.monitoring;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@ConditionalOnClass(name = "org.springframework.boot.actuate.health.Health")
+@ConditionalOnClass(name = "org.springframework.boot.health.contributor.Health")
 @RequiredArgsConstructor
 public class EsHealthIndicator extends AbstractHealthIndicator {
 

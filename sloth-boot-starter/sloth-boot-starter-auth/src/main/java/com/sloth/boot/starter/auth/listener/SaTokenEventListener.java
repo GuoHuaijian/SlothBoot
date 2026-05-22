@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.auth.listener;
 
 import cn.dev33.satoken.listener.SaTokenListener;
-import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.sloth.boot.starter.auth.enums.DeviceStrategy;
 import com.sloth.boot.starter.auth.event.LoginEvent;
 import com.sloth.boot.starter.auth.properties.AuthProperties;
@@ -44,7 +44,7 @@ public class SaTokenEventListener implements SaTokenListener {
      * @param loginModel 登录参数
      */
     @Override
-    public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
+    public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginParameter loginModel) {
         String device = loginModel != null ? loginModel.getDevice() : null;
         log.debug("[Auth] 用户登录: loginId={}, device={}", loginId, device);
         publishEvent(loginId, "login", device);
@@ -171,10 +171,11 @@ public class SaTokenEventListener implements SaTokenListener {
      *
      * @param loginType 账号类型
      * @param loginId   用户 ID
+     * @param device    设备标识
      * @param timeout   新的超时时间（秒）
      */
     @Override
-    public void doRenewTimeout(String loginType, Object loginId, long timeout) {
+    public void doRenewTimeout(String loginType, Object loginId, String device, long timeout) {
         // Token 续期，暂不处理
     }
 

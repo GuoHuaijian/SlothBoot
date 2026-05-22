@@ -1,8 +1,8 @@
 package com.sloth.boot.starter.mq.monitor;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
 
 import java.lang.reflect.Method;
 

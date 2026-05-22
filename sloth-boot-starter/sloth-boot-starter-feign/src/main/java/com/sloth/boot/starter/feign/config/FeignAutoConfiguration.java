@@ -5,11 +5,11 @@ import com.sloth.boot.starter.feign.decoder.FeignResponseDecoder;
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
-import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.openfeign.support.FeignHttpMessageConverters;
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class FeignAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(Decoder.class)
-    public Decoder feignResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+    public Decoder feignResponseDecoder(ObjectProvider<FeignHttpMessageConverters> messageConverters) {
         Decoder delegate = new ResponseEntityDecoder(new SpringDecoder(messageConverters));
         return new FeignResponseDecoder(delegate);
     }

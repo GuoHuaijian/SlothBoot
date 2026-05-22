@@ -180,9 +180,9 @@ public class SpringAiChatClient implements AiChatClient {
 
         // 会话记忆
         if (StringUtils.hasText(request.getConversationId()) && chatMemory != null) {
-            spec = spec.advisors(org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor.builder(chatMemory)
-                .conversationId(request.getConversationId())
-                .build());
+            spec = spec.advisors(a -> a
+                .param("conversationId", request.getConversationId())
+                .advisors(org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor.builder(chatMemory).build()));
         }
 
         // 用户消息（支持变量模板渲染）
