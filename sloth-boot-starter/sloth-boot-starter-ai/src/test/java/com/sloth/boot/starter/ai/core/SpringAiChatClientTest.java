@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,6 +45,7 @@ class SpringAiChatClientTest {
         when(promptSpec.system(anyString())).thenReturn(promptSpec);
         when(promptSpec.call()).thenReturn(callSpec);
         when(promptSpec.stream()).thenReturn(streamSpec);
+        when(promptSpec.advisors(any(Consumer.class))).thenReturn(promptSpec);
 
         springAiChatClient = new SpringAiChatClient(chatClient, null, objectMapper);
     }
@@ -157,11 +159,10 @@ class SpringAiChatClientTest {
 
         @Test
         @DisplayName("结构化请求 - 带会话记忆")
+        @SuppressWarnings("unchecked")
         void chatRequest_withConversationId_usesMemory() {
             ChatMemory chatMemory = mock(ChatMemory.class);
             SpringAiChatClient clientWithMemory = new SpringAiChatClient(chatClient, chatMemory, objectMapper);
-
-            when(promptSpec.advisors(any(org.springframework.ai.chat.client.advisor.api.Advisor.class))).thenReturn(promptSpec);
 
             org.springframework.ai.chat.model.ChatResponse springResponse =
                 mock(org.springframework.ai.chat.model.ChatResponse.class);
@@ -181,7 +182,7 @@ class SpringAiChatClientTest {
                 .build();
             clientWithMemory.chat(request);
 
-            verify(promptSpec).advisors(any(org.springframework.ai.chat.client.advisor.api.Advisor.class));
+            verify(promptSpec).advisors(any(Consumer.class));
         }
     }
 
