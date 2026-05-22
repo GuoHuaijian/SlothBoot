@@ -2,14 +2,18 @@ package com.sloth.boot.starter.excel.listener;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.PageReadListener;
+import com.sloth.boot.starter.excel.model.ExcelErrorDetail;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
  * 通用 Excel 读取监听器。
+ * <p>
+ * 支持分批处理、数据缓存、错误收集，以及可配置的批次大小和表头跳行。
  *
  * @param <T> 数据类型
  * @author sloth-boot
@@ -19,16 +23,53 @@ import java.util.function.Consumer;
 public class ExcelReadListener<T> extends PageReadListener<T> {
 
     private final List<T> cachedData = new ArrayList<>();
-    private final List<String> errorRows = new ArrayList<>();
     private final List<String> invalidRows = new ArrayList<>();
+    private final List<ExcelErrorDetail> errorDetails = new ArrayList<>();
+
+    /**
+     * 是否缓存所有读取的数据。为 {@code false} 时仅通过 consumer 处理，不保留全量缓存。
+     */
+    private final boolean cacheData;
 
     /**
      * 构造函数。
      *
+     * @param consumer   分批处理器
+     * @param batchSize  每批处理的行数
+     * @param cacheData  是否缓存所有读取的数据
+     */
+    public ExcelReadListener(Consumer<List<T>> consumer, int batchSize, boolean cacheData) {
+        super(consumer, batchSize);
+        this.cacheData = cacheData;
+    }
+
+    /**
+     * 构造函数（默认缓存数据，批次大小 1000，无分批回调）。
+     * <p>
+     * 适用于仅需收集所有数据、无需分批处理的场景。
+     */
+    public ExcelReadListener() {
+        this(batch -> {
+        }, 1000, true);
+    }
+
+    /**
+     * 构造函数（默认缓存数据，批次大小 1000）。
+     *
      * @param consumer 分批处理器
      */
     public ExcelReadListener(Consumer<List<T>> consumer) {
-        super(consumer, 1000);
+        this(consumer, 1000, true);
+    }
+
+    /**
+     * 构造函数（指定批次大小，默认缓存数据）。
+     *
+     * @param consumer  分批处理器
+     * @param batchSize 每批处理的行数
+     */
+    public ExcelReadListener(Consumer<List<T>> consumer, int batchSize) {
+        this(consumer, batchSize, true);
     }
 
     /**
@@ -39,7 +80,9 @@ public class ExcelReadListener<T> extends PageReadListener<T> {
      */
     @Override
     public void invoke(T data, AnalysisContext context) {
-        cachedData.add(data);
+        if (cacheData) {
+            cachedData.add(data);
+        }
         super.invoke(data, context);
     }
 
@@ -52,7 +95,12 @@ public class ExcelReadListener<T> extends PageReadListener<T> {
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) throws Exception {
-        errorRows.add("row=" + context.readRowHolder().getRowIndex() + ", error=" + exception.getMessage());
+        int rowIndex = context.readRowHolder().getRowIndex();
+        errorDetails.add(ExcelErrorDetail.builder()
+            .errorType(ExcelErrorDetail.ErrorType.PARSE_EXCEPTION)
+            .rowIndex(rowIndex)
+            .message(Objects.toString(exception.getMessage(), ""))
+            .build());
     }
 
     /**
@@ -62,5 +110,14 @@ public class ExcelReadListener<T> extends PageReadListener<T> {
      */
     public void addInvalidRow(String rowMessage) {
         invalidRows.add(rowMessage);
+    }
+
+    /**
+     * 添加错误详情。
+     *
+     * @param detail 错误详情
+     */
+    public void addErrorDetail(ExcelErrorDetail detail) {
+        this.errorDetails.add(detail);
     }
 }
