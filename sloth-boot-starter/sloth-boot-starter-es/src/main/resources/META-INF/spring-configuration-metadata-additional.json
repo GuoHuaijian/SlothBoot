@@ -9,13 +9,60 @@
     {
       "name": "sloth.es.default-index",
       "type": "java.lang.String",
-      "description": "Default elasticsearch index."
+      "description": "Default elasticsearch index name."
     },
     {
       "name": "sloth.es.timeout",
       "type": "java.lang.Long",
       "defaultValue": 5,
-      "description": "Default timeout in seconds."
+      "description": "Default query timeout in seconds."
+    },
+    {
+      "name": "sloth.es.slow-query-threshold",
+      "type": "java.lang.Long",
+      "defaultValue": 3,
+      "description": "Slow query threshold in seconds. Queries exceeding this will log a WARN."
+    },
+    {
+      "name": "sloth.es.bulk-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 1000,
+      "description": "Batch size for bulk operations."
+    },
+    {
+      "name": "sloth.es.scroll-size",
+      "type": "java.lang.Integer",
+      "defaultValue": 500,
+      "description": "Batch size for scroll queries."
+    },
+    {
+      "name": "sloth.es.scroll-keep-alive",
+      "type": "java.lang.String",
+      "defaultValue": "1m",
+      "description": "Scroll context keep alive time."
+    },
+    {
+      "name": "sloth.es.index-prefix",
+      "type": "java.lang.String",
+      "description": "Global index name prefix."
+    },
+    {
+      "name": "sloth.es.index-date-format",
+      "type": "java.lang.String",
+      "defaultValue": "yyyy.MM.dd",
+      "description": "Date format for time-based index suffix."
+    },
+    {
+      "name": "sloth.es.audit-log-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to enable audit logging for write operations."
+    },
+    {
+      "name": "sloth.es.retry-on-conflict",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "Number of retries on update conflict."
     }
   ]
 }

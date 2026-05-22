@@ -1,35 +1,54 @@
 package com.sloth.boot.starter.es.config;
 
 import com.sloth.boot.starter.es.core.EsTemplate;
+import com.sloth.boot.starter.es.index.EsAliasManager;
+import com.sloth.boot.starter.es.monitoring.EsSlowQueryLogger;
+import com.sloth.boot.starter.es.support.EsIndexNameResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 /**
  * Elasticsearch 自动配置。
+ * <p>
+ * 注册 EsTemplate、EsIndexNameResolver 等核心 Bean。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnClass(ElasticsearchOperations.class)
+@ConditionalOnClass(ElasticsearchTemplate.class)
 @ConditionalOnProperty(prefix = "sloth.es", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(EsProperties.class)
 public class EsAutoConfiguration {
 
-    /**
-     * 注册 ES 模板。
-     *
-     * @param elasticsearchOperations Elasticsearch 操作类
-     * @return ES 模板
-     */
     @Bean
     @ConditionalOnMissingBean
-    public EsTemplate esTemplate(ElasticsearchOperations elasticsearchOperations) {
-        return new EsTemplate(elasticsearchOperations);
+    public EsTemplate esTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
+        return new EsTemplate(elasticsearchTemplate, esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EsIndexNameResolver esIndexNameResolver(EsProperties esProperties) {
+        return new EsIndexNameResolver(esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.es", name = "slow-query-threshold")
+    public EsSlowQueryLogger esSlowQueryLogger(EsProperties esProperties) {
+        return new EsSlowQueryLogger(esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EsAliasManager esAliasManager(ElasticsearchOperations elasticsearchOperations) {
+        return new EsAliasManager(elasticsearchOperations);
     }
 }
