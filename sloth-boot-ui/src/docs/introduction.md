@@ -19,9 +19,9 @@ Sloth Boot 是基于 **Spring Boot 3.5 + Spring Cloud 2025 + Spring Cloud Alibab
 | 层次 | 技术选型 |
 |------|---------|
 | **语言 & 运行时** | Java 21 · Maven 3.8.1+ |
-| **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.0.0 |
-| **微服务生态** | Spring Cloud Alibaba 2025.0.0.0 · Nacos · Sentinel · Seata |
-| **AI 能力** | Spring AI 1.1.4 · OpenAI · 通义千问 · DeepSeek · Ollama |
+| **核心框架** | Spring Boot 3.5.0 · Spring Cloud 2025.1.1 |
+| **微服务生态** | Spring Cloud Alibaba 2025.1.0.0 · Nacos · Sentinel · Seata |
+| **AI 能力** | Spring AI 1.1.6 · OpenAI · 通义千问 · DeepSeek · Ollama |
 | **数据层** | MyBatis-Plus · MySQL · Elasticsearch |
 | **缓存 & 消息** | Redis · RocketMQ |
 | **任务 & 文件** | XXL-Job · MinIO · 阿里云 OSS |

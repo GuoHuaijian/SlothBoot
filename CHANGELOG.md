@@ -87,6 +87,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - 示例服务添加优雅停机配置（`server.shutdown=graceful`）
 - 消除 14 个重复文件（11 个 Jackson 序列化器 + 3 个 Feign 异常类）
 - CI 流水线新增 Checkstyle、SpotBugs、Spotless 检查
+- 升级依赖版本：Spring Cloud `2025.0.0` → `2025.1.1`、Spring Cloud Alibaba `2025.0.0.0` → `2025.1.0.0`
+- 升级依赖版本：Spring AI `1.1.4` → `1.1.6`、EasyExcel `3.3.4` → `4.0.3`、MapStruct `1.5.5.Final` → `1.6.3`
+- 升级依赖版本：Sa-Token `1.37.0` → `1.45.0`、Ip2region `2.7.0` → `3.3.7`、Mica XSS `3.1.6` → `4.0.2`
+- 升级 Maven 插件：`maven-compiler-plugin` `3.11.0` → `3.15.0`、`native-maven-plugin` `0.10.4` → `1.1.0`
+- 升级 CI：`actions/checkout` v4 → v6、`actions/setup-java` v4 → v5、`actions/upload-artifact` v4 → v7
 
 ## [1.0.0-SNAPSHOT] - 2026-04-23
 

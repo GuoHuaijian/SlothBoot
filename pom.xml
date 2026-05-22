@@ -57,9 +57,9 @@
 
         <!-- Spring Boot -->
         <spring-boot.version>3.5.0</spring-boot.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <spring-cloud-alibaba.version>2025.0.0.0</spring-cloud-alibaba.version>
-        <spring-ai.version>1.1.4</spring-ai.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
+        <spring-ai.version>1.1.6</spring-ai.version>
 
         <!-- Database -->
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
@@ -74,12 +74,12 @@
         <!-- Tools -->
         <knife4j.version>4.5.0</knife4j.version>
         <xxl-job.version>2.4.1</xxl-job.version>
-        <easyexcel.version>3.3.4</easyexcel.version>
+        <easyexcel.version>4.0.3</easyexcel.version>
         <hutool.version>5.8.26</hutool.version>
         <hutool-core.version>${hutool.version}</hutool-core.version>
         <hutool-crypto.version>${hutool.version}</hutool-crypto.version>
         <guava.version>33.0.0-jre</guava.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.38</lombok.version>
         <ttl.version>2.14.5</ttl.version>
 
@@ -88,9 +88,9 @@
         <aliyun-oss.version>3.17.4</aliyun-oss.version>
 
         <!-- Security -->
-        <sa-token.version>1.37.0</sa-token.version>
-        <ip2region.version>2.7.0</ip2region.version>
-        <mica-xss.version>3.1.6</mica-xss.version>
+        <sa-token.version>1.45.0</sa-token.version>
+        <ip2region.version>3.3.7</ip2region.version>
+        <mica-xss.version>4.0.2</mica-xss.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
         <jbcrypt.version>0.4</jbcrypt.version>
 
@@ -98,7 +98,7 @@
         <velocity-engine.version>2.4.1</velocity-engine.version>
 
         <!-- Plugins -->
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
@@ -107,7 +107,7 @@
         <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
 
         <!-- GraalVM Native Image -->
-        <native-maven-plugin.version>0.10.4</native-maven-plugin.version>
+        <native-maven-plugin.version>1.1.0</native-maven-plugin.version>
 
         <!-- Code Quality -->
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
