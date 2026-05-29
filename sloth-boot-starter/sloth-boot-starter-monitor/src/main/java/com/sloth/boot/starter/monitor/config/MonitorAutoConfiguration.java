@@ -10,6 +10,7 @@ import com.sloth.boot.starter.monitor.health.NacosHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RedisHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
 import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
+import com.sloth.boot.starter.monitor.event.SlowOperationEventListener;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
 import com.sloth.boot.starter.monitor.metrics.JvmMetricsConfig;
 import com.sloth.boot.starter.monitor.service.JvmInfoService;
@@ -140,6 +141,21 @@ public class MonitorAutoConfiguration {
         registrationBean.addUrlPatterns("/*");
         registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE - 10);
         return registrationBean;
+    }
+
+    /**
+     * 注册慢操作事件监听器。
+     *
+     * @param meterRegistry        指标注册中心
+     * @param alarmServiceProvider 告警服务提供者
+     * @return 慢操作事件监听器
+     */
+    @Bean
+    @ConditionalOnClass(name = "com.sloth.boot.common.log.event.SlowOperationEvent")
+    @ConditionalOnMissingBean
+    public SlowOperationEventListener slowOperationEventListener(MeterRegistry meterRegistry,
+                                                                  ObjectProvider<AlarmService> alarmServiceProvider) {
+        return new SlowOperationEventListener(meterRegistry, alarmServiceProvider);
     }
 
     /**
