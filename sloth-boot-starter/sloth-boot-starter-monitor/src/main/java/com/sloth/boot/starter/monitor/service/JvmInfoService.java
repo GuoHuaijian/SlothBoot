@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.monitor.service;
 
 import com.sloth.boot.starter.monitor.model.JvmInfo;
-import org.springframework.stereotype.Service;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Service
 public class JvmInfoService {
 
     /**
