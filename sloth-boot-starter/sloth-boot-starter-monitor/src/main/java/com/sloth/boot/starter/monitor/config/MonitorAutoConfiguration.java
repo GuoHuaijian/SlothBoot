@@ -10,6 +10,7 @@ import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
 import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
 import com.sloth.boot.starter.monitor.metrics.JvmMetricsConfig;
+import com.sloth.boot.starter.monitor.service.JvmInfoService;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
@@ -182,6 +183,17 @@ public class MonitorAutoConfiguration {
     @ConditionalOnMissingBean
     public BusinessMetrics businessMetrics(MeterRegistry meterRegistry) {
         return new BusinessMetrics(meterRegistry);
+    }
+
+    /**
+     * 注册 JVM 信息采集服务。
+     *
+     * @return JVM 信息采集服务
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public JvmInfoService jvmInfoService() {
+        return new JvmInfoService();
     }
 
     /**
