@@ -11,6 +11,7 @@ import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
 import com.sloth.boot.starter.monitor.metrics.JvmMetricsConfig;
 import com.sloth.boot.starter.monitor.service.JvmInfoService;
+import com.sloth.boot.starter.monitor.service.MetricsSummaryService;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
@@ -194,6 +195,18 @@ public class MonitorAutoConfiguration {
     @ConditionalOnMissingBean
     public JvmInfoService jvmInfoService() {
         return new JvmInfoService();
+    }
+
+    /**
+     * 注册指标汇总服务。
+     *
+     * @param meterRegistry 指标注册中心
+     * @return 指标汇总服务
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public MetricsSummaryService metricsSummaryService(MeterRegistry meterRegistry) {
+        return new MetricsSummaryService(meterRegistry);
     }
 
     /**
