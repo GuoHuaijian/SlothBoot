@@ -57,6 +57,12 @@
       "type": "java.lang.Double",
       "defaultValue": 90.0,
       "description": "磁盘使用率告警阈值（百分比），超过此值触发告警。"
+    },
+    {
+      "name": "sloth.monitor.collect-interval",
+      "type": "java.lang.Long",
+      "defaultValue": 60000,
+      "description": "系统资源采集间隔（毫秒）。"
     }
   ],
   "hints": [

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.monitor.config;
 import com.sloth.boot.starter.monitor.alarm.AlarmService;
 import com.sloth.boot.starter.monitor.alarm.DingTalkAlarmService;
 import com.sloth.boot.starter.monitor.alarm.WeChatAlarmService;
+import com.sloth.boot.starter.monitor.collector.SystemResourceCollector;
 import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.JvmInfoEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.MetricsSummaryEndpoint;
@@ -30,9 +31,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
@@ -281,5 +284,31 @@ public class MonitorAutoConfiguration {
                 return bean;
             }
         };
+    }
+
+    /**
+     * 注册系统资源采集器。
+     *
+     * @param monitorProperties    监控配置
+     * @param alarmServiceProvider 告警服务提供者
+     * @param meterRegistry        指标注册中心
+     * @return 系统资源采集器
+     */
+    @Bean
+    @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnMissingBean
+    public SystemResourceCollector systemResourceCollector(MonitorProperties monitorProperties,
+                                                           ObjectProvider<AlarmService> alarmServiceProvider,
+                                                           MeterRegistry meterRegistry) {
+        return new SystemResourceCollector(monitorProperties, alarmServiceProvider, meterRegistry);
+    }
+
+    /**
+     * 启用定时任务支持。
+     */
+    @Configuration(proxyBeanMethods = false)
+    @EnableScheduling
+    @ConditionalOnProperty(prefix = "sloth.monitor", name = "enabled", havingValue = "true", matchIfMissing = true)
+    static class SchedulingConfiguration {
     }
 }
