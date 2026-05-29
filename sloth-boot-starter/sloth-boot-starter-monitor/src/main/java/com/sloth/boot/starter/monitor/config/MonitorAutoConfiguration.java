@@ -4,6 +4,8 @@ import com.sloth.boot.starter.monitor.alarm.AlarmService;
 import com.sloth.boot.starter.monitor.alarm.DingTalkAlarmService;
 import com.sloth.boot.starter.monitor.alarm.WeChatAlarmService;
 import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
+import com.sloth.boot.starter.monitor.endpoint.JvmInfoEndpoint;
+import com.sloth.boot.starter.monitor.endpoint.MetricsSummaryEndpoint;
 import com.sloth.boot.starter.monitor.health.NacosHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RedisHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
@@ -167,6 +169,32 @@ public class MonitorAutoConfiguration {
     }
 
     /**
+     * 注册 JVM 信息端点。
+     *
+     * @param jvmInfoService JVM 信息采集服务
+     * @return JVM 信息端点
+     */
+    @Bean
+    @ConditionalOnClass(Endpoint.class)
+    @ConditionalOnMissingBean
+    public JvmInfoEndpoint jvmInfoEndpoint(JvmInfoService jvmInfoService) {
+        return new JvmInfoEndpoint(jvmInfoService);
+    }
+
+    /**
+     * 注册指标汇总端点。
+     *
+     * @param metricsSummaryService 指标汇总服务
+     * @return 指标汇总端点
+     */
+    @Bean
+    @ConditionalOnClass(Endpoint.class)
+    @ConditionalOnMissingBean
+    public MetricsSummaryEndpoint metricsSummaryEndpoint(MetricsSummaryService metricsSummaryService) {
+        return new MetricsSummaryEndpoint(metricsSummaryService);
+    }
+
+    /**
      * 自定义 Actuator 端点暴露配置。
      *
      * @return Bean 后处理器
@@ -230,6 +258,8 @@ public class MonitorAutoConfiguration {
                     includes.add("prometheus");
                     includes.add("threadPools");
                     includes.add("appInfo");
+                    includes.add("jvmInfo");
+                    includes.add("metricsSummary");
                     webEndpointProperties.getExposure().setInclude(includes);
                 }
                 return bean;
