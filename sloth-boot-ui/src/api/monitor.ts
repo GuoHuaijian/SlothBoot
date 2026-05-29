@@ -32,6 +32,9 @@ export const monitorApi = {
   getHealth: () =>
     request.get('/api/monitor/health') as Promise<Record<string, any>>,
 
+  getSystemResources: () =>
+    request.get('/actuator/systemResources') as Promise<Record<string, any>>,
+
   triggerSlowApi: () =>
     request.get('/api/monitor/slow-api', { timeout: 10000 }) as Promise<string>,
 }

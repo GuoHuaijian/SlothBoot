@@ -1,6 +1,7 @@
 package com.sloth.boot.example.controller.monitor;
 
 import com.sloth.boot.common.result.R;
+import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
 import com.sloth.boot.starter.monitor.model.JvmInfo;
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import com.sloth.boot.example.service.monitor.MonitorDemoService;
@@ -25,6 +26,13 @@ import java.util.Map;
 public class MonitorController {
 
     private final MonitorDemoService monitorService;
+    private final InfoEndpoint infoEndpoint;
+
+    @Operation(summary = "应用信息", description = "获取应用名称、版本、构建信息、部署环境、JDK、主机等详细信息")
+    @GetMapping("/app-info")
+    public R<Map<String, Object>> appInfo() {
+        return R.ok(infoEndpoint.info());
+    }
 
     @Operation(summary = "JVM 信息", description = "获取 JVM 内存、线程、GC 等详细指标")
     @GetMapping("/jvm")
