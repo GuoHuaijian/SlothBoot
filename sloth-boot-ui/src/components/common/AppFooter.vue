@@ -15,7 +15,7 @@
         </div>
         <div class="link-group">
           <h4 class="link-title">在线体验</h4>
-          <router-link to="/demo/system">系统管理</router-link>
+          <router-link to="/demo/auth">认证授权</router-link>
           <router-link to="/demo/ai">AI 助手</router-link>
           <router-link to="/demo/monitor">系统监控</router-link>
         </div>

@@ -17,7 +17,7 @@ interface NavLink {
 const links: NavLink[] = [
   { label: '首页', path: '/' },
   { label: '模块', path: '/modules' },
-  { label: '在线体验', path: '/demo/system' },
+  { label: '在线体验', path: '/demo/auth' },
   { label: '文档', path: '/docs/architecture' },
 ]
 
