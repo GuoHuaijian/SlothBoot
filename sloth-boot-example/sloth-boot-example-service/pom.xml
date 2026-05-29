@@ -72,6 +72,12 @@
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-starter-idempotent</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-excel</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -87,6 +93,18 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- 内嵌 Redis，示例模块零外部依赖启动 -->
+        <dependency>
+            <groupId>com.github.kstyrc</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>0.6</version>
+        </dependency>
 
     </dependencies>
 

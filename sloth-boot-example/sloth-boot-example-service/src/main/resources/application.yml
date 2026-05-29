@@ -48,11 +48,11 @@ spring:
     console:
       enabled: true
       path: /h2-console
-  # Redis 连接配置
+  # Redis 连接配置（默认使用内嵌 Redis 端口 16379，可通过环境变量切换为外部 Redis）
   data:
     redis:
       host: ${REDIS_HOST:127.0.0.1}
-      port: ${REDIS_PORT:6379}
+      port: ${REDIS_PORT:16379}
       database: ${REDIS_DATABASE:0}
       timeout: 5s
   jackson:
