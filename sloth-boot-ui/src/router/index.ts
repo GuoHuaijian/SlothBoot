@@ -15,9 +15,9 @@ const router = createRouter({
       path: '/demo',
       component: () => import('@/layouts/DemoLayout.vue'),
       children: [
-        { path: 'system', name: 'DemoSystem', component: () => import('@/views/demo/SystemDemo.vue'), meta: { title: '系统管理' } },
-        { path: 'product', name: 'DemoProduct', component: () => import('@/views/demo/ProductDemo.vue'), meta: { title: '商品管理' } },
-        { path: 'order', name: 'DemoOrder', component: () => import('@/views/demo/OrderDemo.vue'), meta: { title: '订单管理' } },
+        { path: 'auth', name: 'DemoAuth', component: () => import('@/views/demo/AuthDemo.vue'), meta: { title: '认证授权' } },
+        { path: 'entity', name: 'DemoEntity', component: () => import('@/views/demo/EntityDemo.vue'), meta: { title: '数据实体' } },
+        { path: 'redis', name: 'DemoRedis', component: () => import('@/views/demo/RedisDemo.vue'), meta: { title: 'Redis 能力' } },
         { path: 'ai', name: 'DemoAi', component: () => import('@/views/demo/AiDemo.vue'), meta: { title: 'AI 助手' } },
         { path: 'security', name: 'DemoSecurity', component: () => import('@/views/demo/SecurityDemo.vue'), meta: { title: '安全工具' } },
         { path: 'monitor', name: 'DemoMonitor', component: () => import('@/views/demo/MonitorDemo.vue'), meta: { title: '系统监控' } },

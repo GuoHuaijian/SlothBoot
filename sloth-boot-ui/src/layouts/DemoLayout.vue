@@ -4,18 +4,18 @@ import AppNavbar from '@/components/common/AppNavbar.vue'
 import {
   Setting,
   Goods,
-  Document,
   ChatDotRound,
   Lock,
   Monitor,
+  UserFilled,
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
 
 const menuItems = [
-  { index: '/demo/system', icon: Setting, label: '系统管理' },
-  { index: '/demo/product', icon: Goods, label: '商品管理' },
-  { index: '/demo/order', icon: Document, label: '订单管理' },
+  { index: '/demo/auth', icon: Setting, label: '认证授权' },
+  { index: '/demo/entity', icon: UserFilled, label: '数据实体' },
+  { index: '/demo/redis', icon: Goods, label: 'Redis 能力' },
   { index: '/demo/ai', icon: ChatDotRound, label: 'AI 助手' },
   { index: '/demo/security', icon: Lock, label: '安全工具' },
   { index: '/demo/monitor', icon: Monitor, label: '系统监控' },
