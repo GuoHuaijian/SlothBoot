@@ -111,17 +111,24 @@ public class MonitorAutoConfiguration {
     }
 
     /**
-     * 注册 RocketMQ 健康检查器。
-     *
-     * @param rocketMQTemplate RocketMQTemplate
-     * @return 健康检查器
+     * RocketMQ 健康检查配置（仅当 RocketMQ 在 classpath 上时加载）。
      */
-    @Bean
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
-    @ConditionalOnBean(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
-    @ConditionalOnMissingBean(name = "rocketMQHealthIndicator")
-    public RocketMQHealthIndicator rocketMQHealthIndicator(Object rocketMQTemplate) {
-        return new RocketMQHealthIndicator(rocketMQTemplate);
+    static class RocketMQHealthConfiguration {
+
+        /**
+         * 注册 RocketMQ 健康检查器。
+         *
+         * @param rocketMQTemplate RocketMQTemplate
+         * @return 健康检查器
+         */
+        @Bean
+        @ConditionalOnBean(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
+        @ConditionalOnMissingBean(name = "rocketMQHealthIndicator")
+        public RocketMQHealthIndicator rocketMQHealthIndicator(org.apache.rocketmq.spring.core.RocketMQTemplate rocketMQTemplate) {
+            return new RocketMQHealthIndicator(rocketMQTemplate);
+        }
     }
 
     /**
