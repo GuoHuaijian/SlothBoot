@@ -1,11 +1,11 @@
 <template>
-  <div class="system-demo">
-    <!-- 登录面板 -->
+  <div class="auth-demo">
+    <!-- 登录/登出面板 -->
     <el-card class="section-card" shadow="hover">
       <template #header>
-        <span class="section-title">登录面板</span>
+        <span class="section-title">登录/登出</span>
       </template>
-      <el-form :inline="true" :model="loginForm" :rules="loginRules" ref="loginFormRef" label-width="80px">
+      <el-form :inline="true" :model="loginForm" label-width="80px">
         <el-form-item label="用户ID">
           <el-input-number v-model="loginForm.userId" :min="1" />
         </el-form-item>
@@ -16,10 +16,13 @@
           <el-button type="primary" :loading="loginLoading" @click="handleLogin">
             登录
           </el-button>
+          <el-button type="danger" :loading="logoutLoading" @click="handleLogout">
+            登出
+          </el-button>
         </el-form-item>
       </el-form>
-      <div v-if="loginResult" class="result-area">
-        <el-tag type="success" size="large">Token: {{ loginResult.token }}</el-tag>
+      <div v-if="authStore.token" class="result-area">
+        <el-tag type="success" size="large">Token: {{ authStore.token }}</el-tag>
       </div>
     </el-card>
 
@@ -29,7 +32,7 @@
         <span class="section-title">当前用户</span>
       </template>
       <el-button type="primary" :loading="userLoading" @click="fetchCurrentUser">
-        获取信息
+        获取当前用户信息
       </el-button>
       <el-descriptions v-if="currentUser" :column="2" border class="mt-16">
         <el-descriptions-item label="ID">{{ currentUser.id }}</el-descriptions-item>
@@ -45,53 +48,14 @@
       </el-descriptions>
     </el-card>
 
-    <!-- 用户列表 -->
+    <!-- 权限校验 -->
     <el-card class="section-card" shadow="hover">
       <template #header>
-        <span class="section-title">用户列表</span>
-      </template>
-      <el-button type="primary" :loading="usersLoading" @click="fetchUsers" class="mb-16">
-        加载用户列表
-      </el-button>
-      <el-skeleton :rows="5" animated :loading="usersLoading">
-        <template #default>
-          <el-table :data="paginatedUsers" border stripe empty-text="暂无用户数据，点击上方按钮加载">
-            <el-table-column prop="id" label="ID" width="80" />
-            <el-table-column prop="username" label="用户名" />
-            <el-table-column prop="phone" label="手机号" />
-            <el-table-column prop="idCard" label="身份证" />
-            <el-table-column prop="email" label="邮箱" />
-            <el-table-column label="角色">
-              <template #default="{ row }">
-                <el-tag v-for="role in row.roles" :key="role" size="small" class="mr-8">
-                  {{ role }}
-                </el-tag>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            v-if="users.length > 10"
-            v-model:current-page="userPage"
-            :page-size="10"
-            :total="users.length"
-            layout="prev, pager, next"
-            class="mt-16"
-          />
-        </template>
-      </el-skeleton>
-    </el-card>
-
-    <!-- 权限测试 -->
-    <el-card class="section-card" shadow="hover">
-      <template #header>
-        <span class="section-title">权限测试</span>
+        <span class="section-title">权限校验</span>
       </template>
       <el-space wrap>
         <el-button type="warning" :loading="permLoading" @click="testPermission">
           测试 user:view 权限
-        </el-button>
-        <el-button type="danger" :loading="logoutLoading" @click="handleLogout">
-          登出
         </el-button>
       </el-space>
       <el-alert
@@ -103,26 +67,48 @@
         class="mt-16"
       />
     </el-card>
+
+    <!-- 数据权限 -->
+    <el-card class="section-card" shadow="hover">
+      <template #header>
+        <span class="section-title">数据权限</span>
+      </template>
+      <el-button type="primary" :loading="scopeLoading" @click="testDataScope">
+        查询数据权限范围
+      </el-button>
+      <el-alert
+        v-if="scopeResult"
+        :title="scopeResult"
+        :type="scopeResultType"
+        show-icon
+        :closable="false"
+        class="mt-16"
+      />
+    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { systemApi } from '@/api/system'
+import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth'
-import type { UserVO, LoginResponse } from '@/api/types'
+
+interface UserVO {
+  id: number
+  username: string
+  phone: string
+  idCard: string
+  email: string
+  roles: string[]
+}
 
 const authStore = useAuthStore()
 
-// 登录面板
-const loginFormRef = ref()
-const loginRules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }]
-}
+// 登录/登出
 const loginForm = reactive({ userId: 1, username: 'admin' })
 const loginLoading = ref(false)
-const loginResult = ref<LoginResponse | null>(null)
+const logoutLoading = ref(false)
 
 async function handleLogin() {
   if (!loginForm.username.trim()) {
@@ -131,14 +117,29 @@ async function handleLogin() {
   }
   loginLoading.value = true
   try {
-    const res = await systemApi.login(loginForm.userId, loginForm.username)
-    loginResult.value = res
+    const res: any = await authApi.login({ userId: loginForm.userId, username: loginForm.username })
     authStore.setAuth({ token: res.token, userId: res.userId, username: res.username })
     ElMessage.success('登录成功')
   } catch (e: any) {
     ElMessage.error('登录失败: ' + (e.message || e))
   } finally {
     loginLoading.value = false
+  }
+}
+
+async function handleLogout() {
+  logoutLoading.value = true
+  try {
+    await authApi.logout()
+    authStore.clearAuth()
+    currentUser.value = null
+    permResult.value = ''
+    scopeResult.value = ''
+    ElMessage.success('登出成功')
+  } catch (e: any) {
+    ElMessage.error('登出失败: ' + (e.message || e))
+  } finally {
+    logoutLoading.value = false
   }
 }
 
@@ -149,7 +150,7 @@ const currentUser = ref<UserVO | null>(null)
 async function fetchCurrentUser() {
   userLoading.value = true
   try {
-    currentUser.value = await systemApi.getCurrentUser()
+    currentUser.value = await authApi.getCurrentUser() as any
   } catch (e: any) {
     ElMessage.error('获取用户信息失败: ' + (e.message || e))
   } finally {
@@ -157,37 +158,16 @@ async function fetchCurrentUser() {
   }
 }
 
-// 用户列表
-const usersLoading = ref(false)
-const users = ref<UserVO[]>([])
-const userPage = ref(1)
-const paginatedUsers = computed(() => {
-  const start = (userPage.value - 1) * 10
-  return users.value.slice(start, start + 10)
-})
-
-async function fetchUsers() {
-  usersLoading.value = true
-  try {
-    users.value = await systemApi.getUsers()
-  } catch (e: any) {
-    ElMessage.error('获取用户列表失败: ' + (e.message || e))
-  } finally {
-    usersLoading.value = false
-  }
-}
-
-// 权限测试
+// 权限校验
 const permLoading = ref(false)
-const logoutLoading = ref(false)
 const permResult = ref('')
 const permResultType = ref<'success' | 'warning' | 'info' | 'error'>('info')
 
 async function testPermission() {
   permLoading.value = true
   try {
-    const res = await systemApi.getPermissions()
-    permResult.value = res
+    const res = await authApi.getPermissions()
+    permResult.value = res as any
     permResultType.value = 'success'
   } catch (e: any) {
     permResult.value = '权限测试失败: ' + (e.message || e)
@@ -197,27 +177,28 @@ async function testPermission() {
   }
 }
 
-async function handleLogout() {
-  logoutLoading.value = true
+// 数据权限
+const scopeLoading = ref(false)
+const scopeResult = ref('')
+const scopeResultType = ref<'success' | 'warning' | 'info' | 'error'>('info')
+
+async function testDataScope() {
+  scopeLoading.value = true
   try {
-    await systemApi.logout()
-    authStore.clearAuth()
-    permResult.value = '已登出'
-    permResultType.value = 'warning'
-    loginResult.value = null
-    currentUser.value = null
-    users.value = []
-    ElMessage.success('登出成功')
+    const res = await authApi.getDataScope()
+    scopeResult.value = res as any
+    scopeResultType.value = 'success'
   } catch (e: any) {
-    ElMessage.error('登出失败: ' + (e.message || e))
+    scopeResult.value = '数据权限查询失败: ' + (e.message || e)
+    scopeResultType.value = 'error'
   } finally {
-    logoutLoading.value = false
+    scopeLoading.value = false
   }
 }
 </script>
 
 <style scoped>
-.system-demo {
+.auth-demo {
   padding: 0;
   font-family: var(--font-body);
 }
@@ -249,14 +230,7 @@ async function handleLogout() {
 .mt-16 {
   margin-top: 16px;
 }
-.mb-16 {
-  margin-bottom: 16px;
-}
 .mr-8 {
   margin-right: 8px;
-}
-:deep(.el-pagination) {
-  margin-top: 16px;
-  justify-content: flex-end;
 }
 </style>
