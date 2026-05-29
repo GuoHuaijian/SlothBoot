@@ -46,6 +46,7 @@ public class InfoEndpoint {
         info.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()).toString());
         info.put("jdkVersion", System.getProperty("java.version"));
         info.put("springBootVersion", SpringBootVersion.getVersion());
+        info.put("availableProcessors", Runtime.getRuntime().availableProcessors());
         return info;
     }
 }
