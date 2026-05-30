@@ -1,11 +1,9 @@
 package com.sloth.boot.common.util.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 import com.sloth.boot.common.enums.IBaseEnum;
-
-import java.io.IOException;
 
 /**
  * IBaseEnum 反序列化器
@@ -15,14 +13,14 @@ import java.io.IOException;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class IBaseEnumDeserializer extends JsonDeserializer<IBaseEnum> {
+public class IBaseEnumDeserializer extends ValueDeserializer<IBaseEnum> {
 
     @Override
-    public IBaseEnum deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public IBaseEnum deserialize(JsonParser p, DeserializationContext ctxt) {
         int code = p.getIntValue();
         Class<?> enumClass = ctxt.getContextualType().getRawClass();
         if (!enumClass.isEnum() || !IBaseEnum.class.isAssignableFrom(enumClass)) {
-            throw new IOException("类型不是 IBaseEnum 枚举: " + enumClass.getName());
+            throw new IllegalArgumentException("类型不是 IBaseEnum 枚举: " + enumClass.getName());
         }
 
         Object[] enumConstants = enumClass.getEnumConstants();
@@ -32,6 +30,6 @@ public class IBaseEnumDeserializer extends JsonDeserializer<IBaseEnum> {
                 return baseEnum;
             }
         }
-        throw new IOException("枚举 " + enumClass.getName() + " 中没有值为 " + code + " 的枚举");
+        throw new IllegalArgumentException("枚举 " + enumClass.getName() + " 中没有值为 " + code + " 的枚举");
     }
 }

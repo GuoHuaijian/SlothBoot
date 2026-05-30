@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.redis.pubsub;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -38,7 +38,7 @@ public class MessageListenerAdapter implements MessageListener {
 
         TypedConsumer consumer = listeners.get(channel);
         if (consumer == null) {
-            log.warn("未找到频道监听器, channel={}", channel);
+            log.warn("[Redis] 未找到频道监听器, channel={}", channel);
             return;
         }
 
@@ -47,7 +47,7 @@ public class MessageListenerAdapter implements MessageListener {
             Object deserialized = objectMapper.readValue(body, javaType);
             consumer.accept(deserialized);
         } catch (Exception ex) {
-            log.error("消息反序列化失败, channel={}, body={}", channel, body, ex);
+            log.error("[Redis] 消息反序列化失败, channel={}, body={}", channel, body, ex);
         }
     }
 

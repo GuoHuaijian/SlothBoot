@@ -1,11 +1,12 @@
 package com.sloth.boot.starter.redis.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.sloth.boot.common.util.JsonUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 
 /**
  * Redis 序列化配置。
+ * <p>
+ * 注：Spring Data Redis 的 {@link GenericJackson2JsonRedisSerializer} 仍使用 Jackson 2.x ObjectMapper。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -20,17 +23,13 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 @Configuration(proxyBeanMethods = false)
 public class RedisSerializerConfig {
 
-    /**
-     * 注册通用 Redis JSON 序列化器。
-     *
-     * @param redisProperties Redis 配置
-     * @return Redis JSON 序列化器
-     */
     @Bean
     @ConditionalOnMissingBean
     public GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer(RedisProperties redisProperties) {
-        ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
-        objectMapper.registerModule(new JavaTimeModule());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         if (redisProperties.isEnableTypeInfo()) {
             objectMapper.activateDefaultTyping(

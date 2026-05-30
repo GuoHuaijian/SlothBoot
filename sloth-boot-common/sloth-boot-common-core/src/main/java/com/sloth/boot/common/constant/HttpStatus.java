@@ -25,7 +25,6 @@ public final class HttpStatus {
     private HttpStatus() {
     }
 
-    // ==================== 1xx 信息性状态码 ====================
     /**
      * 100 Continue
      */
@@ -36,7 +35,6 @@ public final class HttpStatus {
      */
     public static final int SWITCHING_PROTOCOLS = 101;
 
-    // ==================== 2xx 成功状态码 ====================
     /**
      * 200 OK
      */
@@ -57,7 +55,6 @@ public final class HttpStatus {
      */
     public static final int NO_CONTENT = 204;
 
-    // ==================== 3xx 重定向状态码 ====================
     /**
      * 300 Multiple Choices
      */
@@ -88,7 +85,6 @@ public final class HttpStatus {
      */
     public static final int PERMANENT_REDIRECT = 308;
 
-    // ==================== 4xx 客户端错误状态码 ====================
     /**
      * 400 Bad Request
      */
@@ -234,7 +230,6 @@ public final class HttpStatus {
      */
     public static final int UNAVAILABLE_FOR_LEGAL_REASONS = 451;
 
-    // ==================== 5xx 服务器错误状态码 ====================
     /**
      * 500 Internal Server Error
      */

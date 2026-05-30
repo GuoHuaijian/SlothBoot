@@ -33,7 +33,7 @@ public class SignUtil {
         // 构建待签名字符串
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 sb.append("&");
             }
             sb.append(entry.getKey()).append("=").append(entry.getValue());
@@ -47,7 +47,7 @@ public class SignUtil {
     }
 
     /**
-     * 验证签名
+     * 验证签名（不含时间戳校验）
      *
      * @param params    参数Map
      * @param sign      签名
@@ -58,6 +58,28 @@ public class SignUtil {
      */
     public static boolean verifySign(Map<String, Object> params, String sign, String secretKey, long timestamp,
                                      String nonce) {
+        return verifySign(params, sign, secretKey, timestamp, nonce, 0);
+    }
+
+    /**
+     * 验证签名并校验时间戳新鲜度
+     *
+     * @param params           参数Map
+     * @param sign             签名
+     * @param secretKey        密钥
+     * @param timestamp        请求时间戳（毫秒）
+     * @param nonce            随机数
+     * @param validTimeSeconds 有效时间窗口（秒），0 或负数表示不校验
+     * @return 是否验证成功
+     */
+    public static boolean verifySign(Map<String, Object> params, String sign, String secretKey, long timestamp,
+                                     String nonce, int validTimeSeconds) {
+        if (validTimeSeconds > 0) {
+            long now = System.currentTimeMillis();
+            if (Math.abs(now - timestamp) > validTimeSeconds * 1000L) {
+                return false;
+            }
+        }
         String generatedSign = generateSign(params, secretKey, timestamp, nonce);
         return generatedSign.equals(sign);
     }
@@ -87,7 +109,23 @@ public class SignUtil {
      * @return 是否验证成功
      */
     public static boolean verifySignFromJson(String json, String sign, String secretKey, long timestamp, String nonce) {
+        return verifySignFromJson(json, sign, secretKey, timestamp, nonce, 0);
+    }
+
+    /**
+     * 从 JSON 字符串验证签名并校验时间戳新鲜度
+     *
+     * @param json             JSON 字符串
+     * @param sign             签名
+     * @param secretKey        密钥
+     * @param timestamp        请求时间戳（毫秒）
+     * @param nonce            随机数
+     * @param validTimeSeconds 有效时间窗口（秒），0 或负数表示不校验
+     * @return 是否验证成功
+     */
+    public static boolean verifySignFromJson(String json, String sign, String secretKey, long timestamp,
+                                             String nonce, int validTimeSeconds) {
         Map<String, Object> params = JsonUtil.parseObject(json, Map.class);
-        return verifySign(params, sign, secretKey, timestamp, nonce);
+        return verifySign(params, sign, secretKey, timestamp, nonce, validTimeSeconds);
     }
 }

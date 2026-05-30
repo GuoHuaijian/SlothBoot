@@ -148,10 +148,10 @@ sloth-boot/
 | 模块 | 核心能力 | 推荐先看 |
 |------|---------|:-------:|
 | `common-core` | 基础常量、统一返回体 `R<T>`、业务异常体系、请求上下文、工具类、通用注解 | ✅ |
-| `common-log` | TraceId 过滤器、HTTP 请求日志、`@OperationLog` 操作日志切面 | ✅ |
+| `common-log` | TraceId 过滤器、HTTP 请求日志、`@OperateLog` 操作日志注解与切面、慢操作事件 | ✅ |
 | `common-security` | AES/RSA 加解密、HMAC 签名验签、数据脱敏、XSS 过滤 | — |
 | `common-doc` | Knife4j / OpenAPI 3 自动配置，开箱即用文档 | — |
-| `common-test` | `SlothSpringBootTest`、`SlothMockMvcTest`、`SlothMapperTest` 测试基类 | — |
+| `common-test` | `BaseSpringBootTest`、`BaseMockMvcTest`、`BaseMapperTest` 测试基类、`@MockUser` | — |
 
 ### Starter 能力层
 

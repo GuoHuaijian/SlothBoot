@@ -5,7 +5,12 @@ import com.sloth.boot.starter.sms.core.AliyunSmsClient;
 import com.sloth.boot.starter.sms.core.SmsClient;
 import com.sloth.boot.starter.sms.core.SmsTemplate;
 import com.sloth.boot.starter.sms.core.TencentSmsClient;
+import com.sloth.boot.starter.sms.health.SmsHealthIndicator;
+import com.sloth.boot.starter.sms.metrics.SmsMetrics;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -47,5 +52,19 @@ public class SmsAutoConfiguration {
     @ConditionalOnMissingBean
     public SmsTemplate smsTemplate(SmsClient smsClient) {
         return new SmsTemplate(smsClient);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(HealthIndicator.class)
+    public SmsHealthIndicator smsHealthIndicator(SmsProperties smsProperties) {
+        return new SmsHealthIndicator(smsProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(MeterRegistry.class)
+    public SmsMetrics smsMetrics(MeterRegistry registry) {
+        return new SmsMetrics(registry);
     }
 }

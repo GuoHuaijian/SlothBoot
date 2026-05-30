@@ -8,14 +8,15 @@ import com.sloth.boot.starter.web.filter.CachedBodyHttpServletRequestWrapper;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
-import com.sloth.boot.starter.web.properties.GzipProperties;
-import com.sloth.boot.starter.web.properties.SlothWebProperties;
+import com.sloth.boot.starter.web.config.GzipProperties;
+import com.sloth.boot.starter.web.config.SlothWebProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -23,7 +24,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,9 +38,9 @@ import java.io.IOException;
  */
 @Slf4j
 @AutoConfiguration
+@ConditionalOnClass(HttpServletRequest.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class})
-@Import(JacksonConfiguration.class)
 public class WebAutoConfiguration {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
@@ -136,6 +136,40 @@ public class WebAutoConfiguration {
         return registrationBean;
     }
 
+    /**
+     * 全局 CORS 过滤器（最高优先级，覆盖 Sa-Token CORS）。
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "slothCorsFilterRegistration")
+    public FilterRegistrationBean<OncePerRequestFilter> slothCorsFilterRegistration(CorsConfiguration corsConfiguration) {
+        FilterRegistrationBean<OncePerRequestFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain filterChain) throws ServletException, IOException {
+                String origin = request.getHeader("Origin");
+                if (origin != null && corsConfiguration.getAllowedOrigins().contains(origin)) {
+                    response.setHeader("Access-Control-Allow-Origin", origin);
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
+                    response.setHeader("Access-Control-Allow-Methods",
+                        String.join(",", corsConfiguration.getAllowedMethods()));
+                    response.setHeader("Access-Control-Allow-Headers",
+                        String.join(",", corsConfiguration.getAllowedHeaders()));
+                    response.setHeader("Access-Control-Max-Age", String.valueOf(corsConfiguration.getMaxAge()));
+                }
+                if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return;
+                }
+                filterChain.doFilter(request, response);
+            }
+        });
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setName("slothCorsFilter");
+        registrationBean.setOrder(Integer.MIN_VALUE + 50);
+        return registrationBean;
+    }
+
     private boolean shouldSkip(HttpServletRequest request, XssProperties xssProperties) {
         String requestUri = request.getRequestURI();
         if (!xssProperties.isEnabled()) {
@@ -149,7 +183,6 @@ public class WebAutoConfiguration {
         return false;
     }
 
-    // ==================== 新增特性 ====================
 
     /**
      * 注册请求体缓存过滤器（支持多次读取 @RequestBody）。
@@ -176,7 +209,10 @@ public class WebAutoConfiguration {
     }
 
     /**
-     * 注册 API 访问日志过滤器（发布 AccessLogEvent 事件）。
+     * 注册 API 访问日志事件过滤器（发布 AccessLogEvent 事件）。
+     * <p>
+     * 默认关闭，避免与 common-log 的 RequestLogFilter 重复记录。
+     * 如需事件驱动的日志持久化，可通过 sloth.web.access-log-event-enabled=true 开启。
      *
      * @param eventPublisher 事件发布器
      * @param webProperties  Web 配置
@@ -184,7 +220,7 @@ public class WebAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(name = "slothAccessLogFilterRegistration")
-    @ConditionalOnProperty(prefix = "sloth.web", name = "access-log-enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "sloth.web", name = "access-log-event-enabled", havingValue = "true")
     public FilterRegistrationBean<OncePerRequestFilter> slothAccessLogFilterRegistration(
         ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
         FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();

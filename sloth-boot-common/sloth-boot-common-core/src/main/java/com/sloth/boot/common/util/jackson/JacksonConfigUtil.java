@@ -1,32 +1,26 @@
 package com.sloth.boot.common.util.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sloth.boot.common.enums.IBaseEnum;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Jackson 统一配置工具类
+ * Jackson 统一配置工具类。
  * <p>
- * 提供统一的 {@link ObjectMapper} 配置方法，注册所有自定义序列化器/反序列化器。
- * 确保 Web 层和 Redis 层使用相同的序列化策略。
- * <p>
- * 使用示例：
- * <pre>
- * // 获取已配置的 ObjectMapper
- * ObjectMapper mapper = JacksonConfigUtil.createConfiguredMapper();
- *
- * // 或者向已有的 ObjectMapper 注册自定义序列化器
- * JacksonConfigUtil.registerCustomSerializers(existingMapper);
- * </pre>
+ * Jackson 3.x 中 {@link ObjectMapper} 不可变，配置通过 {@link JsonMapper.Builder} 完成。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -38,42 +32,41 @@ public final class JacksonConfigUtil {
     }
 
     /**
-     * 创建已配置的 ObjectMapper（注册所有自定义序列化器）
+     * 创建已配置的 ObjectMapper（含自定义序列化器）
      *
      * @return ObjectMapper
      */
     public static ObjectMapper createConfiguredMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        configureMapper(mapper);
-        return mapper;
+        return createConfiguredMapper(Collections.emptyList());
     }
 
     /**
-     * 配置 ObjectMapper（基础设置 + 自定义序列化器）
+     * 创建已配置的 ObjectMapper，附加额外模块。
      *
-     * @param mapper ObjectMapper
+     * @param extraModules 额外的 Jackson 模块（如脱敏模块）
+     * @return ObjectMapper
      */
-    public static void configureMapper(ObjectMapper mapper) {
-        // 基础配置
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    public static ObjectMapper createConfiguredMapper(List<JacksonModule> extraModules) {
+        JsonMapper.Builder builder = JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl ->
+                        incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        // 注册 JavaTimeModule
-        mapper.registerModule(new JavaTimeModule());
-
-        // 注册自定义序列化器
-        registerCustomSerializers(mapper);
+        builder.addModule(createCustomSerializersModule());
+        for (JacksonModule module : extraModules) {
+            builder.addModule(module);
+        }
+        return builder.build();
     }
 
     /**
-     * 向已有的 ObjectMapper 注册自定义序列化器/反序列化器
+     * 创建包含自定义序列化器/反序列化器的模块。
      *
-     * @param mapper ObjectMapper
+     * @return 自定义序列化器模块
      */
-    public static void registerCustomSerializers(ObjectMapper mapper) {
-        SimpleModule module = new SimpleModule();
+    public static SimpleModule createCustomSerializersModule() {
+        SimpleModule module = new SimpleModule("sloth-custom-serializers");
         module.addSerializer(Long.class, new ToStringSerializer());
         module.addSerializer(long.class, new ToStringSerializer());
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
@@ -86,6 +79,6 @@ public final class JacksonConfigUtil {
         module.addDeserializer(BigDecimal.class, new BigDecimalDeserializer());
         module.addSerializer(IBaseEnum.class, new IBaseEnumSerializer());
         module.addDeserializer(IBaseEnum.class, new IBaseEnumDeserializer());
-        mapper.registerModule(module);
+        return module;
     }
 }

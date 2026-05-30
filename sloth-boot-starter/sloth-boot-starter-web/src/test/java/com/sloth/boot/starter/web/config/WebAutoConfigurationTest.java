@@ -3,7 +3,7 @@ package com.sloth.boot.starter.web.config;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
-import com.sloth.boot.starter.web.properties.SlothWebProperties;
+import com.sloth.boot.starter.web.config.SlothWebProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;

@@ -66,4 +66,20 @@ public class SentinelAutoConfiguration {
     public NacosDataSourceConfig nacosDataSourceConfig(SentinelProperties sentinelProperties, Environment environment) {
         return new NacosDataSourceConfig(sentinelProperties, environment);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(org.springframework.boot.health.contributor.HealthIndicator.class)
+    public com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator sentinelHealthIndicator(
+            SentinelProperties sentinelProperties) {
+        return new com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator(sentinelProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(io.micrometer.core.instrument.MeterRegistry.class)
+    public com.sloth.boot.starter.sentinel.metrics.SentinelMetrics sentinelMetrics(
+            io.micrometer.core.instrument.MeterRegistry registry) {
+        return new com.sloth.boot.starter.sentinel.metrics.SentinelMetrics(registry);
+    }
 }

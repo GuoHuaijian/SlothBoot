@@ -1,9 +1,8 @@
-# 服务基础配置
+# ===== 服务基础配置 =====
 server:
   port: 8080
   shutdown: graceful
 
-# Spring 基础配置
 spring:
   lifecycle:
     timeout-per-shutdown-phase: 30s
@@ -16,9 +15,12 @@ spring:
       - com.sloth.boot.starter.ai.config.AiEmbeddingAutoConfiguration
       - com.sloth.boot.starter.ai.config.AiImageAutoConfiguration
       - com.sloth.boot.starter.ai.config.AiObservabilityAutoConfiguration
-      - com.sloth.boot.starter.mybatis.config.MybatisPlusAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
   main:
     allow-bean-definition-overriding: false
   servlet:
@@ -31,43 +33,56 @@ spring:
     openai:
       base-url: https://api.openai.com
       api-key: ${OPENAI_API_KEY:sk-placeholder}
+  # 数据源配置
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/sloth_boot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:sloth_boot;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  # Redis 连接配置（默认使用内嵌 Redis 端口 16379，可通过环境变量切换为外部 Redis）
   data:
     redis:
       host: ${REDIS_HOST:127.0.0.1}
-      port: ${REDIS_PORT:6379}
+      port: ${REDIS_PORT:16379}
       database: ${REDIS_DATABASE:0}
       timeout: 5s
   jackson:
     time-zone: Asia/Shanghai
     date-format: yyyy-MM-dd HH:mm:ss
 
-# MyBatis-Plus 配置示例
+# ===== MyBatis-Plus 配置 =====
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# Actuator 暴露配置
+# ===== Actuator 配置 =====
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus,threadPools,appInfo
+        include: health,info,metrics,prometheus,threadPools,appInfo,jvmInfo,metricsSummary,systemResources
+      cors:
+        allowed-origins: "*"
+        allowed-methods: GET,POST
   endpoint:
     health:
       show-details: always
 
-# Sloth Boot 自定义配置
+# ===== Sloth Boot 自定义配置 =====
 sloth:
   # Web 组件配置
   web:
-    enabled: true
     response-wrapper: true
     xss-enabled: true
     xss-exclude-urls:
@@ -100,20 +115,14 @@ sloth:
 
   # Redis 能力配置
   redis:
-    enabled: true
     key-prefix: "example:"
-    lock-wait-time: 3
-    lock-lease-time: 30
     bloom:
-      enabled: true
       expected-insertions: 10000
-      false-positive-probability: 0.01
     pubsub:
       enabled: true
 
   # MyBatis 能力配置
   mybatis:
-    enabled: true
     tenant-enabled: false
     tenant-column: tenant_id
     tenant-ignore-tables:
@@ -122,7 +131,6 @@ sloth:
 
   # 线程池配置
   thread-pool:
-    enabled: true
     dynamic: true
     pools:
       default:
@@ -142,7 +150,6 @@ sloth:
 
   # 监控配置
   monitor:
-    enabled: true
     slow-api-enabled: true
     slow-api-threshold: 1000
     alarm:
@@ -152,7 +159,6 @@ sloth:
 
   # 文档配置
   doc:
-    enabled: true
     title: "示例服务 API"
     description: "Sloth Boot 示例服务接口文档"
     version: "1.0.0"
@@ -163,8 +169,7 @@ sloth:
 
   # 日志配置
   log:
-    enabled: true
-    print-request-log: true
+    print-access-log: true
     print-response-log: false
     max-body-length: 2048
     exclude-urls:
@@ -185,17 +190,13 @@ sloth:
 
   # 认证授权配置
   auth:
-    enabled: true
     token-name: Authorization
     token-timeout: 7200
     white-list:
-      - /health
-      - /api/system/**
-      - /api/product/**
-      - /api/order/**
-      - /api/security/**
+      - /api/auth/login
+      - /api/auth/logout
+      - /api/auth/current-user
       - /api/monitor/**
-      - /api/ai/**
       - /doc.html
       - /swagger-ui/**
       - /v3/api-docs/**

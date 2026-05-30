@@ -49,7 +49,6 @@ public class EsTemplate {
     private final ElasticsearchTemplate elasticsearchTemplate;
     private final EsProperties esProperties;
 
-    // ==================== 索引管理 ====================
 
     /**
      * 创建索引。
@@ -127,7 +126,6 @@ public class EsTemplate {
         return elasticsearchTemplate.indexOps(IndexCoordinates.of(alias)).exists();
     }
 
-    // ==================== 文档操作 ====================
 
     /**
      * 保存文档（新增或全量替换）。
@@ -275,7 +273,6 @@ public class EsTemplate {
         return result;
     }
 
-    // ==================== 搜索 ====================
 
     /**
      * 原生 Query 搜索。
@@ -320,7 +317,6 @@ public class EsTemplate {
         return PageResult.of(list, hits.getTotalHits(), pageQuery.getPageNum(), pageQuery.getPageSize());
     }
 
-    // ==================== 滚动查询（深分页） ====================
 
     /**
      * 初始化滚动查询。
@@ -408,7 +404,6 @@ public class EsTemplate {
         return result;
     }
 
-    // ==================== 私有方法 ====================
 
     private <T> SearchResult<T> doSearch(EsPageQuery<T> pageQuery, Class<T> clazz, String index) {
         SearchHits<T> hits = executeNativeQuery(pageQuery, clazz, index);

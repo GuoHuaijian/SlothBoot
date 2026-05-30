@@ -1,6 +1,10 @@
 package com.sloth.boot.starter.job.config;
 
+import com.sloth.boot.starter.job.health.JobHealthIndicator;
+import com.sloth.boot.starter.job.metrics.JobMetrics;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,5 +47,19 @@ public class JobAutoConfiguration {
         executor.setLogPath(jobProperties.getLogPath());
         executor.setLogRetentionDays(jobProperties.getLogRetentionDays());
         return executor;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(HealthIndicator.class)
+    public JobHealthIndicator jobHealthIndicator(JobProperties jobProperties) {
+        return new JobHealthIndicator(jobProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(MeterRegistry.class)
+    public JobMetrics jobMetrics(MeterRegistry registry) {
+        return new JobMetrics(registry);
     }
 }

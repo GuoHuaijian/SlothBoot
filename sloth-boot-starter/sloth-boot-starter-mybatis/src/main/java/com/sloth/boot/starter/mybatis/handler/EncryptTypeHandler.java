@@ -106,6 +106,12 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
             throw new IllegalStateException("sloth.mybatis.encrypt-key 未配置。"
                 + "使用加密字段处理器必须在配置文件中设置 sloth.mybatis.encrypt-key");
         }
-        return StrUtil.fillAfter(configuredKey, '0', 16).substring(0, 16).getBytes(StandardCharsets.UTF_8);
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(configuredKey.getBytes(StandardCharsets.UTF_8));
+            return java.util.Arrays.copyOf(hash, 16);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 not available", e);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.feign.decoder;
 import com.sloth.boot.common.exception.RemoteCallException;
 import com.sloth.boot.common.exception.RemoteRateLimitException;
 import com.sloth.boot.common.exception.RemoteServiceNotFoundException;
+import com.sloth.boot.common.exception.SimpleErrorCode;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;
@@ -33,9 +34,9 @@ public class FeignErrorDecoder implements ErrorDecoder {
             return new RemoteRateLimitException(serviceName);
         }
         if (status >= 500) {
-            return new RemoteCallException(serviceName, status, "远程服务调用失败: " + methodKey);
+            return new RemoteCallException(serviceName, new SimpleErrorCode(status, "Remote Server Error"), "远程服务调用失败: " + methodKey);
         }
-        return new RemoteCallException(serviceName, status, "远程调用异常: " + methodKey);
+        return new RemoteCallException(serviceName, new SimpleErrorCode(status, "Remote Call Error"), "远程调用异常: " + methodKey);
     }
 
     /**

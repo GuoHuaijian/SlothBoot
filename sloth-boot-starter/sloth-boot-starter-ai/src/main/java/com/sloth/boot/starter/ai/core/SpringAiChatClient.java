@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.ai.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 

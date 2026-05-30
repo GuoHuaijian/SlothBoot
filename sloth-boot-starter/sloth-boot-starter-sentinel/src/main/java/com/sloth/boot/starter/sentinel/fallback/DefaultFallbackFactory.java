@@ -22,7 +22,7 @@ public abstract class DefaultFallbackFactory<T> implements FallbackFactory<T> {
      */
     @Override
     public T create(Throwable cause) {
-        log.error("Feign 调用触发 Sentinel 降级, cause={}", cause == null ? null : cause.getMessage(), cause);
+        log.error("[Sentinel] Feign 调用触发 Sentinel 降级, cause={}", cause == null ? null : cause.getMessage(), cause);
         return fallback(cause);
     }
 

@@ -1,17 +1,14 @@
 package com.sloth.boot.common.util;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import com.sloth.boot.common.exception.SystemException;
+import com.sloth.boot.common.util.jackson.JacksonConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -28,26 +25,7 @@ public final class JsonUtil {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    private static final ObjectMapper OBJECT_MAPPER;
-
-    static {
-        OBJECT_MAPPER = new ObjectMapper();
-        // 配置日期格式
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        OBJECT_MAPPER.setDateFormat(dateFormat);
-        // 配置时区
-        OBJECT_MAPPER.setTimeZone(java.util.TimeZone.getTimeZone("GMT+8"));
-        // 配置序列化特性
-        OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        OBJECT_MAPPER.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-        // 配置反序列化特性
-        OBJECT_MAPPER.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 配置空值处理
-        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        // 注册 JavaTimeModule
-        OBJECT_MAPPER.registerModule(new JavaTimeModule());
-    }
+    private static final ObjectMapper OBJECT_MAPPER = JacksonConfigUtil.createConfiguredMapper();
 
     /**
      * 对象转 JSON 字符串
@@ -58,9 +36,9 @@ public final class JsonUtil {
     public static String toJson(Object obj) {
         try {
             return OBJECT_MAPPER.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            log.error("对象转 JSON 失败", e);
-            throw new RuntimeException("对象转 JSON 失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] Object to JSON failed", e);
+            throw SystemException.of("Object to JSON failed", e);
         }
     }
 
@@ -73,9 +51,9 @@ public final class JsonUtil {
     public static String toJsonPretty(Object obj) {
         try {
             return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            log.error("对象转格式化 JSON 失败", e);
-            throw new RuntimeException("对象转格式化 JSON 失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] Object to pretty JSON failed", e);
+            throw SystemException.of("Object to pretty JSON failed", e);
         }
     }
 
@@ -88,9 +66,9 @@ public final class JsonUtil {
     public static byte[] toBytes(Object obj) {
         try {
             return OBJECT_MAPPER.writeValueAsBytes(obj);
-        } catch (JsonProcessingException e) {
-            log.error("对象转 JSON 字节数组失败", e);
-            throw new RuntimeException("对象转 JSON 字节数组失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] Object to JSON bytes failed", e);
+            throw SystemException.of("Object to JSON bytes failed", e);
         }
     }
 
@@ -105,9 +83,9 @@ public final class JsonUtil {
     public static <T> T parseObject(String json, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
-        } catch (IOException e) {
-            log.error("JSON 转对象失败", e);
-            throw new RuntimeException("JSON 转对象失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] JSON to object failed", e);
+            throw SystemException.of("JSON to object failed", e);
         }
     }
 
@@ -122,9 +100,9 @@ public final class JsonUtil {
     public static <T> T parseObject(String json, TypeReference<T> typeReference) {
         try {
             return OBJECT_MAPPER.readValue(json, typeReference);
-        } catch (IOException e) {
-            log.error("JSON 转复杂类型对象失败", e);
-            throw new RuntimeException("JSON 转复杂类型对象失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] JSON to parameterized type failed", e);
+            throw SystemException.of("JSON to parameterized type failed", e);
         }
     }
 
@@ -139,9 +117,9 @@ public final class JsonUtil {
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readValue(json, OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
-        } catch (IOException e) {
-            log.error("JSON 转列表失败", e);
-            throw new RuntimeException("JSON 转列表失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] JSON to list failed", e);
+            throw SystemException.of("JSON to list failed", e);
         }
     }
 
@@ -154,9 +132,9 @@ public final class JsonUtil {
     public static JsonNode readTree(String json) {
         try {
             return OBJECT_MAPPER.readTree(json);
-        } catch (IOException e) {
-            log.error("JSON 解析为 JsonNode 失败", e);
-            throw new RuntimeException("JSON 解析为 JsonNode 失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] JSON parse to JsonNode failed", e);
+            throw SystemException.of("JSON parse to JsonNode failed", e);
         }
     }
 
@@ -173,7 +151,7 @@ public final class JsonUtil {
         try {
             OBJECT_MAPPER.readTree(json);
             return true;
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             return false;
         }
     }
@@ -204,9 +182,9 @@ public final class JsonUtil {
             JsonNode merged = baseNode.deepCopy();
             merged = OBJECT_MAPPER.readerForUpdating(merged).readValue(overlayNode);
             return OBJECT_MAPPER.writeValueAsString(merged);
-        } catch (IOException e) {
-            log.error("JSON 合并失败", e);
-            throw new RuntimeException("JSON 合并失败", e);
+        } catch (JacksonException e) {
+            log.error("[Json] JSON merge failed", e);
+            throw SystemException.of("JSON merge failed", e);
         }
     }
 

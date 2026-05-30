@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.mybatis.interceptor;
 
-import com.sloth.boot.common.annotation.DataScope;
+import com.sloth.boot.starter.mybatis.annotation.DataScope;
 import com.sloth.boot.common.context.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
@@ -95,13 +95,26 @@ public class DataScopeInterceptor implements Interceptor {
                 }
             }
         } catch (Exception e) {
-            log.warn("DataScope SQL 解析失败, 降级为字符串拼接, sql={}", sql, e);
+            log.warn("[MyBatis] DataScope SQL 解析失败, 降级为字符串拼接, sql={}", sql, e);
         }
         // 降级：简单字符串拼接
         if (sql.toLowerCase().contains(" where ")) {
             return sql + " AND " + condition;
         }
         return sql + " WHERE " + condition;
+    }
+
+    private static final java.util.regex.Pattern SAFE_ALIAS_PATTERN =
+        java.util.regex.Pattern.compile("^[a-zA-Z0-9_.]+$");
+
+    private String validateAlias(String alias) {
+        if (alias == null || alias.isEmpty()) {
+            return alias;
+        }
+        if (!SAFE_ALIAS_PATTERN.matcher(alias).matches()) {
+            throw new IllegalArgumentException("Invalid alias: " + alias);
+        }
+        return alias;
     }
 
     private String buildCondition(DataScope dataScope, String dataScopeType) {
@@ -113,15 +126,15 @@ public class DataScopeInterceptor implements Interceptor {
         String safeUserId = String.valueOf(userId);
         return switch (dataScopeType) {
             case SCOPE_SELF -> {
-                String userAlias = dataScope.userAlias();
+                String userAlias = validateAlias(dataScope.userAlias());
                 if (userAlias.isEmpty()) {
                     yield "create_by = " + safeUserId;
                 }
                 yield userAlias + ".create_by = " + safeUserId;
             }
             case SCOPE_DEPT -> {
-                String deptAlias = dataScope.deptAlias();
-                String userAlias = dataScope.userAlias();
+                String deptAlias = validateAlias(dataScope.deptAlias());
+                String userAlias = validateAlias(dataScope.userAlias());
                 if (deptAlias.isEmpty()) {
                     yield null;
                 }
@@ -130,7 +143,7 @@ public class DataScopeInterceptor implements Interceptor {
                     : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = " + safeUserId;
             }
             case SCOPE_DEPT_AND_BELOW -> {
-                String deptAlias = dataScope.deptAlias();
+                String deptAlias = validateAlias(dataScope.deptAlias());
                 if (deptAlias.isEmpty()) {
                     yield null;
                 }
@@ -175,7 +188,7 @@ public class DataScopeInterceptor implements Interceptor {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            log.debug("解析 DataScope 失败, mappedStatementId={}", mappedStatementId, ex);
+            log.debug("[MyBatis] 解析 DataScope 失败, mappedStatementId={}", mappedStatementId, ex);
         }
         return null;
     }

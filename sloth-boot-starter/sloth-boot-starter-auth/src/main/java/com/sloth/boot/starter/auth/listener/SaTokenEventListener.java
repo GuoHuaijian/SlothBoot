@@ -4,7 +4,7 @@ import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.sloth.boot.starter.auth.enums.DeviceStrategy;
 import com.sloth.boot.starter.auth.event.LoginEvent;
-import com.sloth.boot.starter.auth.properties.AuthProperties;
+import com.sloth.boot.starter.auth.config.AuthProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -53,6 +53,13 @@ public class SaTokenEventListener implements SaTokenListener {
         DeviceStrategy strategy = authProperties.getDeviceStrategy();
         if (strategy == DeviceStrategy.REPLACED) {
             cn.dev33.satoken.stp.StpUtil.kickout(loginId, device);
+        } else if (strategy == DeviceStrategy.PROHIBIT) {
+            // 已有设备登录时，踢掉新登录的设备
+            try {
+                cn.dev33.satoken.stp.StpUtil.kickout(loginId, device);
+            } catch (Exception ignored) {
+                // 当前设备可能没有旧会话，忽略
+            }
         }
     }
 
@@ -192,7 +199,25 @@ public class SaTokenEventListener implements SaTokenListener {
             userId = loginId instanceof Long ? (Long) loginId : Long.parseLong(loginId.toString());
         } catch (NumberFormatException ignored) {
         }
-        LoginEvent event = new LoginEvent(this, userId, loginType, null, null, device);
+        String loginIp = null;
+        String userAgent = null;
+        try {
+            cn.dev33.satoken.context.model.SaRequest request = cn.dev33.satoken.context.SaHolder.getRequest();
+            loginIp = request.getHeader("X-Forwarded-For");
+            if (loginIp == null || loginIp.isBlank() || "unknown".equalsIgnoreCase(loginIp)) {
+                loginIp = request.getHeader("X-Real-IP");
+            }
+            if (loginIp == null || loginIp.isBlank() || "unknown".equalsIgnoreCase(loginIp)) {
+                loginIp = request.getHost();
+            }
+            if (loginIp != null && loginIp.contains(",")) {
+                loginIp = loginIp.split(",")[0].trim();
+            }
+            userAgent = request.getHeader("User-Agent");
+        } catch (Exception ignored) {
+            // 非 Web 环境下无法获取请求信息
+        }
+        LoginEvent event = new LoginEvent(this, userId, loginType, loginIp, userAgent, device);
         eventPublisher.publishEvent(event);
     }
 }

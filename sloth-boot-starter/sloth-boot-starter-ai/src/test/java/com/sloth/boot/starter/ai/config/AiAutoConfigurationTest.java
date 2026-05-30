@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.ai.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.starter.ai.core.AiChatClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

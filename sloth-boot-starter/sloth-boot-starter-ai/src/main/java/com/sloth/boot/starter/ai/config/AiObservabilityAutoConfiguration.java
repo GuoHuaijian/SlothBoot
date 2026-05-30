@@ -3,6 +3,7 @@ package com.sloth.boot.starter.ai.config;
 import com.sloth.boot.starter.ai.core.AiChatClient;
 import com.sloth.boot.starter.ai.support.AiChatClientDecorator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
  * @since 1.0.0
  */
 @AutoConfiguration(after = AiAutoConfiguration.class)
+@ConditionalOnClass(AiChatClient.class)
 @ConditionalOnProperty(prefix = "sloth.ai.observability", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(AiProperties.class)
 public class AiObservabilityAutoConfiguration {

@@ -1,5 +1,6 @@
 package com.sloth.boot.common.security.crypto;
 
+import com.sloth.boot.common.exception.SystemException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,7 @@ public class HashUtil {
             byte[] digest = md.digest(data.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("MD5 哈希失败", e);
+            throw SystemException.of("MD5 hash failed", e);
         }
     }
 
@@ -46,7 +47,7 @@ public class HashUtil {
             byte[] digest = md.digest(data.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 哈希失败", e);
+            throw SystemException.of("SHA-256 hash failed", e);
         }
     }
 

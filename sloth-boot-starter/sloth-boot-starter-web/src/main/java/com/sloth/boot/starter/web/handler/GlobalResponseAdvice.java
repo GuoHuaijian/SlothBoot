@@ -2,7 +2,7 @@ package com.sloth.boot.starter.web.handler;
 
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.common.util.JsonUtil;
-import com.sloth.boot.starter.web.properties.SlothWebProperties;
+import com.sloth.boot.starter.web.config.SlothWebProperties;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;

@@ -1,10 +1,9 @@
 package com.sloth.boot.common.util.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -13,10 +12,10 @@ import java.math.BigDecimal;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class BigDecimalDeserializer extends JsonDeserializer<BigDecimal> {
+public class BigDecimalDeserializer extends ValueDeserializer<BigDecimal> {
 
     @Override
-    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) {
         String text = p.getText();
         if (text == null || text.isEmpty()) {
             return null;

@@ -25,7 +25,6 @@ public final class CommonConstant {
     private CommonConstant() {
     }
 
-    // ==================== 编码相关 ====================
     /**
      * UTF-8 编码
      */
@@ -36,7 +35,6 @@ public final class CommonConstant {
      */
     public static final String GBK = "GBK";
 
-    // ==================== Date/time formats ====================
     /**
      * Default date format.
      */
@@ -52,7 +50,6 @@ public final class CommonConstant {
      */
     public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    // ==================== 分隔符 ====================
     /**
      * 斜杠
      */
@@ -83,13 +80,11 @@ public final class CommonConstant {
      */
     public static final String HYPHEN = "-";
 
-    // ==================== 空值 ====================
     /**
      * 空字符串
      */
     public static final String EMPTY = "";
 
-    // ==================== 状态码 ====================
     /**
      * 成功
      */
@@ -100,7 +95,6 @@ public final class CommonConstant {
      */
     public static final int FAIL = -1;
 
-    // ==================== 是/否标记 ====================
     /**
      * 是
      */
@@ -111,49 +105,4 @@ public final class CommonConstant {
      */
     public static final String N = "N";
 
-    // ==================== 数字常量 ====================
-    /**
-     * 零
-     */
-    public static final int NUM_ZERO = 0;
-
-    /**
-     * 一
-     */
-    public static final int NUM_ONE = 1;
-
-    /**
-     * 十
-     */
-    public static final int NUM_TEN = 10;
-
-    /**
-     * 一百
-     */
-    public static final int NUM_HUNDRED = 100;
-
-    /**
-     * 一千
-     */
-    public static final int NUM_THOUSAND = 1000;
-
-    /**
-     * 一万
-     */
-    public static final int NUM_TEN_THOUSAND = 10000;
-
-    /**
-     * 一百万
-     */
-    public static final int NUM_MILLION = 1000000;
-
-    /**
-     * 一千万
-     */
-    public static final int NUM_TEN_MILLION = 10000000;
-
-    /**
-     * 一亿
-     */
-    public static final int NUM_HUNDRED_MILLION = 100000000;
 }

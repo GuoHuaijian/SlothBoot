@@ -1,10 +1,9 @@
 package com.sloth.boot.common.util.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.SerializationContext;
 
-import java.io.IOException;
 
 /**
  * Long 转 String 序列化器
@@ -14,10 +13,10 @@ import java.io.IOException;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class ToStringSerializer extends JsonSerializer<Long> {
+public class ToStringSerializer extends ValueSerializer<Long> {
 
     @Override
-    public void serialize(Long value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(Long value, JsonGenerator gen, SerializationContext provider) {
         gen.writeString(value.toString());
     }
 }

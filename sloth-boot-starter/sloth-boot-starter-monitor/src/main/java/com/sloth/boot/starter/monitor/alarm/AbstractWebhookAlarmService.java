@@ -53,7 +53,7 @@ public abstract class AbstractWebhookAlarmService implements AlarmService {
         }
         String webhook = monitorProperties.getAlarm().getWebhook();
         if (StrUtil.isBlank(webhook)) {
-            log.warn("未配置告警 webhook，忽略发送, title={}", message.getTitle());
+            log.warn("[Monitor] 未配置告警 webhook，忽略发送, title={}", message.getTitle());
             return;
         }
         HttpHeaders headers = new HttpHeaders();

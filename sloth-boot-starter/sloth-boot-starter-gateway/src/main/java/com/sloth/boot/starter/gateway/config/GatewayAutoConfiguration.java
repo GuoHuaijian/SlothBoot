@@ -46,8 +46,8 @@ public class GatewayAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public AuthGlobalFilter authGlobalFilter(GatewayProperties gatewayProperties) {
-        return new AuthGlobalFilter(gatewayProperties);
+    public HeaderForwardingFilter headerForwardingFilter(GatewayProperties gatewayProperties) {
+        return new HeaderForwardingFilter(gatewayProperties);
     }
 
     /**

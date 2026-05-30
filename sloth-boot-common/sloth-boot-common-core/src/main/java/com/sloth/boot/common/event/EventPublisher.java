@@ -55,7 +55,7 @@ public class EventPublisher {
             try {
                 applicationEventPublisher.publishEvent(event);
             } catch (Exception e) {
-                log.error("异步发布事件失败: {}", event.getClass().getSimpleName(), e);
+                log.error("[Event] Async event publish failed: {}", event.getClass().getSimpleName(), e);
             }
         });
     }

@@ -1,9 +1,8 @@
 package com.sloth.boot.common.log.filter;
 
-import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.TraceContext;
-import com.sloth.boot.common.log.properties.LogProperties;
+import com.sloth.boot.common.log.config.LogProperties;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.common.util.ServletUtil;
 import jakarta.servlet.FilterChain;
@@ -21,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 请求日志过滤器。
@@ -60,21 +60,22 @@ public class RequestLogFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request, logProperties.getMaxBodyLength());
-        long startTime = System.currentTimeMillis();
 
+        if (logProperties.isPrintAccessLog()) {
+            log.info("[Access] RequestLog: {}", JsonUtil.toJson(buildRequestLog(requestWrapper)));
+        }
+
+        long startTime = System.currentTimeMillis();
         try {
             filterChain.doFilter(requestWrapper, response);
         } finally {
             long costTime = System.currentTimeMillis() - startTime;
-            if (logProperties.isPrintRequestLog()) {
-                log.info("RequestLog: {}", JsonUtil.toJson(buildRequestLog(requestWrapper)));
-            }
             if (logProperties.isPrintResponseLog()) {
-                Map<String, Object> responseLog = new HashMap<>(2);
+                Map<String, Object> responseLog = new HashMap<>(4);
                 responseLog.put("status", response.getStatus());
                 responseLog.put("costTime", costTime);
                 responseLog.put("traceId", TraceContext.getTraceId());
-                log.info("ResponseLog: {}", JsonUtil.toJson(responseLog));
+                log.info("[Access] ResponseLog: {}", JsonUtil.toJson(responseLog));
             }
         }
     }
@@ -92,14 +93,19 @@ public class RequestLogFilter extends OncePerRequestFilter {
         return requestLog;
     }
 
+    private static final Set<String> SENSITIVE_HEADERS = Set.of(
+        HeaderConstant.TOKEN.toLowerCase(),
+        "cookie", "set-cookie", "proxy-authorization"
+    );
+
     private Map<String, String> extractHeaders(HttpServletRequest request) {
         Map<String, String> headers = new HashMap<>(8);
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames != null && headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
-            if (StrUtil.equalsIgnoreCase(headerName, HeaderConstant.TOKEN)) {
-                headers.put(headerName, StrUtil.hide(headerValue, 4, Math.max(4, StrUtil.length(headerValue) - 4)));
+            if (SENSITIVE_HEADERS.contains(headerName.toLowerCase())) {
+                headers.put(headerName, "******");
             } else {
                 headers.put(headerName, headerValue);
             }

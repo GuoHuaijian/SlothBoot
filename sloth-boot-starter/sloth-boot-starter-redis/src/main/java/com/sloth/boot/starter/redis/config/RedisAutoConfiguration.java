@@ -1,12 +1,12 @@
 package com.sloth.boot.starter.redis.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.starter.redis.bloom.RedisBloomFilter;
 import com.sloth.boot.starter.redis.cache.MultiLevelCacheManager;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
 import com.sloth.boot.starter.redis.delay.RedisDelayQueue;
 import com.sloth.boot.starter.redis.id.RedisIdGenerator;
-import com.sloth.boot.starter.redis.idempotent.IdempotentAspect;
+
 import com.sloth.boot.starter.redis.limiter.RateLimiterAspect;
 import com.sloth.boot.starter.redis.lock.*;
 import com.sloth.boot.starter.redis.pubsub.RedisPubSubTemplate;
@@ -134,19 +134,6 @@ public class RedisAutoConfiguration {
     }
 
     /**
-     * 注册幂等切面。
-     *
-     * @param stringRedisTemplate StringRedisTemplate
-     * @param redisProperties     Redis 配置
-     * @return 幂等切面
-     */
-    @Bean
-    @ConditionalOnMissingBean(type = "com.sloth.boot.starter.idempotent.aspect.IdempotentAspect")
-    public IdempotentAspect idempotentAspect(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties) {
-        return new IdempotentAspect(stringRedisTemplate, redisProperties);
-    }
-
-    /**
      * 注册延迟队列工具类。
      *
      * @param redissonClient Redisson 客户端
@@ -159,7 +146,6 @@ public class RedisAutoConfiguration {
         return new RedisDelayQueue(redissonClient);
     }
 
-    // ==================== 新增特性 ====================
 
     /**
      * 注册分布式 ID 生成器。

@@ -1,8 +1,9 @@
 package com.sloth.boot.common.log.aspect;
 
-import com.sloth.boot.common.annotation.OperateLog;
+import com.sloth.boot.common.log.annotation.OperateLog;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.context.UserContext;
+import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.event.OperateLogEvent;
 import com.sloth.boot.common.log.model.OperateLogDTO;
 import com.sloth.boot.common.util.JsonUtil;
@@ -13,7 +14,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class OperateLogAspect {
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final EventPublisher eventPublisher;
 
     /**
      * 采集操作日志。
@@ -77,7 +77,7 @@ public class OperateLogAspect {
             if (operateLog.saveResponseData() && result != null) {
                 dto.setResponseResult(JsonUtil.toJson(result));
             }
-            eventPublisher.publishEvent(new OperateLogEvent(dto));
+            eventPublisher.publishAsync(new OperateLogEvent(dto));
         }
     }
 }

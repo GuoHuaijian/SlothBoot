@@ -11,15 +11,22 @@ import com.sloth.boot.starter.mybatis.handler.AutoFillMetaObjectHandler;
 import com.sloth.boot.starter.mybatis.injector.InsertBatchSqlInjector;
 import com.sloth.boot.starter.mybatis.interceptor.DataScopeInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.SlowSqlInterceptor;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,7 +39,9 @@ import java.sql.SQLException;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnClass(MybatisPlusInterceptor.class)
 @EnableConfigurationProperties(MybatisPlusProperties.class)
+@EnableTransactionManagement
 public class MybatisPlusAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
@@ -135,13 +144,46 @@ public class MybatisPlusAutoConfiguration {
         return new InsertBatchSqlInjector();
     }
 
+    /**
+     * 注册 SqlSessionFactory。
+     *
+     * @param dataSource     数据源
+     * @param interceptor    MyBatis Plus 拦截器
+     * @return SqlSessionFactory
+     * @throws Exception 异常
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource,
+                                               MybatisPlusInterceptor interceptor) throws Exception {
+        MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
+        factory.setDataSource(dataSource);
+        factory.setPlugins(interceptor);
+        factory.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/**/*.xml"));
+        factory.setGlobalConfig(new com.baomidou.mybatisplus.core.config.GlobalConfig());
+        return factory.getObject();
+    }
+
+    /**
+     * 注册 SqlSessionTemplate。
+     *
+     * @param sqlSessionFactory SqlSessionFactory
+     * @return SqlSessionTemplate
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+
     private boolean isDevProfile(Environment environment) {
         for (String profile : environment.getActiveProfiles()) {
             if ("dev".equalsIgnoreCase(profile)) {
                 return true;
             }
         }
-        return environment.getActiveProfiles().length == 0;
+        return false;
     }
 
     /**
@@ -177,10 +219,10 @@ public class MybatisPlusAutoConfiguration {
             } else if (url.startsWith("jdbc:oceanbase:")) {
                 return DbType.OCEAN_BASE;
             }
-            log.warn("无法识别数据库类型, JDBC URL: {}, 将使用默认 MySQL 方言", url);
+            log.warn("[MyBatis] 无法识别数据库类型, JDBC URL: {}, 将使用默认 MySQL 方言", url);
             return DbType.MYSQL;
         } catch (SQLException e) {
-            log.warn("检测数据库类型失败, 将使用默认 MySQL 方言", e);
+            log.warn("[MyBatis] 检测数据库类型失败, 将使用默认 MySQL 方言", e);
             return DbType.MYSQL;
         }
     }

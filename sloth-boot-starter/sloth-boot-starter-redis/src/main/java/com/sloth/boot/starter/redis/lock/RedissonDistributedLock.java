@@ -38,7 +38,7 @@ public class RedissonDistributedLock implements DistributedLock {
             return redissonClient.getLock(key).tryLock(waitTime, leaseTime, unit);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-            log.error("获取分布式锁被中断, key={}", key, ex);
+            log.error("[Redis] 获取分布式锁被中断, key={}", key, ex);
             throw BizException.of(GlobalErrorCode.INTERNAL_ERROR, "获取分布式锁失败");
         }
     }

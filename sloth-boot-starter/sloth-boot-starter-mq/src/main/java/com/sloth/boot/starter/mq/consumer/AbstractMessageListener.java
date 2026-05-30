@@ -53,26 +53,25 @@ public abstract class AbstractMessageListener<T extends BaseMessage> implements 
         try {
             T message = parseMessage(messageExt);
             if (needIdempotentCheck(message) && !markConsumed(message)) {
-                log.warn("RocketMQ 消息重复消费, topic={}, msgId={}, traceId={}",
-                    messageExt.getTopic(), message.getMsgId(), traceId);
+                log.warn("[MQ] RocketMQ 消息重复消费, topic={}, msgId={}",
+                    messageExt.getTopic(), message.getMsgId());
                 return;
             }
             onMessage(message);
-            log.info("RocketMQ 消息消费成功, topic={}, msgId={}, traceId={}, cost={}ms",
-                messageExt.getTopic(), message.getMsgId(), traceId, System.currentTimeMillis() - startTime);
+            log.info("[MQ] RocketMQ 消息消费成功, topic={}, msgId={}, cost={}ms",
+                messageExt.getTopic(), message.getMsgId(), System.currentTimeMillis() - startTime);
         } catch (Exception ex) {
             int reconsumeTimes = messageExt.getReconsumeTimes();
-            log.error("RocketMQ 消息消费失败, topic={}, msgId={}, traceId={}, retryTimes={}, maxRetry={}, cost={}ms",
+            log.error("[MQ] RocketMQ 消息消费失败, topic={}, msgId={}, retryTimes={}, maxRetry={}, cost={}ms",
                 messageExt.getTopic(),
                 messageExt.getMsgId(),
-                traceId,
                 reconsumeTimes,
                 mqProperties.getMaxRetry(),
                 System.currentTimeMillis() - startTime,
                 ex);
             if (reconsumeTimes >= mqProperties.getMaxRetry()) {
-                log.error("RocketMQ 消息达到最大重试阈值, topic={}, msgId={}, traceId={}, retryTimes={}",
-                    messageExt.getTopic(), messageExt.getMsgId(), traceId, reconsumeTimes);
+                log.error("[MQ] RocketMQ 消息达到最大重试阈值, topic={}, msgId={}, retryTimes={}",
+                    messageExt.getTopic(), messageExt.getMsgId(), reconsumeTimes);
             }
             throw ex;
         } finally {

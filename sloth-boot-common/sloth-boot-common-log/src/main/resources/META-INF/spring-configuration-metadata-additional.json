@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "sloth.log.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用日志组件（请求日志、审计日志、链路追踪）。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.print-access-log",
+      "type": "java.lang.Boolean",
+      "description": "是否打印 HTTP 访问日志。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.print-operate-log",
+      "type": "java.lang.Boolean",
+      "description": "是否打印审计操作日志。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.log.print-response-log",
+      "type": "java.lang.Boolean",
+      "description": "是否打印响应日志。",
+      "defaultValue": false
+    },
+    {
+      "name": "sloth.log.exclude-urls",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "排除日志记录的 URL 列表（支持 Ant 风格）。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.log.max-body-length",
+      "type": "java.lang.Integer",
+      "description": "请求/响应体最大记录长度（字符数）。",
+      "defaultValue": 2048
+    }
+  ]
+}

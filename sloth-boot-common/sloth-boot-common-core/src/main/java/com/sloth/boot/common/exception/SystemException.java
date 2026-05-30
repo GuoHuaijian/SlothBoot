@@ -65,4 +65,15 @@ public class SystemException extends BaseException {
     public static SystemException of(String message) {
         return new SystemException(GlobalErrorCode.INTERNAL_ERROR, message);
     }
+
+    /**
+     * 创建系统异常
+     *
+     * @param message 错误信息
+     * @param cause   原因
+     * @return 系统异常
+     */
+    public static SystemException of(String message, Throwable cause) {
+        return new SystemException(GlobalErrorCode.INTERNAL_ERROR, message, cause);
+    }
 }

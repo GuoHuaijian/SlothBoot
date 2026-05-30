@@ -36,7 +36,7 @@ public class TokenIdempotentService {
             "1",
             Duration.ofSeconds(idempotentProperties.getTimeout())
         );
-        log.debug("幂等令牌创建: token={}", token);
+        log.debug("[Idempotent] 幂等令牌创建: token={}", token);
         return token;
     }
 
@@ -52,7 +52,7 @@ public class TokenIdempotentService {
         }
         String key = buildTokenKey(token);
         Boolean result = stringRedisTemplate.delete(key);
-        log.debug("幂等令牌消费: token={}, result={}", token, result);
+        log.debug("[Idempotent] 幂等令牌消费: token={}, result={}", token, result);
         return result;
     }
 

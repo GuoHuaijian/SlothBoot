@@ -36,7 +36,7 @@ public class DistributedLockAspect {
      */
     @Around("@annotation(distributedLockAnnotation)")
     public Object around(ProceedingJoinPoint joinPoint,
-                         com.sloth.boot.common.annotation.DistributedLock distributedLockAnnotation) throws Throwable {
+                         com.sloth.boot.starter.redis.annotation.DistributedLock distributedLockAnnotation) throws Throwable {
         String defaultKey = joinPoint.getSignature().toShortString();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String key = SpelUtil.parse(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs(),

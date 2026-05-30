@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.monitor.config;
 
 import com.sloth.boot.starter.monitor.tracing.TraceContextBridge;
-import com.sloth.boot.starter.monitor.tracing.TracingProperties;
+import com.sloth.boot.starter.monitor.config.TracingProperties;
 import io.micrometer.tracing.Tracer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

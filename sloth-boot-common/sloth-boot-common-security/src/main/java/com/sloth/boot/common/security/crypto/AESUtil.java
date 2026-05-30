@@ -1,5 +1,7 @@
 package com.sloth.boot.common.security.crypto;
 
+import com.sloth.boot.common.exception.SystemException;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,7 +42,7 @@ public class AESUtil {
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception e) {
-            throw new RuntimeException("AES 加密失败", e);
+            throw SystemException.of("AES encryption failed", e);
         }
     }
 
@@ -62,7 +64,7 @@ public class AESUtil {
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new RuntimeException("AES 解密失败", e);
+            throw SystemException.of("AES decryption failed", e);
         }
     }
 }

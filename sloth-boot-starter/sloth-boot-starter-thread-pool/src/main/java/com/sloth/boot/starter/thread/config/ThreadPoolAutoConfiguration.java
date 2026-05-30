@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.0.0
  */
 @AutoConfiguration
-@EnableAsync
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 @ConditionalOnProperty(prefix = "sloth.thread-pool", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class ThreadPoolAutoConfiguration {
@@ -210,7 +209,6 @@ public class ThreadPoolAutoConfiguration {
         };
     }
 
-    // ==================== 新增特性 ====================
 
     /**
      * 注册线程池动态管理器。
@@ -238,5 +236,17 @@ public class ThreadPoolAutoConfiguration {
                                                     org.springframework.context.ApplicationEventPublisher eventPublisher,
                                                     ThreadPoolProperties properties) {
         return new ThreadPoolAlarmTask(threadPoolRegistry, eventPublisher, properties.getAlarm().getThreshold());
+    }
+
+    /**
+     * 异步支持配置。
+     * <p>
+     * 默认开启。如不需要 @Async 支持，可通过 sloth.thread-pool.async-enabled=false 关闭。
+     */
+    @org.springframework.context.annotation.Configuration
+    @org.springframework.scheduling.annotation.EnableAsync
+    @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(
+        prefix = "sloth.thread-pool", name = "async-enabled", matchIfMissing = true)
+    static class AsyncEnableConfiguration {
     }
 }

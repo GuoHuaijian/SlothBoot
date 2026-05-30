@@ -1,6 +1,5 @@
 package com.sloth.boot.starter.thread.async;
 
-import com.sloth.boot.common.context.TraceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 
@@ -25,8 +24,7 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
      */
     @Override
     public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
-        log.error("异步任务执行异常, traceId={}, method={}, params={}",
-            TraceContext.getTraceId(),
+        log.error("[ThreadPool] 异步任务执行异常, method={}, params={}",
             method.toGenericString(),
             Arrays.toString(objects),
             throwable);

@@ -32,7 +32,7 @@ public class AliyunSmsClient implements SmsClient {
     @Override
     public SendResult send(String phone, String templateCode, Map<String, String> params) {
         String msgId = IdUtil.fastSimpleUUID();
-        log.info("模拟发送阿里云短信, phone={}, signName={}, templateCode={}, params={}, regionId={}",
+        log.info("[SMS] 模拟发送阿里云短信, phone={}, signName={}, templateCode={}, params={}, regionId={}",
             phone, smsProperties.getSignName(), templateCode, params, smsProperties.getRegionId());
         return SendResult.builder()
             .success(true)
@@ -51,7 +51,7 @@ public class AliyunSmsClient implements SmsClient {
      */
     @Override
     public SendResult batchSend(List<String> phones, String templateCode, Map<String, String> params) {
-        log.info("模拟批量发送阿里云短信, phones={}, templateCode={}, params={}", phones, templateCode, params);
+        log.info("[SMS] 模拟批量发送阿里云短信, phones={}, templateCode={}, params={}", phones, templateCode, params);
         return SendResult.builder()
             .success(true)
             .msgId(IdUtil.fastSimpleUUID())

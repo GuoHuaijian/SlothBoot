@@ -31,7 +31,6 @@ public final class ExcelUtil {
     private ExcelUtil() {
     }
 
-    // ==================== 导出 ====================
 
     /**
      * 单 Sheet 导出。
@@ -93,6 +92,34 @@ public final class ExcelUtil {
     }
 
     /**
+     * 导出 Excel 到输出流。
+     *
+     * @param data         数据列表
+     * @param head         表头类型
+     * @param outputStream 输出流
+     * @param <T>          泛型
+     */
+    public static <T> void export(List<T> data, Class<T> head, java.io.OutputStream outputStream) {
+        EasyExcel.write(outputStream, head)
+            .sheet("Sheet1")
+            .doWrite(data);
+    }
+
+    /**
+     * 从输入流导入 Excel。
+     *
+     * @param inputStream 输入流
+     * @param clazz       类型
+     * @param <T>         泛型
+     * @return 数据列表
+     */
+    public static <T> List<T> importExcel(java.io.InputStream inputStream, Class<T> clazz) {
+        ExcelReadListener<T> listener = new ExcelReadListener<>();
+        EasyExcel.read(inputStream, clazz, listener).sheet().doRead();
+        return new ArrayList<>(listener.getCachedData());
+    }
+
+    /**
      * 使用构建器执行自定义导出。
      *
      * @param response 响应对象
@@ -105,7 +132,6 @@ public final class ExcelUtil {
         builder.write(response.getOutputStream());
     }
 
-    // ==================== 导入 ====================
 
     /**
      * 导入 Excel（全量缓存）。
@@ -232,7 +258,6 @@ public final class ExcelUtil {
         return importExcelStreaming(file, clazz, 1000, 1, consumer);
     }
 
-    // ==================== 模板 ====================
 
     /**
      * 下载模板（仅生成空白标题行）。
@@ -266,7 +291,6 @@ public final class ExcelUtil {
             .doWrite(sampleData);
     }
 
-    // ==================== 构建器工厂 ====================
 
     /**
      * 创建导出构建器。

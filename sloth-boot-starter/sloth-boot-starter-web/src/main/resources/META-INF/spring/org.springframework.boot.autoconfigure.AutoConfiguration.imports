@@ -1,2 +1,3 @@
 com.sloth.boot.starter.web.config.WebAutoConfiguration
 com.sloth.boot.starter.web.config.GzipAutoConfiguration
+com.sloth.boot.starter.web.config.JacksonAutoConfiguration
