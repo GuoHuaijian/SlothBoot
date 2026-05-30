@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "java-lsp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@knno/jdtls-mcp",
+        "--workspace",
+        "D:/Guo/IDEA/project/SlothBoot"
+      ],
+      "env": {
+        "JDTLS_HOME": "C:/Users/Administrator/.trae/extensions/redhat.java-1.54.0-win32-x64/server"
+      }
+    }
+  }
+}
