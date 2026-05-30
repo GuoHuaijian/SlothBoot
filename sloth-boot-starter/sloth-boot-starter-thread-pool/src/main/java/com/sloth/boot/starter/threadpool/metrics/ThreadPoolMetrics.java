@@ -1,6 +1,6 @@
-package com.sloth.boot.starter.thread.monitor;
+package com.sloth.boot.starter.threadpool.metrics;
 
-import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;

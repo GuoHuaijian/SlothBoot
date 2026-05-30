@@ -6,4 +6,4 @@
  * @author sloth-boot
  * @since 1.0.0
  */
-package com.sloth.boot.starter.thread.config;
+package com.sloth.boot.starter.threadpool.config;

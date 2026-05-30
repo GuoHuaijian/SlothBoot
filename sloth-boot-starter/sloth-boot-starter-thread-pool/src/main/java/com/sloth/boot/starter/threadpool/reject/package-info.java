@@ -6,4 +6,4 @@
  * @author sloth-boot
  * @since 1.0.0
  */
-package com.sloth.boot.starter.thread.reject;
+package com.sloth.boot.starter.threadpool.reject;

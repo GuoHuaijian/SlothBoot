@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.config;
+package com.sloth.boot.starter.threadpool.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

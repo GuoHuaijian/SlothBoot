@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.decorator;
+package com.sloth.boot.starter.threadpool.decorator;
 
 import com.alibaba.ttl.TtlRunnable;
 import com.sloth.boot.common.util.ContextSnapshot;

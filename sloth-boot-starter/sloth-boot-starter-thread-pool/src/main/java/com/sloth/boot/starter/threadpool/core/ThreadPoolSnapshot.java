@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.core;
+package com.sloth.boot.starter.threadpool.core;
 
 /**
  * 线程池运行时快照。

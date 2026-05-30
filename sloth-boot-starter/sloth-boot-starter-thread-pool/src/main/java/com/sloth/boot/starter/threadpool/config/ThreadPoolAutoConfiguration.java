@@ -1,14 +1,14 @@
-package com.sloth.boot.starter.thread.config;
+package com.sloth.boot.starter.threadpool.config;
 
-import com.sloth.boot.starter.thread.async.AsyncExceptionHandler;
-import com.sloth.boot.starter.thread.core.ThreadPoolManager;
-import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
-import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
-import com.sloth.boot.starter.thread.decorator.TtlTaskDecorator;
-import com.sloth.boot.starter.thread.monitor.ThreadPoolAlarmTask;
-import com.sloth.boot.starter.thread.monitor.ThreadPoolEndpoint;
-import com.sloth.boot.starter.thread.monitor.ThreadPoolMetrics;
-import com.sloth.boot.starter.thread.reject.LogRejectedExecutionHandler;
+import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
+import com.sloth.boot.starter.threadpool.decorator.TtlTaskDecorator;
+import com.sloth.boot.starter.threadpool.metrics.ThreadPoolAlarmTask;
+import com.sloth.boot.starter.threadpool.metrics.ThreadPoolEndpoint;
+import com.sloth.boot.starter.threadpool.metrics.ThreadPoolMetrics;
+import com.sloth.boot.starter.threadpool.reject.LogRejectedExecutionHandler;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;

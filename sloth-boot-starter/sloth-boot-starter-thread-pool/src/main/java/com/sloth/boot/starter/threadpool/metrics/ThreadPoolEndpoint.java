@@ -1,9 +1,9 @@
-package com.sloth.boot.starter.thread.monitor;
+package com.sloth.boot.starter.threadpool.metrics;
 
-import com.sloth.boot.starter.thread.core.ThreadPoolManager;
-import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
-import com.sloth.boot.starter.thread.core.ThreadPoolSnapshot;
-import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;

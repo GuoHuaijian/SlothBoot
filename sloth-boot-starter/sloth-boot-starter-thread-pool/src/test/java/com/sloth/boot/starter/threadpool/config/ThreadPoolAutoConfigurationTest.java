@@ -1,9 +1,9 @@
-package com.sloth.boot.starter.thread.config;
+package com.sloth.boot.starter.threadpool.config;
 
-import com.sloth.boot.starter.thread.async.AsyncExceptionHandler;
-import com.sloth.boot.starter.thread.core.ThreadPoolManager;
-import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
-import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
+import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;

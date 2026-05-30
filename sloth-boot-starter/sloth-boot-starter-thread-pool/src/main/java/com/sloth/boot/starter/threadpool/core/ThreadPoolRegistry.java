@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.core;
+package com.sloth.boot.starter.threadpool.core;
 
 import java.util.Collections;
 import java.util.Map;

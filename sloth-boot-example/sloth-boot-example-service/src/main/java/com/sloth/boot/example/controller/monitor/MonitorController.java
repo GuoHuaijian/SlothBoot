@@ -6,7 +6,7 @@ import com.sloth.boot.starter.monitor.endpoint.SystemResourceEndpoint;
 import com.sloth.boot.starter.monitor.model.JvmInfo;
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import com.sloth.boot.example.service.monitor.MonitorDemoService;
-import com.sloth.boot.starter.thread.core.ThreadPoolSnapshot;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

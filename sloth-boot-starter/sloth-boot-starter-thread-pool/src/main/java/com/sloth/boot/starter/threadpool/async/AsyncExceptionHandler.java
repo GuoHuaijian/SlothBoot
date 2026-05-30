@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.async;
+package com.sloth.boot.starter.threadpool.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;

@@ -1,8 +1,8 @@
-package com.sloth.boot.starter.thread.monitor;
+package com.sloth.boot.starter.threadpool.metrics;
 
-import com.sloth.boot.starter.thread.core.ThreadPoolRegistry;
-import com.sloth.boot.starter.thread.core.ThreadPoolSnapshot;
-import com.sloth.boot.starter.thread.core.VisibleThreadPoolExecutor;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 

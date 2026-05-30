@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.thread.reject;
+package com.sloth.boot.starter.threadpool.reject;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
