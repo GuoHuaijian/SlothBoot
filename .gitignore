@@ -37,3 +37,12 @@ coverage/
 *.jar
 *.class
 *.hprof
+
+# Claude Code / AI tools
+.claude/
+.mcp.json
+docs/superpowers/
+Ai工作空间/
+
+# IDE generated
+.factorypath
