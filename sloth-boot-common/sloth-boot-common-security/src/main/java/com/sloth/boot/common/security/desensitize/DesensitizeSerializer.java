@@ -1,70 +1,43 @@
 package com.sloth.boot.common.security.desensitize;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.sloth.boot.common.annotation.Desensitize;
-import com.sloth.boot.common.annotation.DesensitizeType;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.SerializationContext;
 import com.sloth.boot.common.util.DesensitizeUtil;
-
-import java.io.IOException;
 
 /**
  * 脱敏 JSON 序列化器。
  * <p>
- * 配合 {@link com.sloth.boot.common.annotation.Desensitize} 注解使用， 在 Jackson
- * 序列化时根据注解指定的脱敏类型自动对字段值进行脱敏处理。
+ * 由 {@link DesensitizeValueSerializerModifier} 注入，通过构造函数传入
+ * 字段上的 {@link Desensitize} 注解实例。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
-public class DesensitizeSerializer extends JsonSerializer<String> {
+public class DesensitizeSerializer extends ValueSerializer<String> {
 
-    /**
-     * 序列化字段值，根据 {@link Desensitize} 注解配置进行脱敏。
-     *
-     * @param value    原始字段值
-     * @param gen      JSON 生成器
-     * @param provider 序列化提供者
-     * @throws IOException IO 异常
-     */
+    private final Desensitize desensitize;
+
+    public DesensitizeSerializer(Desensitize desensitize) {
+        super();
+        this.desensitize = desensitize;
+    }
+
     @Override
-    public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        Desensitize desensitize = gen.getCurrentValue().getClass().getAnnotation(Desensitize.class);
-        if (desensitize != null) {
-            DesensitizeType type = desensitize.type();
-            int prefixLen = desensitize.prefixLen();
-            int suffixLen = desensitize.suffixLen();
-
-            String desensitizedValue;
-            switch (type) {
-                case MOBILE:
-                    desensitizedValue = DesensitizeUtil.mobilePhone(value);
-                    break;
-                case ID_CARD:
-                    desensitizedValue = DesensitizeUtil.idCard(value);
-                    break;
-                case EMAIL:
-                    desensitizedValue = DesensitizeUtil.email(value);
-                    break;
-                case BANK_CARD:
-                    desensitizedValue = DesensitizeUtil.bankCard(value);
-                    break;
-                case NAME:
-                    desensitizedValue = DesensitizeUtil.chineseName(value);
-                    break;
-                case ADDRESS:
-                    desensitizedValue = DesensitizeUtil.address(value, 4);
-                    break;
-                case CUSTOM:
-                    desensitizedValue = DesensitizeUtil.custom(value, prefixLen, suffixLen);
-                    break;
-                default:
-                    desensitizedValue = value;
-            }
-            gen.writeString(desensitizedValue);
-        } else {
-            gen.writeString(value);
+    public void serialize(String value, JsonGenerator gen, SerializationContext provider) {
+        if (value == null) {
+            gen.writeNull();
+            return;
         }
+        String result = switch (desensitize.type()) {
+            case MOBILE -> DesensitizeUtil.mobilePhone(value);
+            case ID_CARD -> DesensitizeUtil.idCard(value);
+            case EMAIL -> DesensitizeUtil.email(value);
+            case BANK_CARD -> DesensitizeUtil.bankCard(value);
+            case NAME -> DesensitizeUtil.chineseName(value);
+            case ADDRESS -> DesensitizeUtil.address(value, 4);
+            case CUSTOM -> DesensitizeUtil.custom(value, desensitize.prefixLen(), desensitize.suffixLen());
+        };
+        gen.writeString(result);
     }
 }

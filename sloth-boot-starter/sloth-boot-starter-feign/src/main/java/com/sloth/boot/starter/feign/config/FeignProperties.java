@@ -47,4 +47,22 @@ public class FeignProperties {
      * 是否启用 Sentinel 集成。
      */
     private boolean sentinelEnabled = false;
+
+    /**
+     * 重试配置。
+     */
+    private Retry retry = new Retry();
+
+    @Data
+    public static class Retry {
+        /**
+         * 最大重试次数（不含首次请求）。
+         */
+        private int maxAttempts = 3;
+
+        /**
+         * 重试退避基础间隔（毫秒）。
+         */
+        private long backoffMs = 100;
+    }
 }

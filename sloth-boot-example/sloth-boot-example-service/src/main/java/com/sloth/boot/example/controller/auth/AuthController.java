@@ -52,7 +52,7 @@ public class AuthController {
      * <p>
      * 从数据库查询并返回脱敏后的用户信息（phone/idCard/email 自动脱敏）。
      */
-    @Operation(summary = "获取当前用户", description = "获取当前登录用户的详细信息（含 @Desensitize 脱敏字段）")
+    @Operation(summary = "获取当前用户", description = "获取当前登录用户的详细信息（含 @Desensitize 脱敏字段），未登录返回空数据")
     @GetMapping("/current-user")
     public R<SystemUserVO> getCurrentUser() {
         return R.ok(authDemoService.getCurrentUser());

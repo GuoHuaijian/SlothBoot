@@ -1,0 +1,63 @@
+{
+  "properties": [
+    {
+      "name": "sloth.sign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用请求签名验证。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.sign.secret-key",
+      "type": "java.lang.String",
+      "description": "签名密钥。"
+    },
+    {
+      "name": "sloth.sign.valid-time",
+      "type": "java.lang.Integer",
+      "description": "签名有效时间（秒），超过该时间的请求将被拒绝。",
+      "defaultValue": 300
+    },
+    {
+      "name": "sloth.sign.exclude-paths",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "排除签名验证的路径列表（支持 Ant 风格）。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.xss.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 XSS 过滤。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.exclude-urls",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "排除 XSS 过滤的 URL 列表。",
+      "defaultValue": []
+    },
+    {
+      "name": "sloth.xss.clean-html",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 HTML 标签。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-java-script",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 JavaScript 协议。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-css",
+      "type": "java.lang.Boolean",
+      "description": "是否清理 CSS 样式标签。",
+      "defaultValue": true
+    },
+    {
+      "name": "sloth.xss.clean-event-attributes",
+      "type": "java.lang.Boolean",
+      "description": "是否清理事件属性（onclick 等）。",
+      "defaultValue": true
+    }
+  ]
+}

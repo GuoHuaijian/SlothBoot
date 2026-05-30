@@ -70,3 +70,9 @@ CREATE TABLE IF NOT EXISTS demo_order (
     deleted      TINYINT      DEFAULT 0   COMMENT '逻辑删除标记（0-正常, 1-已删除）',
     version      INT          DEFAULT 1   COMMENT '乐观锁版本号'
 );
+
+-- 逻辑删除索引（IllegalSQLInnerInterceptor 要求 WHERE 条件列必须有索引）
+CREATE INDEX IF NOT EXISTS idx_sys_user_deleted ON sys_user (deleted);
+CREATE INDEX IF NOT EXISTS idx_sys_dept_deleted ON sys_dept (deleted);
+CREATE INDEX IF NOT EXISTS idx_product_deleted ON product (deleted);
+CREATE INDEX IF NOT EXISTS idx_demo_order_deleted ON demo_order (deleted);

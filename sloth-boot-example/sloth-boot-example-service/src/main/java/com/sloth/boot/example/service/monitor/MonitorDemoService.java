@@ -1,5 +1,6 @@
 package com.sloth.boot.example.service.monitor;
 
+import com.sloth.boot.starter.monitor.collector.SystemResourceCollector;
 import com.sloth.boot.starter.monitor.model.JvmInfo;
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import com.sloth.boot.starter.monitor.service.JvmInfoService;
@@ -34,6 +35,7 @@ public class MonitorDemoService {
     private final ThreadPoolManager threadPoolManager;
     private final ThreadPoolRegistry threadPoolRegistry;
     private final BusinessMetrics businessMetrics;
+    private final SystemResourceCollector systemResourceCollector;
 
     /**
      * 获取 JVM 详细信息。
@@ -134,6 +136,31 @@ public class MonitorDemoService {
                 Thread.currentThread().interrupt();
             }
         });
+    }
+
+    /**
+     * 获取健康状态。
+     *
+     * @return 健康状态（status + timestamp + threadPools）
+     */
+    public Map<String, Object> getHealthStatus() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("status", "UP");
+        result.put("timestamp", java.time.LocalDateTime.now().toString());
+
+        Map<String, Object> threadPools = new LinkedHashMap<>();
+        Map<String, ThreadPoolSnapshot> snapshots = threadPoolRegistry.getAllSnapshots();
+        for (Map.Entry<String, ThreadPoolSnapshot> entry : snapshots.entrySet()) {
+            ThreadPoolSnapshot s = entry.getValue();
+            Map<String, Object> info = new LinkedHashMap<>();
+            info.put("activeCount", s.activeCount());
+            info.put("maximumPoolSize", s.maximumPoolSize());
+            info.put("queueSize", s.queueSize());
+            info.put("rejectedCount", s.rejectedCount());
+            threadPools.put(entry.getKey(), info);
+        }
+        result.put("threadPools", threadPools);
+        return result;
     }
 
     /**

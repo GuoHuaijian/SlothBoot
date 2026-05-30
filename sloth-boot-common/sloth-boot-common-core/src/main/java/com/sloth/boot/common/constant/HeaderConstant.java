@@ -25,13 +25,16 @@ public final class HeaderConstant {
     private HeaderConstant() {
     }
 
-    // ==================== 链路追踪 ====================
     /**
-     * 链路追踪ID
+     * 链路追踪ID（请求头）
      */
     public static final String TRACE_ID = "X-Trace-Id";
 
-    // ==================== 用户信息 ====================
+    /**
+     * 链路追踪ID（MDC key）
+     */
+    public static final String MDC_TRACE_ID = "traceId";
+
     /**
      * 用户ID
      */
@@ -52,7 +55,6 @@ public final class HeaderConstant {
      */
     public static final String TOKEN = "Authorization";
 
-    // ==================== 内部调用 ====================
     /**
      * 内部调用标识
      */
@@ -63,7 +65,6 @@ public final class HeaderConstant {
      */
     public static final String INNER_CALL_TOKEN_HEADER = "X-Inner-Call-Token";
 
-    // ==================== 客户端信息 ====================
     /**
      * 客户端IP
      */

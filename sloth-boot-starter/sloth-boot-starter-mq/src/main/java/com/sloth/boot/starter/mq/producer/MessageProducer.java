@@ -37,9 +37,9 @@ public class MessageProducer {
     public SendResult sendSync(String topic, String tag, BaseMessage msg) {
         String destination = buildDestination(topic, tag);
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("同步发送 RocketMQ 消息, destination={}, msgId={}, traceId={}", destination, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 同步发送 RocketMQ 消息, destination={}, msgId={}", destination, msg.getMsgId());
         SendResult result = rocketMQTemplate.syncSend(destination, message);
-        log.info("RocketMQ 同步发送完成, destination={}, result={}", destination, result);
+        log.info("[MQ] RocketMQ 同步发送完成, destination={}, result={}", destination, result);
         return result;
     }
 
@@ -65,7 +65,7 @@ public class MessageProducer {
     public void sendAsync(String topic, String tag, BaseMessage msg, SendCallback callback) {
         String destination = buildDestination(topic, tag);
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("异步发送 RocketMQ 消息, destination={}, msgId={}, traceId={}", destination, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 异步发送 RocketMQ 消息, destination={}, msgId={}", destination, msg.getMsgId());
         rocketMQTemplate.asyncSend(destination, message, callback);
     }
 
@@ -77,7 +77,7 @@ public class MessageProducer {
      */
     public void sendOneway(String topic, BaseMessage msg) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("单向发送 RocketMQ 消息, topic={}, msgId={}, traceId={}", topic, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 单向发送 RocketMQ 消息, topic={}, msgId={}", topic, msg.getMsgId());
         rocketMQTemplate.sendOneWay(topic, message);
     }
 
@@ -91,8 +91,8 @@ public class MessageProducer {
      */
     public SendResult sendDelay(String topic, BaseMessage msg, int delayLevel) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("发送延迟 RocketMQ 消息, topic={}, delayLevel={}, msgId={}, traceId={}",
-            topic, delayLevel, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 发送延迟 RocketMQ 消息, topic={}, delayLevel={}, msgId={}",
+            topic, delayLevel, msg.getMsgId());
         return rocketMQTemplate.syncSend(topic, message, rocketMQTemplate.getProducer().getSendMsgTimeout(), delayLevel);
     }
 
@@ -106,8 +106,8 @@ public class MessageProducer {
      */
     public SendResult sendOrderly(String topic, BaseMessage msg, String hashKey) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("顺序发送 RocketMQ 消息, topic={}, hashKey={}, msgId={}, traceId={}",
-            topic, hashKey, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 顺序发送 RocketMQ 消息, topic={}, hashKey={}, msgId={}",
+            topic, hashKey, msg.getMsgId());
         return rocketMQTemplate.syncSendOrderly(topic, message, hashKey);
     }
 
@@ -121,7 +121,7 @@ public class MessageProducer {
      */
     public TransactionSendResult sendTransaction(String topic, BaseMessage msg, Object arg) {
         Message<String> message = TraceMessageInterceptor.buildMessage(msg);
-        log.info("发送事务 RocketMQ 消息, topic={}, msgId={}, traceId={}", topic, msg.getMsgId(), msg.getTraceId());
+        log.info("[MQ] 发送事务 RocketMQ 消息, topic={}, msgId={}", topic, msg.getMsgId());
         return invokeTransactionSend(topic, message, arg);
     }
 

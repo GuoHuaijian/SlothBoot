@@ -2,9 +2,9 @@ package com.sloth.boot.starter.idempotent.aspect;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.sloth.boot.common.annotation.Idempotent;
+import com.sloth.boot.starter.idempotent.annotation.Idempotent;
 import com.sloth.boot.common.context.UserContext;
-import com.sloth.boot.common.enums.IdempotentType;
+import com.sloth.boot.starter.idempotent.annotation.IdempotentType;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.IpUtil;
@@ -105,7 +105,7 @@ public class IdempotentAspect {
         if (!acquired) {
             String message = SpelUtil.parse(joinPoint.getTarget(), ((MethodSignature) joinPoint.getSignature()).getMethod(),
                     joinPoint.getArgs(), idempotent.message(), idempotent.message());
-            log.debug("幂等拦截: key={}", key);
+            log.debug("[Idempotent] 幂等拦截: key={}", key);
             throw BizException.of(GlobalErrorCode.REPEATED_REQUEST, message);
         }
 
@@ -113,7 +113,7 @@ public class IdempotentAspect {
             return joinPoint.proceed();
         } catch (Throwable ex) {
             // 执行异常时原子释放锁，仅当锁仍为当前请求持有时才删除
-            log.debug("执行异常，释放幂等锁: key={}", key);
+            log.debug("[Idempotent] 执行异常，释放幂等锁: key={}", key);
             redisTemplate.execute(releaseScript, List.of(key), requestId);
             throw ex;
         }
@@ -160,7 +160,7 @@ public class IdempotentAspect {
         if (StrUtil.isBlank(token) || tokenIdempotentService == null || !tokenIdempotentService.checkToken(token)) {
             String message = SpelUtil.parse(joinPoint.getTarget(), ((MethodSignature) joinPoint.getSignature()).getMethod(),
                     joinPoint.getArgs(), idempotent.message(), idempotent.message());
-            log.debug("幂等令牌校验失败: token={}", token);
+            log.debug("[Idempotent] 幂等令牌校验失败: token={}", token);
             throw BizException.of(GlobalErrorCode.REPEATED_REQUEST, message);
         }
         return joinPoint.proceed();

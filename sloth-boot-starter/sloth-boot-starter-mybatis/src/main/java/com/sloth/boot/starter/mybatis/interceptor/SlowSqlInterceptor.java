@@ -44,7 +44,7 @@ public class SlowSqlInterceptor implements Interceptor {
             MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
             Object parameter = invocation.getArgs().length > 1 ? invocation.getArgs()[1] : null;
             BoundSql boundSql = mappedStatement.getBoundSql(parameter);
-            log.warn("检测到慢 SQL, id={}, cost={}ms, sql={}, parameter={}", mappedStatement.getId(), cost,
+            log.warn("[MyBatis] 检测到慢 SQL, id={}, cost={}ms, sql={}, parameter={}", mappedStatement.getId(), cost,
                 normalize(boundSql.getSql()), parameter);
         }
         return result;

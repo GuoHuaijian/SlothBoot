@@ -25,7 +25,6 @@ public final class CacheConstant {
     private CacheConstant() {
     }
 
-    // ==================== 缓存基础配置 ====================
     /**
      * 默认缓存 key 前缀
      */
@@ -36,7 +35,6 @@ public final class CacheConstant {
      */
     public static final String SEPARATOR = ":";
 
-    // ==================== 业务域缓存前缀 ====================
     /**
      * 用户缓存前缀
      */
@@ -92,7 +90,6 @@ public final class CacheConstant {
      */
     public static final String OPERATE_LOG_PREFIX = DEFAULT_CACHE_PREFIX + "operateLog";
 
-    // ==================== 缓存时间 ====================
     /**
      * 缓存默认过期时间：30分钟
      */
@@ -138,7 +135,6 @@ public final class CacheConstant {
      */
     public static final long NULL_VALUE_EXPIRE_TIME = 2 * 60 * 1000L;
 
-    // ==================== 缓存通配符 ====================
     /**
      * 缓存键通配符：*
      */

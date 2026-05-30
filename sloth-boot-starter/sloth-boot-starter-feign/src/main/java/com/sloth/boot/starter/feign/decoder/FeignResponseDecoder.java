@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.feign.decoder;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.exception.RemoteCallException;
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.common.util.JsonUtil;
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class FeignResponseDecoder implements Decoder {
 
-    private static final ObjectMapper OBJECT_MAPPER = JsonUtil.getObjectMapper().copy();
+    private static final ObjectMapper OBJECT_MAPPER = JsonUtil.getObjectMapper();
 
     private final Decoder delegate;
 
@@ -59,7 +59,7 @@ public class FeignResponseDecoder implements Decoder {
             .constructParametricType(R.class, OBJECT_MAPPER.getTypeFactory().constructType(type));
         R<?> result = OBJECT_MAPPER.readValue(body, wrapperType);
         if (result.getCode() != 0) {
-            throw new RemoteCallException("unknown", result.getCode(), result.getMsg());
+            throw new RemoteCallException("unknown", new com.sloth.boot.common.exception.SimpleErrorCode(result.getCode(), result.getMsg()), result.getMsg());
         }
         if (isReturnR(type)) {
             return result;

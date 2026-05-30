@@ -5,7 +5,7 @@ import com.sloth.boot.common.log.aspect.OperateLogAspect;
 import com.sloth.boot.common.log.event.OperateLogListener;
 import com.sloth.boot.common.log.filter.RequestLogFilter;
 import com.sloth.boot.common.log.filter.TraceFilter;
-import com.sloth.boot.common.log.properties.LogProperties;
+import com.sloth.boot.common.log.config.LogProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -59,7 +59,7 @@ public class LogAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public OperateLogAspect operateLogAspect(org.springframework.context.ApplicationEventPublisher eventPublisher) {
+    public OperateLogAspect operateLogAspect(com.sloth.boot.common.event.EventPublisher eventPublisher) {
         return new OperateLogAspect(eventPublisher);
     }
 

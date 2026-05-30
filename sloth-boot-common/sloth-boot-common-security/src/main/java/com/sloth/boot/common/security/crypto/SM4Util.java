@@ -1,5 +1,6 @@
 package com.sloth.boot.common.security.crypto;
 
+import com.sloth.boot.common.exception.SystemException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -47,7 +48,7 @@ public class SM4Util {
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception e) {
-            throw new RuntimeException("SM4 加密失败", e);
+            throw SystemException.of("SM4 encryption failed", e);
         }
     }
 
@@ -69,7 +70,7 @@ public class SM4Util {
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new RuntimeException("SM4 解密失败", e);
+            throw SystemException.of("SM4 decryption failed", e);
         }
     }
 }

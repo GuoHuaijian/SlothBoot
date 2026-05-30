@@ -1,5 +1,7 @@
 package com.sloth.boot.common.util;
 
+import com.sloth.boot.common.exception.SystemException;
+
 import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -82,7 +84,7 @@ public final class RetryUtil {
                     TimeUnit.MILLISECONDS.sleep(delay.toMillis());
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
-                    throw new RuntimeException("重试被中断", ie);
+                    throw SystemException.of("Retry interrupted", ie);
                 }
             }
         }
@@ -108,14 +110,14 @@ public final class RetryUtil {
             return future.get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("异步重试被中断", e);
+            throw SystemException.of("Async retry interrupted", e);
         } catch (ExecutionException e) {
             // 提取原始异常，进行重试逻辑
             Throwable cause = e.getCause();
             if (cause instanceof Exception ex) {
                 return executeWithRetry(task, maxRetries, delay, (Class<? extends Exception>) cause.getClass());
             }
-            throw new RuntimeException(e);
+            throw SystemException.of("Async retry execution failed", e);
         }
     }
 
@@ -139,13 +141,13 @@ public final class RetryUtil {
             return future.get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("异步重试被中断", e);
+            throw SystemException.of("Async retry interrupted", e);
         } catch (ExecutionException e) {
             Throwable cause = e.getCause();
             if (cause instanceof Exception ex) {
                 return executeWithRetry(task, maxRetries, delay, (Class<? extends Exception>) cause.getClass());
             }
-            throw new RuntimeException(e);
+            throw SystemException.of("Async retry execution failed", e);
         }
     }
 

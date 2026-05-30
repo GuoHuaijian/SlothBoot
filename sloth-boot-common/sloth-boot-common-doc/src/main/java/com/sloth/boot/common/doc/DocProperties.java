@@ -69,7 +69,6 @@ public class DocProperties {
      */
     private List<String> basePackages = DEFAULT_BASE_PACKAGES;
 
-    // ==================== 安全方案 ====================
 
     /**
      * 是否启用 Bearer Token 安全方案（Swagger UI 中显示锁图标）。
@@ -91,7 +90,6 @@ public class DocProperties {
      */
     private String securityDescription = "请输入 Token（无需 Bearer 前缀）";
 
-    // ==================== 服务器地址 ====================
 
     /**
      * 服务器地址（不配置则自动从 server.port + context-path 检测）。
@@ -103,7 +101,6 @@ public class DocProperties {
      */
     private String serverDescription = "默认服务器";
 
-    // ==================== 多分组 ====================
 
     /**
      * 自定义 API 分组列表。

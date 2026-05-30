@@ -1,11 +1,10 @@
 package com.sloth.boot.common.util.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.SerializationContext;
 import com.sloth.boot.common.constant.CommonConstant;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -15,12 +14,12 @@ import java.time.format.DateTimeFormatter;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+public class LocalDateTimeSerializer extends ValueSerializer<LocalDateTime> {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(CommonConstant.DEFAULT_DATE_TIME_FORMAT);
 
     @Override
-    public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(LocalDateTime value, JsonGenerator gen, SerializationContext provider) {
         gen.writeString(value.format(FORMATTER));
     }
 }

@@ -53,14 +53,14 @@ public class RedisDelayQueue implements DisposableBean {
         consumers.computeIfAbsent(queueName, key -> {
             ExecutorService executorService = new ThreadPoolExecutor(
                     1, 1, 0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>(1),
+                    new LinkedBlockingQueue<>(16),
                     runnable -> {
                         Thread thread = new Thread(runnable);
                         thread.setName("sloth-redis-delay-" + key);
                         thread.setDaemon(true);
                         return thread;
                     },
-                    new ThreadPoolExecutor.DiscardPolicy()
+                    new ThreadPoolExecutor.CallerRunsPolicy()
             );
             executorService.submit(() -> consume(queueName, handler));
             return executorService;
@@ -75,9 +75,9 @@ public class RedisDelayQueue implements DisposableBean {
                 handler.handle(message);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
-                log.warn("延迟队列消费者已中断, queueName={}", queueName);
+                log.warn("[Redis] 延迟队列消费者已中断, queueName={}", queueName);
             } catch (Exception ex) {
-                log.error("处理延迟消息失败, queueName={}", queueName, ex);
+                log.error("[Redis] 处理延迟消息失败, queueName={}", queueName, ex);
             }
         }
     }
@@ -86,7 +86,7 @@ public class RedisDelayQueue implements DisposableBean {
     public void destroy() {
         consumers.forEach((name, executor) -> {
             executor.shutdownNow();
-            log.info("延迟队列消费者已关闭, queueName={}", name);
+            log.info("[Redis] 延迟队列消费者已关闭, queueName={}", name);
         });
         consumers.clear();
     }

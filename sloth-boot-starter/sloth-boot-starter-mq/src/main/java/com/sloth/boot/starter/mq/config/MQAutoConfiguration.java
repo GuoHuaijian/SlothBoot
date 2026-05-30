@@ -51,7 +51,6 @@ public class MQAutoConfiguration {
         return new MQHealthIndicator(rocketMQTemplate);
     }
 
-    // ==================== 新增特性 ====================
 
     /**
      * 注册消息消费失败日志监听器（监听 MessageFailureLogEvent）。

@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.web.handler;
 
 import cn.hutool.core.util.StrUtil;
-import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.exception.BaseException;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
@@ -43,7 +42,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BizException.class)
     public R<Void> handleBizException(BizException ex) {
-        log.warn("业务异常, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.warn("[Biz] 业务异常, msg={}", ex.getMessage(), ex);
         return buildBaseExceptionResponse(ex);
     }
 
@@ -55,7 +54,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(SystemException.class)
     public R<Void> handleSystemException(SystemException ex) {
-        log.error("系统异常, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.error("[System] 系统异常, msg={}", ex.getMessage(), ex);
         return buildBaseExceptionResponse(ex);
     }
 
@@ -120,7 +119,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        log.warn("请求方法不支持, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.warn("[Web] 请求方法不支持, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.METHOD_NOT_ALLOWED.getCode(), ex.getMessage());
     }
 
@@ -132,7 +131,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public R<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
-        log.warn("媒体类型不支持, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.warn("[Web] 媒体类型不支持, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
             I18nUtil.getMessage("sloth.error.media_type_not_supported"));
     }
@@ -145,7 +144,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public R<Void> handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        log.warn("请求路径不存在, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.warn("[Web] 请求路径不存在, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.NOT_FOUND);
     }
 
@@ -168,7 +167,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public R<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
-        log.warn("上传文件过大, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.warn("[Web] 上传文件过大, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.file_too_large"));
     }
 
@@ -181,18 +180,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public R<Void> handleException(Exception ex) {
         if (isDuplicateKeyException(ex)) {
-            log.warn("数据重复, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+            log.warn("[Biz] 数据重复, msg={}", ex.getMessage(), ex);
             return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.data_duplicate"));
         }
         if (isAccessDeniedException(ex)) {
-            log.warn("权限不足, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+            log.warn("[Biz] 权限不足, msg={}", ex.getMessage(), ex);
             return R.fail(GlobalErrorCode.FORBIDDEN);
         }
         if (isBlockException(ex)) {
-            log.warn("Sentinel 限流/降级触发, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+            log.warn("[Sentinel] 限流/降级触发, msg={}", ex.getMessage(), ex);
             return buildBlockExceptionResponse(ex);
         }
-        log.error("系统兜底异常, traceId={}, msg={}", TraceContext.getTraceId(), ex.getMessage(), ex);
+        log.error("[Unknown] 系统兜底异常, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.INTERNAL_ERROR);
     }
 
@@ -201,7 +200,7 @@ public class GlobalExceptionHandler {
     }
 
     private R<Void> handleBadRequest(Exception ex, String message) {
-        log.warn("请求参数异常, traceId={}, msg={}", TraceContext.getTraceId(), message, ex);
+        log.warn("[Validation] 请求参数异常, msg={}", message, ex);
         return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(),
             StrUtil.blankToDefault(message, GlobalErrorCode.BAD_REQUEST.getMsg()));
     }
@@ -209,6 +208,8 @@ public class GlobalExceptionHandler {
     private String formatFieldError(FieldError fieldError) {
         return fieldError.getField() + ": " + fieldError.getDefaultMessage();
     }
+
+    private static final java.util.Map<String, Class<?>> CLASS_CACHE = new java.util.concurrent.ConcurrentHashMap<>();
 
     private boolean isDuplicateKeyException(Throwable throwable) {
         return isInstanceOf(throwable, "org.springframework.dao.DuplicateKeyException");
@@ -227,10 +228,14 @@ public class GlobalExceptionHandler {
      * 使用 {@code Class.isAssignableFrom} 进行类型检查，避免字符串硬编码。
      */
     private boolean isInstanceOf(Throwable throwable, String className) {
-        Class<?> targetClass;
-        try {
-            targetClass = Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        Class<?> targetClass = CLASS_CACHE.computeIfAbsent(className, name -> {
+            try {
+                return Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        });
+        if (targetClass == null) {
             return false;
         }
         Throwable current = throwable;

@@ -98,6 +98,6 @@ public class MinioOssClient implements OssClient {
 
     @Override
     public List<OssFile> listFiles(String prefix) {
-        return Collections.emptyList();
+        throw new UnsupportedOperationException("MinIO listFiles not yet implemented. Use AliyunOssClient or LocalOssClient.");
     }
 }

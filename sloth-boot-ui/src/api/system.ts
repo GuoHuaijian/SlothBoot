@@ -1,25 +1,28 @@
 import request from './request'
-import type { LoginResponse, UserVO } from './types'
+import type { LoginRequest, LoginResponse, UserVO } from './types'
 
 export const systemApi = {
-  login: (userId: number, username: string) =>
-    request.post('/api/system/login', null, { params: { userId, username } }) as Promise<LoginResponse>,
+  /** 用户登录（从数据库验证，请求体传参） */
+  login: (data: LoginRequest) =>
+    request.post<LoginResponse>('/api/system/login', data),
 
+  /** 用户登出 */
   logout: () =>
-    request.post('/api/system/logout') as Promise<string>,
+    request.post<string>('/api/system/logout'),
 
+  /** 获取当前登录用户（含脱敏） */
   getCurrentUser: () =>
-    request.get('/api/system/current-user') as Promise<UserVO>,
+    request.get<UserVO>('/api/system/current-user'),
 
+  /** 查询用户列表（从数据库） */
   getUsers: () =>
-    request.get('/api/system/users') as Promise<UserVO[]>,
+    request.get<UserVO[]>('/api/system/users'),
 
-  createUser: (user: Partial<UserVO>) =>
-    request.post('/api/system/users', user) as Promise<UserVO>,
-
+  /** 权限校验 */
   getPermissions: () =>
-    request.get('/api/system/permissions') as Promise<string>,
+    request.get<string>('/api/system/permissions'),
 
+  /** 数据权限查询 */
   getDataScope: () =>
-    request.get('/api/system/data-scope') as Promise<string>,
+    request.get<string>('/api/system/data-scope'),
 }

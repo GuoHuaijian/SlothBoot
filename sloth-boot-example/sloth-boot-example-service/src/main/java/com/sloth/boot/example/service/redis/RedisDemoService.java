@@ -368,7 +368,7 @@ public class RedisDemoService {
         // 本地也记录一份，保证无 Redis 时演示可用
         receivedEvents.add(event);
         while (receivedEvents.size() > MAX_EVENTS) {
-            receivedEvents.remove(0);
+            receivedEvents.removeFirst();
         }
     }
 

@@ -1,22 +1,20 @@
 package com.sloth.boot.common.exception;
 
-import java.io.Serializable;
-
 /**
- * 远程服务限流异常
+ * 远程服务限流异常。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
-public class RemoteRateLimitException extends RemoteCallException implements Serializable {
+public class RemoteRateLimitException extends RemoteCallException {
 
     private static final long serialVersionUID = 1L;
 
     public RemoteRateLimitException(String serviceName) {
-        super(serviceName, GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), "远程服务限流: " + serviceName);
+        super(serviceName, GlobalErrorCode.TOO_MANY_REQUESTS, "远程服务限流: " + serviceName);
     }
 
     public RemoteRateLimitException(String serviceName, String url) {
-        super(serviceName, GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), "远程服务限流: " + serviceName, url);
+        super(serviceName, GlobalErrorCode.TOO_MANY_REQUESTS, "远程服务限流: " + serviceName, url);
     }
 }

@@ -128,7 +128,7 @@ export const modules: ModuleInfo[] = [
       'Redis Pub/Sub 消息广播',
     ],
     icon: 'Coin',
-    demoRoute: '/demo/product',
+    demoRoute: '/demo/redis',
     mavenArtifact: 'sloth-starter-redis',
   },
   {
@@ -143,6 +143,7 @@ export const modules: ModuleInfo[] = [
       '多租户隔离拦截器',
     ],
     icon: 'Grid',
+    demoRoute: '/demo/entity',
     mavenArtifact: 'sloth-starter-mybatis',
   },
   {
@@ -158,7 +159,7 @@ export const modules: ModuleInfo[] = [
       '接口级 / 按钮级权限控制',
     ],
     icon: 'User',
-    demoRoute: '/demo/system',
+    demoRoute: '/demo/auth',
     mavenArtifact: 'sloth-starter-auth',
   },
   {
@@ -315,6 +316,7 @@ export const modules: ModuleInfo[] = [
       '索引生命周期管理',
     ],
     icon: 'Search',
+    demoRoute: '/demo/entity',
     mavenArtifact: 'sloth-starter-es',
   },
   {

@@ -1,7 +1,8 @@
 package com.sloth.boot.starter.redis.pubsub;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import com.sloth.boot.common.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -68,9 +69,9 @@ public class RedisPubSubTemplate {
         try {
             String json = objectMapper.writeValueAsString(message);
             stringRedisTemplate.convertAndSend(channel, json);
-            log.debug("消息已发布, channel={}", channel);
-        } catch (JsonProcessingException ex) {
-            throw new RuntimeException("消息序列化失败, channel=" + channel, ex);
+            log.debug("[Redis] 消息已发布, channel={}", channel);
+        } catch (JacksonException ex) {
+            throw SystemException.of("[Redis] Message serialization failed, channel=" + channel, ex);
         }
     }
 
@@ -91,9 +92,9 @@ public class RedisPubSubTemplate {
         if (containerStarted.compareAndSet(false, true)) {
             listenerContainer.afterPropertiesSet();
             listenerContainer.start();
-            log.info("Redis 消息监听容器已启动");
+            log.info("[Redis] Redis 消息监听容器已启动");
         }
 
-        log.info("已订阅频道: {}", channel);
+        log.info("[Redis] 已订阅频道: {}", channel);
     }
 }

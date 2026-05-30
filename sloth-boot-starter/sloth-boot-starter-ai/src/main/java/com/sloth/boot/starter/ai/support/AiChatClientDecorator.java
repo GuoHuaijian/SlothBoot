@@ -31,7 +31,6 @@ public class AiChatClientDecorator extends LoggingDecorator<AiChatClient> implem
         this.observability = observability;
     }
 
-    // ==================== 同步方法 ====================
 
     /**
      * {@inheritDoc}
@@ -84,7 +83,6 @@ public class AiChatClientDecorator extends LoggingDecorator<AiChatClient> implem
         return execute(() -> target.chatStructured(request, clazz), "chatStructured", request);
     }
 
-    // ==================== 流式方法 ====================
 
     /**
      * {@inheritDoc}
@@ -111,7 +109,6 @@ public class AiChatClientDecorator extends LoggingDecorator<AiChatClient> implem
         return wrapStream(target.chatStream(request), "chatStream(request)", request);
     }
 
-    // ==================== 钩子方法 ====================
 
     /**
      * 方法执行成功后的钩子：记录慢调用告警和 Token 用量。

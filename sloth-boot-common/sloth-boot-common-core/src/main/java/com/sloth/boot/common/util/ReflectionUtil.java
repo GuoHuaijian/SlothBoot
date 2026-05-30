@@ -1,5 +1,7 @@
 package com.sloth.boot.common.util;
 
+import com.sloth.boot.common.exception.SystemException;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -67,7 +69,7 @@ public final class ReflectionUtil {
             field.setAccessible(true);
             return field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("反射获取字段值失败: " + fieldName, e);
+            throw SystemException.of("Reflect get field value failed: " + fieldName, e);
         }
     }
 
@@ -90,7 +92,7 @@ public final class ReflectionUtil {
             field.setAccessible(true);
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("反射设置字段值失败: " + fieldName, e);
+            throw SystemException.of("Reflect set field value failed: " + fieldName, e);
         }
     }
 
@@ -112,7 +114,7 @@ public final class ReflectionUtil {
             method.setAccessible(true);
             return method.invoke(obj, args);
         } catch (Exception e) {
-            throw new RuntimeException("反射调用方法失败: " + methodName, e);
+            throw SystemException.of("Reflect invoke method failed: " + methodName, e);
         }
     }
 

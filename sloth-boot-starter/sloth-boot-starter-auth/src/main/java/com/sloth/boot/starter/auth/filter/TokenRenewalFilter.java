@@ -11,7 +11,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.sloth.boot.starter.auth.properties.AuthProperties;
+import com.sloth.boot.starter.auth.config.AuthProperties;
 
 /**
  * Token 续期过滤器。

@@ -1,5 +1,7 @@
 package com.sloth.boot.common.util;
 
+import com.sloth.boot.common.exception.SystemException;
+
 import java.io.*;
 import java.util.Set;
 
@@ -119,7 +121,7 @@ public final class FileUtil {
             }
             return sb.toString();
         } catch (IOException e) {
-            throw new RuntimeException("读取流失败", e);
+            throw SystemException.of("Read stream failed", e);
         }
     }
 
@@ -138,7 +140,7 @@ public final class FileUtil {
             writer.write(content);
             writer.flush();
         } catch (IOException e) {
-            throw new RuntimeException("写入流失败", e);
+            throw SystemException.of("Write stream failed", e);
         }
     }
 }

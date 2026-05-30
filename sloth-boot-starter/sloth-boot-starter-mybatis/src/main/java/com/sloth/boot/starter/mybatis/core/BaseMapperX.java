@@ -45,14 +45,15 @@ public interface BaseMapperX<T> extends BaseMapper<T> {
     }
 
     /**
-     * 批量插入（逐条插入，适用于小数据量场景）。
+     * 逐条插入（适用于小数据量场景，如 10 条以内）。
      * <p>
+     * 注意：此方法不是真批量，而是循环逐条 INSERT。
      * 大数据量请使用 {@code InsertBatchSomeColumn} 注入器实现真批量。
      *
      * @param list 实体集合
      * @return 影响行数
      */
-    default int insertBatch(Collection<T> list) {
+    default int insertOneByOne(Collection<T> list) {
         if (list == null || list.isEmpty()) {
             return 0;
         }

@@ -6,7 +6,7 @@ package com.sloth.boot.common.exception;
  * @author sloth-boot
  * @since 1.0.0
  */
-record SimpleErrorCode(int code, String msg) implements ErrorCode {
+public record SimpleErrorCode(int code, String msg) implements ErrorCode {
 
     @Override
     public int getCode() {

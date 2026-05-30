@@ -11,7 +11,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.sentinel.config.SentinelProperties;
 import jakarta.annotation.PostConstruct;

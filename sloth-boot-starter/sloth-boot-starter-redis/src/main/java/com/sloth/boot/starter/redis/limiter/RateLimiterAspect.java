@@ -2,8 +2,8 @@ package com.sloth.boot.starter.redis.limiter;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.sloth.boot.common.annotation.LimitType;
-import com.sloth.boot.common.annotation.RateLimit;
+import com.sloth.boot.starter.redis.annotation.LimitType;
+import com.sloth.boot.starter.redis.annotation.RateLimit;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;

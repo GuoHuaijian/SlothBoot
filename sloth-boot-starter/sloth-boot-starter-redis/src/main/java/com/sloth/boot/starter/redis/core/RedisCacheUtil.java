@@ -2,7 +2,7 @@ package com.sloth.boot.starter.redis.core;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
 import lombok.Data;
@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 public class RedisCacheUtil {
 
     private static final Object NULL_HOLDER = "__NULL__";
-    private static final ObjectMapper OBJECT_MAPPER = JsonUtil.getObjectMapper().copy();
+    private static final ObjectMapper OBJECT_MAPPER = JsonUtil.getObjectMapper();
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final RedisProperties redisProperties;

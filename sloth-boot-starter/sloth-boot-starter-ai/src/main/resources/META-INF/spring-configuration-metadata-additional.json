@@ -94,5 +94,16 @@
       "defaultValue": false,
       "description": "是否启用 AI 函数调用注册中心。"
     }
+  ],
+  "hints": [
+    {
+      "name": "sloth.ai.model",
+      "values": [
+        { "value": "gpt-4o-mini", "description": "OpenAI GPT-4o Mini" },
+        { "value": "gpt-4o", "description": "OpenAI GPT-4o" },
+        { "value": "deepseek-chat", "description": "DeepSeek Chat" },
+        { "value": "qwen-turbo", "description": "通义千问 Turbo" }
+      ]
+    }
   ]
 }

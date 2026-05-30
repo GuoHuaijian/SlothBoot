@@ -21,7 +21,7 @@ public abstract class AbstractFallbackFactory<T> implements FallbackFactory<T> {
      */
     @Override
     public T create(Throwable cause) {
-        log.error("Feign 调用降级, cause={}", cause == null ? null : cause.getMessage(), cause);
+        log.error("[Feign] Feign 调用降级, cause={}", cause == null ? null : cause.getMessage(), cause);
         return doCreate(cause);
     }
 

@@ -7,6 +7,7 @@ import com.sloth.boot.starter.monitor.collector.SystemResourceCollector;
 import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.JvmInfoEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.MetricsSummaryEndpoint;
+import com.sloth.boot.starter.monitor.endpoint.SystemResourceEndpoint;
 import com.sloth.boot.starter.monitor.health.NacosHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RedisHealthIndicator;
 import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
@@ -218,6 +219,13 @@ public class MonitorAutoConfiguration {
     @ConditionalOnMissingBean
     public MetricsSummaryEndpoint metricsSummaryEndpoint(MetricsSummaryService metricsSummaryService) {
         return new MetricsSummaryEndpoint(metricsSummaryService);
+    }
+
+    @Bean
+    @ConditionalOnClass(Endpoint.class)
+    @ConditionalOnMissingBean
+    public SystemResourceEndpoint systemResourceEndpoint() {
+        return new SystemResourceEndpoint();
     }
 
     /**

@@ -7,6 +7,7 @@ import com.sloth.boot.starter.mq.producer.MessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @ConditionalOnProperty(prefix = "sloth.mq.dlq", name = "enabled", havingValue = "true")
-public class DeadLetterQueueHandler {
+public class DeadLetterQueueHandler implements DisposableBean {
 
     private static final String DLQ_SUFFIX = "-DLQ";
 
@@ -69,12 +70,12 @@ public class DeadLetterQueueHandler {
         int currentRetry = retryCounters.merge(msgId, 1, Integer::sum);
         int maxRetries = dlq.getMaxRetries();
 
-        log.warn("DLQ 处理消费失败消息, topic={}, msgId={}, currentRetry={}, maxRetries={}", originalTopic, msgId, currentRetry,
+        log.warn("[MQ] DLQ 处理消费失败消息, topic={}, msgId={}, currentRetry={}, maxRetries={}", originalTopic, msgId, currentRetry,
             maxRetries);
 
         if (currentRetry > maxRetries) {
-            publishToDlq(originalTopic, message, cause);
             retryCounters.remove(msgId);
+            publishToDlq(originalTopic, message, cause);
         } else {
             scheduleRetry(originalTopic, message, dlq.getDelaySeconds());
         }
@@ -96,13 +97,13 @@ public class DeadLetterQueueHandler {
         try {
             SendResult result = messageProducer.sendSync(dlqTopic, null, message);
             if (result.getSendStatus() == SendStatus.SEND_OK) {
-                log.info("消息已投递到死信队列, dlqTopic={}, msgId={}", dlqTopic, message.getMsgId());
+                log.info("[MQ] 消息已投递到死信队列, dlqTopic={}, msgId={}", dlqTopic, message.getMsgId());
             } else {
-                log.error("消息投递死信队列失败, dlqTopic={}, msgId={}, status={}", dlqTopic, message.getMsgId(),
+                log.error("[MQ] 消息投递死信队列失败, dlqTopic={}, msgId={}, status={}", dlqTopic, message.getMsgId(),
                     result.getSendStatus());
             }
         } catch (Exception ex) {
-            log.error("消息投递死信队列异常, dlqTopic={}, msgId={}", dlqTopic, message.getMsgId(), ex);
+            log.error("[MQ] 消息投递死信队列异常, dlqTopic={}, msgId={}", dlqTopic, message.getMsgId(), ex);
         }
     }
 
@@ -114,12 +115,12 @@ public class DeadLetterQueueHandler {
      * @param delaySeconds 延迟秒数
      */
     private void scheduleRetry(String topic, BaseMessage message, int delaySeconds) {
-        log.info("调度延迟重试, topic={}, msgId={}, delaySeconds={}", topic, message.getMsgId(), delaySeconds);
+        log.info("[MQ] 调度延迟重试, topic={}, msgId={}, delaySeconds={}", topic, message.getMsgId(), delaySeconds);
         scheduler.schedule(() -> {
             try {
                 messageProducer.sendDelay(topic, message, delaySecondsToDelayLevel(delaySeconds));
             } catch (Exception ex) {
-                log.error("延迟重试发送失败, topic={}, msgId={}", topic, message.getMsgId(), ex);
+                log.error("[MQ] 延迟重试发送失败, topic={}, msgId={}", topic, message.getMsgId(), ex);
             }
         }, delaySeconds, TimeUnit.SECONDS);
     }

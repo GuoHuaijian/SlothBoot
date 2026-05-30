@@ -1,5 +1,6 @@
 package com.sloth.boot.common.util;
 
+import com.sloth.boot.common.exception.SystemException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -245,7 +246,7 @@ public final class ServletUtil {
             response.getWriter().write(JsonUtil.toJson(data));
             response.getWriter().flush();
         } catch (IOException e) {
-            throw new RuntimeException("写入 JSON 响应失败", e);
+            throw SystemException.of("Write JSON response failed", e);
         }
     }
 }

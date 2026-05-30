@@ -36,7 +36,7 @@ public class EsHealthIndicator extends AbstractHealthIndicator {
             elasticsearchTemplate.indexOps(IndexCoordinates.of(SYSTEM_INDEX)).exists();
             builder.up().withDetail("status", "connected");
         } catch (Exception e) {
-            log.warn("Elasticsearch health check failed", e);
+            log.warn("[ES] Elasticsearch health check failed", e);
             builder.down(e).withDetail("status", "disconnected");
         }
     }

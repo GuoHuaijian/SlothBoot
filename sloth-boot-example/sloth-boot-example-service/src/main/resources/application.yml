@@ -71,7 +71,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus,threadPools,appInfo
+        include: health,info,metrics,prometheus,threadPools,appInfo,jvmInfo,metricsSummary,systemResources
+      cors:
+        allowed-origins: "*"
+        allowed-methods: GET,POST
   endpoint:
     health:
       show-details: always
@@ -190,8 +193,10 @@ sloth:
     token-name: Authorization
     token-timeout: 7200
     white-list:
-      - /health
-      - /api/system/login
+      - /api/auth/login
+      - /api/auth/logout
+      - /api/auth/current-user
+      - /api/monitor/**
       - /doc.html
       - /swagger-ui/**
       - /v3/api-docs/**

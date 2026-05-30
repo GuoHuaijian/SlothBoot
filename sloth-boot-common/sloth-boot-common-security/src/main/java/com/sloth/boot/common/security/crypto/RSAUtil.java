@@ -1,5 +1,7 @@
 package com.sloth.boot.common.security.crypto;
 
+import com.sloth.boot.common.exception.SystemException;
+
 import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -40,7 +42,7 @@ public class RSAUtil {
             keyPairGenerator.initialize(2048);
             return keyPairGenerator.generateKeyPair();
         } catch (Exception e) {
-            throw new RuntimeException("生成密钥对失败", e);
+            throw SystemException.of("Generate key pair failed", e);
         }
     }
 
@@ -80,7 +82,7 @@ public class RSAUtil {
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception e) {
-            throw new RuntimeException("RSA 加密失败", e);
+            throw SystemException.of("RSA encryption failed", e);
         }
     }
 
@@ -100,7 +102,7 @@ public class RSAUtil {
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new RuntimeException("RSA 解密失败", e);
+            throw SystemException.of("RSA decryption failed", e);
         }
     }
 
@@ -121,7 +123,7 @@ public class RSAUtil {
             byte[] signed = signature.sign();
             return Base64.getEncoder().encodeToString(signed);
         } catch (Exception e) {
-            throw new RuntimeException("签名失败", e);
+            throw SystemException.of("RSA signing failed", e);
         }
     }
 
@@ -142,7 +144,7 @@ public class RSAUtil {
             signature.update(data.getBytes(StandardCharsets.UTF_8));
             return signature.verify(Base64.getDecoder().decode(sign));
         } catch (Exception e) {
-            throw new RuntimeException("验签失败", e);
+            throw SystemException.of("RSA verification failed", e);
         }
     }
 

@@ -60,10 +60,12 @@ public class AuthDemoService {
     }
 
     /**
-     * 用户登出 - 清除 Sa-Token 登录状态和 UserContext
+     * 用户登出 - 清除 Sa-Token 登录状态和 UserContext（幂等，未登录也正常返回）
      */
     public void logout() {
-        StpUtil.logout();
+        if (StpUtil.isLogin()) {
+            StpUtil.logout();
+        }
         UserContext.clear();
         log.info("用户登出成功");
     }

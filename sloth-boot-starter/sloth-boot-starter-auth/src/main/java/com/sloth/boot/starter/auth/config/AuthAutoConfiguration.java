@@ -1,10 +1,18 @@
 package com.sloth.boot.starter.auth.config;
 
+import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.listener.SaTokenEventCenter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
-
+import cn.dev33.satoken.context.SaHolder;
+import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
+import com.sloth.boot.starter.auth.handler.DefaultStpInterface;
+import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
+import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
+import com.sloth.boot.starter.auth.service.DefaultPermissionService;
+import com.sloth.boot.starter.auth.service.OnlineUserService;
+import com.sloth.boot.starter.auth.service.PermissionService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,18 +22,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.sloth.boot.starter.auth.filter.TokenRenewalFilter;
-import com.sloth.boot.starter.auth.handler.DefaultStpInterface;
-import com.sloth.boot.starter.auth.handler.SaTokenContextHandler;
-import com.sloth.boot.starter.auth.listener.SaTokenEventListener;
-import com.sloth.boot.starter.auth.properties.AuthProperties;
-import com.sloth.boot.starter.auth.service.DefaultPermissionService;
-import com.sloth.boot.starter.auth.service.OnlineUserService;
-import com.sloth.boot.starter.auth.service.PermissionService;
 
 /**
  * Sa-Token 认证授权自动配置。
@@ -39,6 +39,26 @@ import com.sloth.boot.starter.auth.service.PermissionService;
 @ConditionalOnProperty(prefix = "sloth.auth", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(AuthProperties.class)
 public class AuthAutoConfiguration {
+
+    /**
+     * 使用 AuthProperties 覆盖 Sa-Token 默认配置。
+     * <p>
+     * Sa-Token 的 {@code SaBeanRegister} 没有 {@code @ConditionalOnMissingBean}，
+     * 总是会创建一个默认的 {@link SaTokenConfig}。此 Bean 标记 {@code @Primary}
+     * 确保 Sa-Token 使用我们的配置而非默认值。
+     */
+    @Bean
+    @Primary
+    public SaTokenConfig saTokenConfig(AuthProperties authProperties) {
+        SaTokenConfig config = new SaTokenConfig();
+        config.setTokenName(authProperties.getTokenName());
+        config.setTimeout(authProperties.getTokenTimeout());
+        config.setActiveTimeout(authProperties.getActiveTimeout());
+        config.setTokenPrefix(authProperties.getTokenPrefix());
+        config.setIsReadCookie(authProperties.isReadCookie());
+        config.setIsReadBody(authProperties.isReadBody());
+        return config;
+    }
 
     /**
      * 注册 Sa-Token 权限/角色查询默认实现。
@@ -77,6 +97,11 @@ public class AuthAutoConfiguration {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 registry.addInterceptor(new SaInterceptor(handle -> {
+                    // OPTIONS 预检请求放行（CORS preflight 不携带 token）
+                    if ("OPTIONS".equalsIgnoreCase(SaHolder.getRequest().getMethod())) {
+                        return;
+                    }
+
                     // 白名单路径放行
                     SaRouter.match(authProperties.getWhiteList()).stop();
 
@@ -96,7 +121,6 @@ public class AuthAutoConfiguration {
         };
     }
 
-    // ==================== 新增特性 ====================
 
     /**
      * 注册 Sa-Token 事件监听桥接器（登录/登出事件发布为 Spring Event）。
@@ -133,7 +157,6 @@ public class AuthAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "sloth.auth", name = "active-timeout", havingValue = "-1", matchIfMissing = false)
     public FilterRegistrationBean<TokenRenewalFilter> tokenRenewalFilterRegistration(AuthProperties authProperties) {
         FilterRegistrationBean<TokenRenewalFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new TokenRenewalFilter(authProperties));

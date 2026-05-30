@@ -266,6 +266,26 @@
         </el-skeleton>
         <el-empty v-if="!healthLoading && !healthData" description="点击刷新加载健康数据" />
       </el-tab-pane>
+
+      <!-- Tab 5: 系统资源 -->
+      <el-tab-pane label="系统资源" name="sysres">
+        <div class="tab-toolbar">
+          <el-button type="primary" size="small" @click="fetchSystemResources" :loading="sysResLoading">刷新</el-button>
+        </div>
+        <el-skeleton :rows="4" animated :loading="sysResLoading">
+          <template #default>
+            <div class="sysres-grid" v-if="sysRes">
+              <div class="gauge-card" v-for="item in gaugeItems" :key="item.label">
+                <div class="gauge-circle" :style="{ '--pct': item.pct, '--clr': item.color }">
+                  <span class="gauge-pct">{{ item.pct.toFixed(1) }}%</span>
+                </div>
+                <div class="gauge-label">{{ item.label }}</div>
+                <div class="gauge-detail">{{ item.detail }}</div>
+              </div>
+            </div>
+          </template>
+        </el-skeleton>
+      </el-tab-pane>
     </el-tabs>
 
     <!-- 动态调参对话框 -->
@@ -492,10 +512,38 @@ async function fetchHealth() {
   try { healthData.value = await monitorApi.getHealth() } catch (e: any) { ElMessage.error('获取健康数据失败') } finally { healthLoading.value = false }
 }
 
+// 系统资源
+const sysResLoading = ref(false)
+const sysRes = ref<Record<string, any> | null>(null)
+
+async function fetchSystemResources() {
+  sysResLoading.value = true
+  try { sysRes.value = await monitorApi.getSystemResources() } catch (e: any) { ElMessage.error('获取系统资源失败') } finally { sysResLoading.value = false }
+}
+
+const gaugeItems = computed(() => {
+  if (!sysRes.value) return []
+  const r = sysRes.value
+  const items: { label: string; pct: number; color: string; detail: string }[] = []
+  if (r.cpuUsage !== undefined) {
+    const pct = r.cpuUsage * 100
+    items.push({ label: 'CPU 使用率', pct, color: pct > 80 ? 'var(--error)' : pct > 60 ? 'var(--warning)' : 'var(--accent)', detail: `${r.cpuCores ?? '-'} 核` })
+  }
+  if (r.memoryUsed !== undefined && r.memoryTotal !== undefined) {
+    const pct = (r.memoryUsed / r.memoryTotal) * 100
+    items.push({ label: '内存使用率', pct, color: pct > 80 ? 'var(--error)' : pct > 60 ? 'var(--warning)' : 'var(--success)', detail: `${formatBytes(r.memoryUsed)} / ${formatBytes(r.memoryTotal)}` })
+  }
+  if (r.diskUsed !== undefined && r.diskTotal !== undefined) {
+    const pct = (r.diskUsed / r.diskTotal) * 100
+    items.push({ label: '磁盘使用率', pct, color: pct > 80 ? 'var(--error)' : pct > 60 ? 'var(--warning)' : 'var(--accent)', detail: `${formatBytes(r.diskUsed)} / ${formatBytes(r.diskTotal)}` })
+  }
+  return items
+})
+
 // 全部刷新
 async function refreshAll() {
   refreshing.value = true
-  await Promise.all([fetchAppInfo(), fetchJvmInfo(), fetchThreadPools(), fetchMetrics(), fetchHealth()])
+  await Promise.all([fetchAppInfo(), fetchJvmInfo(), fetchThreadPools(), fetchMetrics(), fetchHealth(), fetchSystemResources()])
   refreshing.value = false
 }
 
@@ -503,7 +551,7 @@ async function refreshAll() {
 let jvmInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(() => {
-  fetchAppInfo(); fetchJvmInfo(); fetchThreadPools(); fetchMetrics(); fetchHealth()
+  fetchAppInfo(); fetchJvmInfo(); fetchThreadPools(); fetchMetrics(); fetchHealth(); fetchSystemResources()
   jvmInterval = setInterval(fetchJvmInfo, 5000)
 })
 
@@ -961,4 +1009,58 @@ onUnmounted(() => { if (jvmInterval) { clearInterval(jvmInterval); jvmInterval =
 }
 .system-name { color: var(--text-secondary); }
 .system-val { font-family: var(--font-mono); color: var(--text-primary); font-weight: 500; }
+
+/* System Resources gauges */
+.sysres-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 768px) { .sysres-grid { grid-template-columns: 1fr; } }
+.gauge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.gauge-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(var(--clr) calc(var(--pct) * 3.6deg), var(--bg-surface) 0deg);
+  position: relative;
+  margin-bottom: 14px;
+}
+.gauge-circle::before {
+  content: '';
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--bg-card);
+}
+.gauge-pct {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.gauge-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.gauge-detail {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
 </style>

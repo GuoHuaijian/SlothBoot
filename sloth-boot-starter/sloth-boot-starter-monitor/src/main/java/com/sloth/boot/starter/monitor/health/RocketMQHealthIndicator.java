@@ -1,26 +1,35 @@
 package com.sloth.boot.starter.monitor.health;
 
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.boot.health.contributor.AbstractHealthIndicator;
 import org.springframework.boot.health.contributor.Health;
 
-import java.lang.reflect.Method;
-
+/**
+ * RocketMQ 健康检查。
+ * <p>
+ * 检查生产者连接状态和 NameServer 地址。
+ *
+ * @author sloth-boot
+ * @since 1.0.0
+ */
 public class RocketMQHealthIndicator extends AbstractHealthIndicator {
 
-    private final Object rocketMQTemplate;
+    private final RocketMQTemplate rocketMQTemplate;
 
-    public RocketMQHealthIndicator(Object rocketMQTemplate) {
+    public RocketMQHealthIndicator(RocketMQTemplate rocketMQTemplate) {
         this.rocketMQTemplate = rocketMQTemplate;
     }
 
     @Override
-    protected void doHealthCheck(Health.Builder builder) throws Exception {
-        Method getProducer = rocketMQTemplate.getClass().getMethod("getProducer");
-        Object producer = getProducer.invoke(rocketMQTemplate);
-        Method namesrvMethod = producer.getClass().getMethod("getNamesrvAddr");
-        Method groupMethod = producer.getClass().getMethod("getProducerGroup");
-        builder.up()
-            .withDetail("namesrvAddr", String.valueOf(namesrvMethod.invoke(producer)))
-            .withDetail("producerGroup", String.valueOf(groupMethod.invoke(producer)));
+    protected void doHealthCheck(Health.Builder builder) {
+        try {
+            DefaultMQProducer producer = rocketMQTemplate.getProducer();
+            builder.up()
+                .withDetail("namesrvAddr", producer.getNamesrvAddr())
+                .withDetail("producerGroup", producer.getProducerGroup());
+        } catch (Exception e) {
+            builder.down(e);
+        }
     }
 }

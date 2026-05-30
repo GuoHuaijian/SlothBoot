@@ -73,6 +73,18 @@
       "type": "java.lang.String",
       "defaultValue": "默认服务器",
       "description": "服务器描述。"
+    },
+    {
+      "name": "sloth.doc.base-packages",
+      "type": "java.util.List<java.lang.String>",
+      "description": "扫描的基础包。",
+      "defaultValue": ["com.sloth.boot"]
+    },
+    {
+      "name": "sloth.doc.security-description",
+      "type": "java.lang.String",
+      "description": "安全方案描述。",
+      "defaultValue": "请输入 Token（无需 Bearer 前缀）"
     }
   ]
 }

@@ -2,6 +2,12 @@ package com.sloth.boot.starter.idempotent.config;
 
 import com.sloth.boot.starter.idempotent.aspect.IdempotentAspect;
 import com.sloth.boot.starter.idempotent.core.TokenIdempotentService;
+import com.sloth.boot.starter.idempotent.metrics.IdempotentMetrics;
+import com.sloth.boot.starter.idempotent.spi.DefaultIdempotentKeyStrategy;
+import com.sloth.boot.starter.idempotent.spi.IdempotentKeyStrategy;
+import com.sloth.boot.starter.idempotent.spi.IdempotentStore;
+import com.sloth.boot.starter.idempotent.spi.RedisIdempotentStore;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -23,13 +29,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @EnableConfigurationProperties(IdempotentProperties.class)
 public class IdempotentAutoConfiguration {
 
-    /**
-     * 注册 Token 幂等服务。
-     *
-     * @param stringRedisTemplate  Redis 模板
-     * @param idempotentProperties 幂等配置
-     * @return Token 幂等服务
-     */
     @Bean
     @ConditionalOnMissingBean
     public TokenIdempotentService tokenIdempotentService(StringRedisTemplate stringRedisTemplate,
@@ -37,13 +36,25 @@ public class IdempotentAutoConfiguration {
         return new TokenIdempotentService(stringRedisTemplate, idempotentProperties);
     }
 
-    /**
-     * 注册幂等切面。
-     *
-     * @param stringRedisTemplate  Redis 模板
-     * @param idempotentProperties 幂等配置
-     * @return 幂等切面
-     */
+    @Bean
+    @ConditionalOnMissingBean
+    public IdempotentStore idempotentStore(StringRedisTemplate stringRedisTemplate) {
+        return new RedisIdempotentStore(stringRedisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IdempotentKeyStrategy idempotentKeyStrategy(IdempotentProperties properties) {
+        return new DefaultIdempotentKeyStrategy(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(MeterRegistry.class)
+    public IdempotentMetrics idempotentMetrics(MeterRegistry meterRegistry) {
+        return new IdempotentMetrics(meterRegistry);
+    }
+
     @Bean
     @ConditionalOnMissingBean
     public IdempotentAspect idempotentAspect(StringRedisTemplate stringRedisTemplate,

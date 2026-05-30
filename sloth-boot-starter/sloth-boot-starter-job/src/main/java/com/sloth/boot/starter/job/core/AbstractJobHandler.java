@@ -26,12 +26,12 @@ public abstract class AbstractJobHandler {
         MDC.put("traceId", traceId);
         long startTime = System.currentTimeMillis();
         try {
-            log.info("XXL-Job 开始执行, handler={}, traceId={}", getClass().getSimpleName(), traceId);
+            log.info("[Job] XXL-Job 开始执行, handler={}", getClass().getSimpleName());
             doExecute();
-            log.info("XXL-Job 执行成功, handler={}, traceId={}, cost={}ms",
-                getClass().getSimpleName(), traceId, System.currentTimeMillis() - startTime);
+            log.info("[Job] XXL-Job 执行成功, handler={}, cost={}ms",
+                getClass().getSimpleName(), System.currentTimeMillis() - startTime);
         } catch (Exception ex) {
-            log.error("XXL-Job 执行失败, handler={}, traceId={}", getClass().getSimpleName(), traceId, ex);
+            log.error("[Job] XXL-Job 执行失败, handler={}", getClass().getSimpleName(), ex);
             throw ex;
         } finally {
             MDC.remove("traceId");

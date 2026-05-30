@@ -36,7 +36,7 @@ public class RedisBloomFilter<T> {
         this.falsePositiveProbability = falsePositiveProbability;
         this.bloomFilter = redissonClient.getBloomFilter(name);
         this.bloomFilter.tryInit(expectedInsertions, falsePositiveProbability);
-        log.info("Redis 布隆过滤器已初始化, name={}, expectedInsertions={}, falsePositiveProbability={}", name,
+        log.info("[Redis] Redis 布隆过滤器已初始化, name={}, expectedInsertions={}, falsePositiveProbability={}", name,
             expectedInsertions, falsePositiveProbability);
     }
 
@@ -95,6 +95,6 @@ public class RedisBloomFilter<T> {
     public void reset() {
         bloomFilter.delete();
         bloomFilter.tryInit(expectedInsertions, falsePositiveProbability);
-        log.info("Redis 布隆过滤器已重置");
+        log.info("[Redis] Redis 布隆过滤器已重置");
     }
 }

@@ -2,7 +2,7 @@ package com.sloth.boot.common.log.event;
 
 import com.sloth.boot.common.log.OperateLogHandler;
 import com.sloth.boot.common.log.model.OperateLogDTO;
-import com.sloth.boot.common.log.properties.LogProperties;
+import com.sloth.boot.common.log.config.LogProperties;
 import com.sloth.boot.common.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class OperateLogListener {
     @EventListener
     public void handleOperateLogEvent(OperateLogEvent event) {
         OperateLogDTO dto = event.getOperateLog();
-        if (logProperties.isPrintRequestLog()) {
-            log.info("OperateLog: {}", JsonUtil.toJson(dto));
+        if (logProperties.isPrintOperateLog()) {
+            log.info("[Operate] {}", JsonUtil.toJson(dto));
         }
         operateLogHandler.handle(dto);
     }

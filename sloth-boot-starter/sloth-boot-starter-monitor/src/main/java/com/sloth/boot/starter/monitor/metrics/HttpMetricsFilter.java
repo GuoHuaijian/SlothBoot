@@ -54,7 +54,7 @@ public class HttpMetricsFilter extends OncePerRequestFilter {
                 .register(meterRegistry)
                 .record(Duration.ofMillis(cost));
             if (monitorProperties.isSlowApiEnabled() && cost >= monitorProperties.getSlowApiThreshold()) {
-                log.warn("检测到慢接口, uri={}, method={}, status={}, cost={}ms",
+                log.warn("[Monitor] 检测到慢接口, uri={}, method={}, status={}, cost={}ms",
                     request.getRequestURI(), request.getMethod(), response.getStatus(), cost);
                 if (alarmService != null) {
                     AlarmMessage alarmMessage = new AlarmMessage();

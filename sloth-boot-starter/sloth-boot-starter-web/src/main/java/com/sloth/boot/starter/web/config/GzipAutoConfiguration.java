@@ -1,9 +1,8 @@
 package com.sloth.boot.starter.web.config;
 
-import com.sloth.boot.starter.web.properties.GzipProperties;
-
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
@@ -18,6 +17,7 @@ import org.springframework.util.StringUtils;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnClass(Http11NioProtocol.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = "sloth.web.gzip", name = "enabled", havingValue = "true")
 public class GzipAutoConfiguration {

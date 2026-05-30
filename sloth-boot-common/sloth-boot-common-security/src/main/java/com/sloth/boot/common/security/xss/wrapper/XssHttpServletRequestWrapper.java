@@ -28,16 +28,6 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private byte[] body;
 
     /**
-     * 构造 XSS 请求包装器（无原始请求，用于测试场景）。
-     *
-     * @param xssProperties XSS 配置
-     */
-    public XssHttpServletRequestWrapper(XssProperties xssProperties) {
-        super(null);
-        this.xssProperties = xssProperties;
-    }
-
-    /**
      * 构造 XSS 请求包装器。
      *
      * @param request       原始 HTTP 请求

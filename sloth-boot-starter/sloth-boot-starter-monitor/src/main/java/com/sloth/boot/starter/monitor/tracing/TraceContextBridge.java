@@ -22,7 +22,7 @@ public class TraceContextBridge {
 
     public TraceContextBridge(Tracer tracer) {
         this.tracer = tracer;
-        log.info("TraceContextBridge 已初始化，开始同步 TraceContext 与 Micrometer Tracing");
+        log.info("[Monitor] TraceContextBridge 已初始化，开始同步 TraceContext 与 Micrometer Tracing");
     }
 
     /**

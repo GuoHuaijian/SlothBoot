@@ -1,11 +1,10 @@
 package com.sloth.boot.common.util.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.SerializationContext;
 import com.sloth.boot.common.enums.IBaseEnum;
 
-import java.io.IOException;
 
 /**
  * IBaseEnum 序列化器
@@ -15,16 +14,18 @@ import java.io.IOException;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class IBaseEnumSerializer extends JsonSerializer<IBaseEnum> {
+public class IBaseEnumSerializer extends ValueSerializer<IBaseEnum> {
 
     @Override
-    public void serialize(IBaseEnum value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(IBaseEnum value, JsonGenerator gen, SerializationContext provider) {
         if (value == null) {
             gen.writeNull();
         } else {
             gen.writeStartObject();
-            gen.writeNumberField("code", value.getCode());
-            gen.writeStringField("desc", value.getDesc());
+            gen.writeName("code");
+            gen.writeNumber(value.getCode());
+            gen.writeName("desc");
+            gen.writeString(value.getDesc());
             gen.writeEndObject();
         }
     }

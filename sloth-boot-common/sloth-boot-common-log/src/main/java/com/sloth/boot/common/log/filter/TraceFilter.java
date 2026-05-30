@@ -14,24 +14,41 @@ import java.io.IOException;
 
 /**
  * Trace 过滤器。
+ * <p>
+ * 覆盖 {@code OncePerRequestFilter} 的守卫机制，使用独立的请求属性控制执行次数。
+ * 正常请求结束后守卫立即清除，使得错误派发时 TraceFilter 能再次执行，
+ * 从请求属性恢复 traceId 到 MDC，确保异常处理链中的日志都携带链路ID。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
 public class TraceFilter extends OncePerRequestFilter {
 
-    /**
-     * 过滤请求并透传 TraceId。
-     *
-     * @param request     请求
-     * @param response    响应
-     * @param filterChain 过滤器链
-     * @throws ServletException Servlet 异常
-     * @throws IOException      IO 异常
-     */
+    private static final String TRACE_GUARD = TraceFilter.class.getName() + ".GUARD";
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getAttribute(TRACE_GUARD) != null;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
+        request.setAttribute(TRACE_GUARD, Boolean.TRUE);
+
+        // 错误派发：请求属性中已有 traceId，恢复到 MDC
+        String existing = (String) request.getAttribute(HeaderConstant.TRACE_ID);
+        if (existing != null) {
+            MDC.put(HeaderConstant.MDC_TRACE_ID, existing);
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                MDC.remove(HeaderConstant.MDC_TRACE_ID);
+            }
+            return;
+        }
+
+        // 正常请求：生成 traceId
         String traceId = request.getHeader(HeaderConstant.TRACE_ID);
         if (StrUtil.isBlank(traceId)) {
             traceId = TraceContext.generateTraceId();
@@ -40,13 +57,15 @@ public class TraceFilter extends OncePerRequestFilter {
         TraceContext.TraceInfo traceInfo = new TraceContext.TraceInfo();
         traceInfo.setTraceId(traceId);
         TraceContext.set(traceInfo);
-        MDC.put("traceId", traceId);
+        MDC.put(HeaderConstant.MDC_TRACE_ID, traceId);
+        request.setAttribute(HeaderConstant.TRACE_ID, traceId);
         response.setHeader(HeaderConstant.TRACE_ID, traceId);
 
         try {
             filterChain.doFilter(request, response);
         } finally {
-            MDC.remove("traceId");
+            request.removeAttribute(TRACE_GUARD);
+            MDC.remove(HeaderConstant.MDC_TRACE_ID);
             TraceContext.clear();
         }
     }

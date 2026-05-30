@@ -123,3 +123,112 @@ export interface ChatResponse {
   totalTokens: number
   finishReason: string
 }
+
+// ==================== 部门管理 ====================
+
+/** 部门创建请求 */
+export interface DeptCreateRequest {
+  name: string
+  parentId?: number
+  leader?: string
+  sort?: number
+  status?: number
+}
+
+/** 部门实体 */
+export interface SysDept {
+  id: number
+  name: string
+  parentId: number
+  sort: number
+  leader?: string
+  status: number
+  ancestors: string
+  createBy?: string
+  createTime?: string
+  updateBy?: string
+  updateTime?: string
+  version?: number
+}
+
+/** 部门视图（树结构） */
+export interface DeptVO {
+  id: number
+  name: string
+  parentId: number
+  sort: number
+  leader?: string
+  status: number
+  ancestors: string
+  createBy?: string
+  createTime?: string
+  children?: DeptVO[]
+}
+
+// ==================== 用户管理 ====================
+
+/** 用户创建请求 */
+export interface UserCreateRequest {
+  username: string
+  phone?: string
+  idCard?: string
+  email?: string
+  gender?: number
+  status?: number
+  deptId?: number
+  extraInfo?: Record<string, any>
+}
+
+/** 用户查询条件 */
+export interface UserQuery {
+  pageNum?: number
+  pageSize?: number
+  username?: string
+  phone?: string
+  deptId?: number
+  status?: number
+}
+
+/** 用户实体 */
+export interface SysUser {
+  id: number
+  deptId?: number
+  username: string
+  phone?: string
+  idCard?: string
+  email?: string
+  gender: number
+  status: number
+  extraInfo?: Record<string, any>
+  createBy?: string
+  createTime?: string
+  updateBy?: string
+  updateTime?: string
+  version?: number
+}
+
+/** 用户脱敏视图 */
+export interface SysUserVO {
+  id: number
+  deptId?: number
+  username: string
+  phone?: string
+  idCard?: string
+  email?: string
+  gender: number
+  status: number
+  extraInfo?: Record<string, any>
+  createBy?: string
+  createTime?: string
+  updateBy?: string
+  updateTime?: string
+}
+
+/** 分页结果 */
+export interface PageResult<T> {
+  list: T[]
+  total: number
+  pageNum: number
+  pageSize: number
+  totalPages: number
+}

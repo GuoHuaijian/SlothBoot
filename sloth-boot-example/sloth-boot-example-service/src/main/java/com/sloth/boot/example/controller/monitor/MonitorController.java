@@ -2,6 +2,7 @@ package com.sloth.boot.example.controller.monitor;
 
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.starter.monitor.endpoint.InfoEndpoint;
+import com.sloth.boot.starter.monitor.endpoint.SystemResourceEndpoint;
 import com.sloth.boot.starter.monitor.model.JvmInfo;
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import com.sloth.boot.example.service.monitor.MonitorDemoService;
@@ -27,6 +28,13 @@ public class MonitorController {
 
     private final MonitorDemoService monitorService;
     private final InfoEndpoint infoEndpoint;
+    private final SystemResourceEndpoint systemResourceEndpoint;
+
+    @Operation(summary = "健康检查", description = "获取应用健康状态（UP/DOWN）及各组件检查结果")
+    @GetMapping("/health")
+    public R<Map<String, Object>> health() {
+        return R.ok(monitorService.getHealthStatus());
+    }
 
     @Operation(summary = "应用信息", description = "获取应用名称、版本、构建信息、部署环境、JDK、主机等详细信息")
     @GetMapping("/app-info")
