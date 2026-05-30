@@ -9,8 +9,6 @@ import com.sloth.boot.starter.monitor.endpoint.JvmInfoEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.MetricsSummaryEndpoint;
 import com.sloth.boot.starter.monitor.endpoint.SystemResourceEndpoint;
 import com.sloth.boot.starter.monitor.health.NacosHealthIndicator;
-import com.sloth.boot.starter.monitor.health.RedisHealthIndicator;
-import com.sloth.boot.starter.monitor.health.RocketMQHealthIndicator;
 import com.sloth.boot.starter.monitor.metrics.BusinessMetrics;
 import com.sloth.boot.starter.monitor.event.SlowOperationEventListener;
 import com.sloth.boot.starter.monitor.metrics.HttpMetricsFilter;
@@ -24,7 +22,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,7 +32,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
@@ -95,41 +91,6 @@ public class MonitorAutoConfiguration {
     @ConditionalOnMissingBean(name = "nacosHealthIndicator")
     public NacosHealthIndicator nacosHealthIndicator(Environment environment) {
         return new NacosHealthIndicator(environment);
-    }
-
-    /**
-     * 注册 Redis 健康检查器。
-     *
-     * @param redisConnectionFactory Redis 连接工厂
-     * @return 健康检查器
-     */
-    @Bean
-    @ConditionalOnClass(RedisConnectionFactory.class)
-    @ConditionalOnBean(RedisConnectionFactory.class)
-    @ConditionalOnMissingBean(name = "monitorRedisHealthIndicator")
-    public RedisHealthIndicator monitorRedisHealthIndicator(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisHealthIndicator(redisConnectionFactory);
-    }
-
-    /**
-     * RocketMQ 健康检查配置（仅当 RocketMQ 在 classpath 上时加载）。
-     */
-    @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
-    static class RocketMQHealthConfiguration {
-
-        /**
-         * 注册 RocketMQ 健康检查器。
-         *
-         * @param rocketMQTemplate RocketMQTemplate
-         * @return 健康检查器
-         */
-        @Bean
-        @ConditionalOnBean(name = "org.apache.rocketmq.spring.core.RocketMQTemplate")
-        @ConditionalOnMissingBean(name = "rocketMQHealthIndicator")
-        public RocketMQHealthIndicator rocketMQHealthIndicator(org.apache.rocketmq.spring.core.RocketMQTemplate rocketMQTemplate) {
-            return new RocketMQHealthIndicator(rocketMQTemplate);
-        }
     }
 
     /**

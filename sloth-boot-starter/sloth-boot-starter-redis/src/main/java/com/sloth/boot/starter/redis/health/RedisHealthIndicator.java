@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.monitor.health;
+package com.sloth.boot.starter.redis.health;
 
 import org.springframework.boot.health.contributor.AbstractHealthIndicator;
 import org.springframework.boot.health.contributor.Health;
