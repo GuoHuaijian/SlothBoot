@@ -3,7 +3,7 @@ package com.sloth.boot.starter.idempotent.spi;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.util.IpUtil;
-import com.sloth.boot.common.util.ServletUtil;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.annotation.Idempotent;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;

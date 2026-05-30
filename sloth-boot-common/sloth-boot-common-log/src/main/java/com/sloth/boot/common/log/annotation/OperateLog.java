@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * 操作日志注解。
  * <p>
  * 标注在 Controller 方法上，自动采集操作日志。
- * 通过 {@link com.sloth.boot.common.log.aspect.OperateLogAspect} 实现 AOP 拦截。
+ * 通过 {@link com.sloth.boot.starter.web.log.OperateLogAspect} 实现 AOP 拦截。
  *
  * @author sloth-boot
  * @since 1.0.0

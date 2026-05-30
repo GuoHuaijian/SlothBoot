@@ -1,10 +1,10 @@
-package com.sloth.boot.common.log.filter;
+package com.sloth.boot.starter.web.log;
 
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.log.config.LogProperties;
 import com.sloth.boot.common.util.JsonUtil;
-import com.sloth.boot.common.util.ServletUtil;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

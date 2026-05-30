@@ -1,9 +1,7 @@
 package com.sloth.boot.common.log.config;
 
 import com.sloth.boot.common.log.OperateLogHandler;
-import com.sloth.boot.common.log.aspect.OperateLogAspect;
 import com.sloth.boot.common.log.event.OperateLogListener;
-import com.sloth.boot.common.log.filter.RequestLogFilter;
 import com.sloth.boot.common.log.filter.TraceFilter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +22,6 @@ class LogAutoConfigurationTest {
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
             assertThat(context.getBeansOfType(TraceFilter.class)).isNotEmpty();
-            assertThat(context.getBeansOfType(RequestLogFilter.class)).isNotEmpty();
-            assertThat(context.getBeansOfType(OperateLogAspect.class)).isNotEmpty();
             assertThat(context.getBeansOfType(OperateLogHandler.class)).isNotEmpty();
             assertThat(context.getBeansOfType(OperateLogListener.class)).isNotEmpty();
         });
@@ -36,8 +32,6 @@ class LogAutoConfigurationTest {
     void disabledByProperty() {
         contextRunner.withPropertyValues("sloth.log.enabled=false").run(context -> {
             assertThat(context).doesNotHaveBean(TraceFilter.class);
-            assertThat(context).doesNotHaveBean(RequestLogFilter.class);
-            assertThat(context).doesNotHaveBean(OperateLogAspect.class);
             assertThat(context).doesNotHaveBean(OperateLogHandler.class);
             assertThat(context).doesNotHaveBean(OperateLogListener.class);
         });

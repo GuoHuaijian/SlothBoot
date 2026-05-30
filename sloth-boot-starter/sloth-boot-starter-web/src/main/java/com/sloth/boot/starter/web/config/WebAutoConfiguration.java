@@ -1,6 +1,8 @@
 package com.sloth.boot.starter.web.config;
 
 import com.sloth.boot.common.context.UserContext;
+import com.sloth.boot.common.event.EventPublisher;
+import com.sloth.boot.common.log.config.LogProperties;
 import com.sloth.boot.common.security.xss.XssProperties;
 import com.sloth.boot.common.security.xss.wrapper.XssHttpServletRequestWrapper;
 import com.sloth.boot.starter.web.event.AccessLogEvent;
@@ -10,6 +12,8 @@ import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
 import com.sloth.boot.starter.web.config.GzipProperties;
 import com.sloth.boot.starter.web.config.SlothWebProperties;
+import com.sloth.boot.starter.web.log.OperateLogAspect;
+import com.sloth.boot.starter.web.log.RequestLogFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +44,7 @@ import java.io.IOException;
 @AutoConfiguration
 @ConditionalOnClass(HttpServletRequest.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class})
+@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class, LogProperties.class})
 public class WebAutoConfiguration {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
@@ -91,6 +95,30 @@ public class WebAutoConfiguration {
     @ConditionalOnMissingBean
     public GlobalResponseAdvice globalResponseAdvice(SlothWebProperties slothWebProperties) {
         return new GlobalResponseAdvice(slothWebProperties);
+    }
+
+    /**
+     * 注册请求日志过滤器。
+     *
+     * @param logProperties 日志配置
+     * @return 请求日志过滤器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public RequestLogFilter requestLogFilter(LogProperties logProperties) {
+        return new RequestLogFilter(logProperties);
+    }
+
+    /**
+     * 注册操作日志切面。
+     *
+     * @param eventPublisher 事件发布器
+     * @return 操作日志切面
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public OperateLogAspect operateLogAspect(EventPublisher eventPublisher) {
+        return new OperateLogAspect(eventPublisher);
     }
 
     /**

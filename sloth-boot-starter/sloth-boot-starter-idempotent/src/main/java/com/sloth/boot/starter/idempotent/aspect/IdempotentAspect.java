@@ -8,7 +8,7 @@ import com.sloth.boot.starter.idempotent.annotation.IdempotentType;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.IpUtil;
-import com.sloth.boot.common.util.ServletUtil;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;
 import com.sloth.boot.starter.idempotent.core.TokenIdempotentService;

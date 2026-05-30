@@ -1,4 +1,4 @@
-package com.sloth.boot.common.log.aspect;
+package com.sloth.boot.starter.web.log;
 
 import com.sloth.boot.common.log.annotation.OperateLog;
 import com.sloth.boot.common.context.TraceContext;
@@ -7,7 +7,7 @@ import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.event.OperateLogEvent;
 import com.sloth.boot.common.log.model.OperateLogDTO;
 import com.sloth.boot.common.util.JsonUtil;
-import com.sloth.boot.common.util.ServletUtil;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

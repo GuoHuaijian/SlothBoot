@@ -1,9 +1,7 @@
 package com.sloth.boot.common.log.config;
 
 import com.sloth.boot.common.log.OperateLogHandler;
-import com.sloth.boot.common.log.aspect.OperateLogAspect;
 import com.sloth.boot.common.log.event.OperateLogListener;
-import com.sloth.boot.common.log.filter.RequestLogFilter;
 import com.sloth.boot.common.log.filter.TraceFilter;
 import com.sloth.boot.common.log.config.LogProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -37,30 +35,6 @@ public class LogAutoConfiguration {
     @ConditionalOnMissingBean
     public TraceFilter traceFilter() {
         return new TraceFilter();
-    }
-
-    /**
-     * 注册请求日志过滤器。
-     *
-     * @param logProperties 日志配置
-     * @return 请求日志过滤器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public RequestLogFilter requestLogFilter(LogProperties logProperties) {
-        return new RequestLogFilter(logProperties);
-    }
-
-    /**
-     * 注册操作日志切面。
-     *
-     * @param eventPublisher 事件发布器
-     * @return 操作日志切面
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public OperateLogAspect operateLogAspect(com.sloth.boot.common.event.EventPublisher eventPublisher) {
-        return new OperateLogAspect(eventPublisher);
     }
 
     /**
