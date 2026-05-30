@@ -19,13 +19,11 @@
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-core</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-log</artifactId>
-            <version>${revision}</version>
             <optional>true</optional>
         </dependency>
 

@@ -19,67 +19,56 @@
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-ai</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-web</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-redis</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-mybatis</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-thread-pool</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-doc</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-log</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-monitor</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-auth</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-idempotent</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-excel</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>
