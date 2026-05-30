@@ -3,6 +3,8 @@ package com.sloth.boot.starter.oss.core;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.OSSObjectSummary;
+import com.sloth.boot.common.exception.SystemException;
+import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.starter.oss.config.OssProperties;
 import com.sloth.boot.starter.oss.model.OssFile;
 
@@ -50,7 +52,7 @@ public class AliyunOssClient implements OssClient {
         try (InputStream inputStream = ossClient.getObject(ossProperties.getBucketName(), path).getObjectContent()) {
             inputStream.transferTo(outputStream);
         } catch (Exception ex) {
-            throw new IllegalStateException("阿里云 OSS 下载失败", ex);
+            throw new SystemException(GlobalErrorCode.INTERNAL_ERROR, ex);
         }
     }
 

@@ -6,8 +6,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.common.util.jackson.JacksonConfigUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -17,9 +16,8 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 public final class JsonUtil {
-
-    private static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
 
     private JsonUtil() {
         throw new UnsupportedOperationException("Utility class");

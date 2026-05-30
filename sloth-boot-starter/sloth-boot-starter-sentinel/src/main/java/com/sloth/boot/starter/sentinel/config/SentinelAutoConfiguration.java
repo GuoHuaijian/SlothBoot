@@ -6,6 +6,10 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.sloth.boot.starter.sentinel.datasource.NacosDataSourceConfig;
 import com.sloth.boot.starter.sentinel.handler.GlobalBlockHandler;
 import com.sloth.boot.starter.sentinel.handler.SentinelBlockExceptionHandler;
+import com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator;
+import com.sloth.boot.starter.sentinel.metrics.SentinelMetrics;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -69,17 +73,16 @@ public class SentinelAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(org.springframework.boot.health.contributor.HealthIndicator.class)
-    public com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator sentinelHealthIndicator(
+    @ConditionalOnClass(HealthIndicator.class)
+    public SentinelHealthIndicator sentinelHealthIndicator(
             SentinelProperties sentinelProperties) {
-        return new com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator(sentinelProperties);
+        return new SentinelHealthIndicator(sentinelProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(io.micrometer.core.instrument.MeterRegistry.class)
-    public com.sloth.boot.starter.sentinel.metrics.SentinelMetrics sentinelMetrics(
-            io.micrometer.core.instrument.MeterRegistry registry) {
-        return new com.sloth.boot.starter.sentinel.metrics.SentinelMetrics(registry);
+    @ConditionalOnClass(MeterRegistry.class)
+    public SentinelMetrics sentinelMetrics(MeterRegistry registry) {
+        return new SentinelMetrics(registry);
     }
 }

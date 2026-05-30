@@ -3,9 +3,8 @@ package com.sloth.boot.starter.mybatis.handler;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.starter.mybatis.config.MybatisPlusProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +14,8 @@ import java.time.LocalDateTime;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(AutoFillMetaObjectHandler.class);
 
     private final MybatisPlusProperties properties;
 

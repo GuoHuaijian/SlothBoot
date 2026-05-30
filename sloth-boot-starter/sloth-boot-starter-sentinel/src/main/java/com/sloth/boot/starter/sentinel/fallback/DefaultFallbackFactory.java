@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.sentinel.fallback;
 
 import com.sloth.boot.common.result.R;
+import com.sloth.boot.common.util.I18nUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -41,6 +42,6 @@ public abstract class DefaultFallbackFactory<T> implements FallbackFactory<T> {
      * @return 默认失败响应
      */
     protected <D> R<D> defaultFailure() {
-        return R.fail("服务暂不可用");
+        return R.fail(I18nUtil.getMessage("sloth.error.service_unavailable"));
     }
 }

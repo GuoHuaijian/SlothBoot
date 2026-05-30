@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.support.FeignHttpMessageConverters;
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration
 @ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignClient")
+@ConditionalOnProperty(prefix = "sloth.feign", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import({FeignLogConfig.class, OkHttpConfig.class})
 public class FeignAutoConfiguration {
 

@@ -3,8 +3,7 @@ package com.sloth.boot.starter.monitor.collector;
 import com.sloth.boot.starter.monitor.alarm.AlarmService;
 import com.sloth.boot.starter.monitor.config.MonitorProperties;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -24,9 +23,8 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 public class SystemResourceCollector {
-
-    private static final Logger log = LoggerFactory.getLogger(SystemResourceCollector.class);
 
     private final MonitorProperties monitorProperties;
     private final ObjectProvider<AlarmService> alarmServiceProvider;

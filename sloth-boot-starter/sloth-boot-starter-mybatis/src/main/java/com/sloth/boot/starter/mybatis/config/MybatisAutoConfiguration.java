@@ -17,15 +17,15 @@ import com.sloth.boot.starter.mybatis.injector.InsertBatchSqlInjector;
 import com.sloth.boot.starter.mybatis.interceptor.DataScopeInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.SlowSqlInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -43,13 +43,13 @@ import java.sql.SQLException;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 @AutoConfiguration
 @ConditionalOnClass(MybatisPlusInterceptor.class)
+@ConditionalOnProperty(prefix = "sloth.mybatis", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(MybatisPlusProperties.class)
 @EnableTransactionManagement
 public class MybatisAutoConfiguration {
-
-    private static final Logger log = LoggerFactory.getLogger(MybatisAutoConfiguration.class);
 
     /**
      * 注册 MyBatis Plus 主拦截器。

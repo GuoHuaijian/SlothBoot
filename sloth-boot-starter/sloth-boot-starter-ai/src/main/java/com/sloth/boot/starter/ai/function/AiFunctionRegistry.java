@@ -1,5 +1,7 @@
 package com.sloth.boot.starter.ai.function;
 
+import com.sloth.boot.common.exception.BizException;
+import com.sloth.boot.common.exception.GlobalErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -28,10 +30,10 @@ public class AiFunctionRegistry {
      */
     public void register(String name, Function<?, ?> function) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("函数名称不能为空");
+            throw BizException.of(GlobalErrorCode.BAD_REQUEST);
         }
         if (function == null) {
-            throw new IllegalArgumentException("函数实例不能为空");
+            throw BizException.of(GlobalErrorCode.BAD_REQUEST);
         }
         functions.put(name, function);
         log.info("[AI] 注册函数: {}", name);

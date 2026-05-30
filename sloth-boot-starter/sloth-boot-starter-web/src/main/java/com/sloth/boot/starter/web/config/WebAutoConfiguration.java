@@ -10,8 +10,6 @@ import com.sloth.boot.starter.web.filter.CachedBodyHttpServletRequestWrapper;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
-import com.sloth.boot.starter.web.config.GzipProperties;
-import com.sloth.boot.starter.web.config.SlothWebProperties;
 import com.sloth.boot.starter.web.log.OperateLogAspect;
 import com.sloth.boot.starter.web.log.RequestLogFilter;
 import jakarta.servlet.FilterChain;
@@ -44,7 +42,8 @@ import java.io.IOException;
 @AutoConfiguration
 @ConditionalOnClass(HttpServletRequest.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class, LogProperties.class})
+@ConditionalOnProperty(prefix = "sloth.web", name = "enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class})
 public class WebAutoConfiguration {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();

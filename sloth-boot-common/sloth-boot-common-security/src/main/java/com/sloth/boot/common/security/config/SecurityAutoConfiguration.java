@@ -4,6 +4,7 @@ import com.sloth.boot.common.security.desensitize.DesensitizeValueSerializerModi
 import com.sloth.boot.common.security.sign.SignProperties;
 import com.sloth.boot.common.security.xss.XssProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import tools.jackson.databind.JacksonModule;
@@ -18,6 +19,7 @@ import tools.jackson.databind.module.SimpleModule;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnProperty(prefix = "sloth.security", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties({XssProperties.class, SignProperties.class})
 public class SecurityAutoConfiguration {
 

@@ -1,7 +1,6 @@
 package com.sloth.boot.common.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +13,9 @@ import java.util.concurrent.Executors;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 @Component
 public class EventPublisher {
-
-    private static final Logger log = LoggerFactory.getLogger(EventPublisher.class);
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private static final Executor DEFAULT_ASYNC_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();

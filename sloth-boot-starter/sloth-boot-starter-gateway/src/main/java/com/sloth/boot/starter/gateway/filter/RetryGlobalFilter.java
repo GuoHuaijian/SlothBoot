@@ -84,7 +84,7 @@ public class RetryGlobalFilter implements GlobalFilter, Ordered {
      */
     private static class Retry5xxException extends RuntimeException {
         Retry5xxException() {
-            super("网关 5xx 重试标记");
+            super("Gateway 5xx retry marker");
         }
     }
 }

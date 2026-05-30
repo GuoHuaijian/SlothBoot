@@ -2,6 +2,8 @@ package com.sloth.boot.starter.mybatis.handler;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.symmetric.AES;
+import com.sloth.boot.common.exception.BizException;
+import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.util.SpringContextUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -103,8 +105,7 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
     private byte[] resolveKey() {
         String configuredKey = SpringContextUtil.getProperty("sloth.mybatis.encrypt-key");
         if (StrUtil.isBlank(configuredKey)) {
-            throw new IllegalStateException("sloth.mybatis.encrypt-key 未配置。"
-                + "使用加密字段处理器必须在配置文件中设置 sloth.mybatis.encrypt-key");
+            throw BizException.of(GlobalErrorCode.BAD_REQUEST);
         }
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");

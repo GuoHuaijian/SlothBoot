@@ -7,6 +7,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import com.sloth.boot.common.result.R;
+import com.sloth.boot.common.util.I18nUtil;
 
 /**
  * Sentinel 全局拦截处理器。
@@ -24,20 +25,20 @@ public class GlobalBlockHandler {
      */
     public R<Void> handle(BlockException exception) {
         if (exception instanceof FlowException) {
-            return R.fail(429, "请求过于频繁，请稍后再试");
+            return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
         }
         if (exception instanceof DegradeException) {
-            return R.fail(503, "服务暂时不可用，请稍后再试");
+            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
         }
         if (exception instanceof ParamFlowException) {
-            return R.fail(429, "热点参数限流");
+            return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
         }
         if (exception instanceof SystemBlockException) {
-            return R.fail(503, "系统保护触发");
+            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_system"));
         }
         if (exception instanceof AuthorityException) {
-            return R.fail(403, "授权规则不通过");
+            return R.fail(403, I18nUtil.getMessage("sloth.error.sentinel_authority"));
         }
-        return R.fail(429, "请求被限流，请稍后再试");
+        return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_blocked"));
     }
 }

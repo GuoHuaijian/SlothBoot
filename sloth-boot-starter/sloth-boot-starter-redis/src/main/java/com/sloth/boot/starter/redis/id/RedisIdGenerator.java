@@ -1,5 +1,7 @@
 package com.sloth.boot.starter.redis.id;
 
+import com.sloth.boot.common.exception.SystemException;
+import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.starter.redis.config.RedisProperties;
 
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +108,7 @@ public class RedisIdGenerator {
         try {
             redisScript.setScriptText(scriptSource.getScriptAsString());
         } catch (IOException ex) {
-            throw new IllegalStateException("加载 ID 生成器脚本失败", ex);
+            throw new SystemException(GlobalErrorCode.INTERNAL_ERROR, ex);
         }
         return redisScript;
     }

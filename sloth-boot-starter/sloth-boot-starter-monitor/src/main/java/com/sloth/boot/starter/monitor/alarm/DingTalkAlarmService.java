@@ -3,6 +3,8 @@ package com.sloth.boot.starter.monitor.alarm;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.StrUtil;
+import com.sloth.boot.common.exception.GlobalErrorCode;
+import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.starter.monitor.config.MonitorProperties;
 import org.springframework.web.client.RestTemplate;
 
@@ -70,7 +72,7 @@ public class DingTalkAlarmService extends AbstractWebhookAlarmService {
             byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
             return URLEncoder.encode(Base64.encode(signData), StandardCharsets.UTF_8);
         } catch (Exception ex) {
-            throw new IllegalStateException("生成钉钉签名失败", ex);
+            throw new SystemException(GlobalErrorCode.INTERNAL_ERROR, ex);
         }
     }
 }
