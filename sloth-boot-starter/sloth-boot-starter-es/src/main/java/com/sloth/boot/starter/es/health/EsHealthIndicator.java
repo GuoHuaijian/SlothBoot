@@ -1,4 +1,4 @@
-package com.sloth.boot.starter.es.monitoring;
+package com.sloth.boot.starter.es.health;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
