@@ -359,18 +359,6 @@ public class EsTemplate {
     }
 
     /**
-     * 获取下一批滚动结果。
-     * <p>Spring Data ES NativeQuery 不直接支持 scroll，请使用 {@link #searchAfter} 替代。
-     *
-     * @deprecated scroll 操作需通过低层 ELC 客户端实现，建议使用 searchAfter 方式深分页
-     */
-    @Deprecated
-    public <T> SearchResult<T> scrollNext(String scrollId, Class<T> clazz) {
-        throw new UnsupportedOperationException(
-            "Scroll API is not supported via NativeQuery, use searchAfter() for deep pagination");
-    }
-
-    /**
      * Search After 方式深分页（推荐）。
      */
     public <T> SearchResult<T> searchAfter(EsPageQuery<T> pageQuery, Class<T> clazz,

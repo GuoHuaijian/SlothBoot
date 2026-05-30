@@ -12,6 +12,7 @@ import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
 import com.sloth.boot.starter.web.log.OperateLogAspect;
 import com.sloth.boot.starter.web.log.RequestLogFilter;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -265,7 +266,7 @@ public class WebAutoConfiguration {
                         && request instanceof CachedBodyHttpServletRequestWrapper cached) {
                         requestBody = cached.getCachedBodyAsString();
                     }
-                    String clientIp = getClientIp(request);
+                    String clientIp = ServletUtil.getClientIp(request);
                     Long userId = null;
                     try {
                         userId = UserContext.getUserId();
@@ -285,15 +286,4 @@ public class WebAutoConfiguration {
         return registration;
     }
 
-    private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-            return ip.split(",")[0].trim();
-        }
-        ip = request.getHeader("X-Real-IP");
-        if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-            return ip;
-        }
-        return request.getRemoteAddr();
-    }
 }

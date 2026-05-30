@@ -59,7 +59,9 @@ public class IdempotentAutoConfiguration {
     @ConditionalOnMissingBean
     public IdempotentAspect idempotentAspect(StringRedisTemplate stringRedisTemplate,
                                               IdempotentProperties idempotentProperties,
-                                              ObjectProvider<TokenIdempotentService> tokenServiceProvider) {
-        return new IdempotentAspect(stringRedisTemplate, idempotentProperties, tokenServiceProvider.getIfAvailable());
+                                              ObjectProvider<TokenIdempotentService> tokenServiceProvider,
+                                              IdempotentKeyStrategy idempotentKeyStrategy) {
+        return new IdempotentAspect(stringRedisTemplate, idempotentProperties,
+                tokenServiceProvider.getIfAvailable(), idempotentKeyStrategy);
     }
 }

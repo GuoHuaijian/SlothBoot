@@ -3,15 +3,14 @@ package com.sloth.boot.starter.idempotent.aspect;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.starter.idempotent.annotation.Idempotent;
-import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.starter.idempotent.annotation.IdempotentType;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
-import com.sloth.boot.common.util.IpUtil;
-import com.sloth.boot.starter.web.util.ServletUtil;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.config.IdempotentProperties;
 import com.sloth.boot.starter.idempotent.core.TokenIdempotentService;
+import com.sloth.boot.starter.idempotent.spi.IdempotentKeyStrategy;
+import com.sloth.boot.starter.web.util.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -53,14 +52,17 @@ public class IdempotentAspect {
     private final StringRedisTemplate redisTemplate;
     private final IdempotentProperties idempotentProperties;
     private final TokenIdempotentService tokenIdempotentService;
+    private final IdempotentKeyStrategy idempotentKeyStrategy;
     private final DefaultRedisScript<Long> releaseScript;
 
     public IdempotentAspect(StringRedisTemplate redisTemplate,
                             IdempotentProperties idempotentProperties,
-                            TokenIdempotentService tokenIdempotentService) {
+                            TokenIdempotentService tokenIdempotentService,
+                            IdempotentKeyStrategy idempotentKeyStrategy) {
         this.redisTemplate = redisTemplate;
         this.idempotentProperties = idempotentProperties;
         this.tokenIdempotentService = tokenIdempotentService;
+        this.idempotentKeyStrategy = idempotentKeyStrategy;
         this.releaseScript = buildReleaseScript();
     }
 
@@ -94,7 +96,7 @@ public class IdempotentAspect {
      * </ol>
      */
     private Object handleLockMode(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable {
-        String key = buildIdempotentKey(joinPoint, idempotent);
+        String key = idempotentKeyStrategy.buildKey(joinPoint, idempotent);
         String requestId = IdUtil.nanoId();
         int timeout = idempotent.timeout() > 0 ? idempotent.timeout() : idempotentProperties.getTimeout();
         Duration duration = Duration.ofSeconds(timeout);
@@ -187,26 +189,6 @@ public class IdempotentAspect {
         // 降级到 HTTP 请求参数
         String param = ServletUtil.getRequestParam(tokenParam);
         return StrUtil.blankToDefault(param, null);
-    }
-
-    /**
-     * 构建幂等 Key。
-     * <p>
-     * Key 组成规则：
-     * <ul>
-     *   <li>自定义 key（SpEL）：prefix + SpEL 解析结果</li>
-     *   <li>默认：prefix + 方法签名 + ":" + 用户ID（未登录时使用客户端 IP）</li>
-     * </ul>
-     */
-    private String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
-        String prefix = idempotentProperties.getKeyPrefix();
-        if (StrUtil.isNotBlank(idempotent.key())) {
-            return prefix + SpelUtil.parse(joinPoint.getTarget(), ((MethodSignature) joinPoint.getSignature()).getMethod(),
-                    joinPoint.getArgs(), idempotent.key(), idempotent.key());
-        }
-        Long userId = UserContext.getUserId();
-        String userPart = userId != null ? String.valueOf(userId) : IpUtil.getClientIp(ServletUtil.getRequest());
-        return prefix + joinPoint.getSignature().toShortString() + ":" + userPart;
     }
 
     /**
