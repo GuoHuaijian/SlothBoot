@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("MybatisPlusAutoConfiguration 条件装配测试")
-class MybatisPlusAutoConfigurationTest {
+@DisplayName("MybatisAutoConfiguration 条件装配测试")
+class MybatisAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class)).withBean(DataSource.class, () -> {
+        .withConfiguration(AutoConfigurations.of(MybatisAutoConfiguration.class)).withBean(DataSource.class, () -> {
             DataSource ds = mock(DataSource.class);
             try {
                 Connection conn = mock(Connection.class);

@@ -42,9 +42,9 @@ import java.sql.SQLException;
 @ConditionalOnClass(MybatisPlusInterceptor.class)
 @EnableConfigurationProperties(MybatisPlusProperties.class)
 @EnableTransactionManagement
-public class MybatisPlusAutoConfiguration {
+public class MybatisAutoConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
+    private static final Logger log = LoggerFactory.getLogger(MybatisAutoConfiguration.class);
 
     /**
      * 注册 MyBatis Plus 主拦截器。
