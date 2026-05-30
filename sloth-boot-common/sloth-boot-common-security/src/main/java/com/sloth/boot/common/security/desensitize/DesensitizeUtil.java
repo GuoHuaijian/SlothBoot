@@ -1,4 +1,4 @@
-package com.sloth.boot.common.util;
+package com.sloth.boot.common.security.desensitize;
 
 import cn.hutool.core.util.StrUtil;
 

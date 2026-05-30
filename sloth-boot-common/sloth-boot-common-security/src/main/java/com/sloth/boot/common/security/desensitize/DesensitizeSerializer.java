@@ -3,7 +3,7 @@ package com.sloth.boot.common.security.desensitize;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.SerializationContext;
-import com.sloth.boot.common.util.DesensitizeUtil;
+
 
 /**
  * 脱敏 JSON 序列化器。
