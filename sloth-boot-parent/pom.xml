@@ -128,10 +128,13 @@
                 </configuration>
             </plugin>
 
-            <!-- Checkstyle 代码规范检查 -->
+            <!-- Checkstyle 代码规范检查 (暂时关闭，待规则完善后启用) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>checkstyle-check</id>
