@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.github.kstyrc</groupId>
             <artifactId>embedded-redis</artifactId>
-            <version>0.6</version>
+            <version>${embedded-redis.version}</version>
         </dependency>
 
     </dependencies>

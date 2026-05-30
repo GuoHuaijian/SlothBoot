@@ -2,7 +2,11 @@ package com.sloth.boot.starter.oss.config;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.sloth.boot.starter.oss.core.*;
+import com.sloth.boot.starter.oss.core.AliyunOssClient;
+import com.sloth.boot.starter.oss.core.LocalOssClient;
+import com.sloth.boot.starter.oss.core.MinioOssClient;
+import com.sloth.boot.starter.oss.core.OssClient;
+import com.sloth.boot.starter.oss.core.OssTemplate;
 import io.minio.MinioClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

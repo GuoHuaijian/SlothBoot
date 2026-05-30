@@ -147,7 +147,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> fail(ErrorCode errorCode) {
         R<T> r = new R<>();
         r.setCode(errorCode.getCode());
-        r.setMsg(errorCode.getMsg());
+        r.setMsg(resolveMsg(errorCode));
         return r;
     }
 
@@ -170,7 +170,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> build(ErrorCode errorCode) {
         R<T> r = new R<>();
         r.setCode(errorCode.getCode());
-        r.setMsg(errorCode.getMsg());
+        r.setMsg(resolveMsg(errorCode));
         return r;
     }
 
@@ -191,5 +191,25 @@ public class R<T> implements Serializable {
             r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : I18nUtil.getMessage("sloth.error.internal"));
         }
         return r;
+    }
+
+    /**
+     * 解析错误码的国际化消息。
+     * <p>
+     * 优先通过 {@link ErrorCode#getI18nKey()} 查找国际化消息，
+     * 未配置 i18nKey 或查找失败时回退到 {@link ErrorCode#getMsg()}。
+     *
+     * @param errorCode 错误码
+     * @return 国际化消息或默认消息
+     */
+    private static String resolveMsg(ErrorCode errorCode) {
+        String i18nKey = errorCode.getI18nKey();
+        if (i18nKey != null) {
+            String resolved = I18nUtil.getMessage(i18nKey);
+            if (!resolved.equals(i18nKey)) {
+                return resolved;
+            }
+        }
+        return errorCode.getMsg();
     }
 }

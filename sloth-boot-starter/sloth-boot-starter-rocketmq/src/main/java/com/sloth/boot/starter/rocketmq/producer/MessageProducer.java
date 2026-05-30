@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.rocketmq.producer;
 
+import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.starter.rocketmq.config.RocketMQProperties;
 import com.sloth.boot.starter.rocketmq.interceptor.TraceMessageInterceptor;
 import com.sloth.boot.starter.rocketmq.model.BaseMessage;
@@ -158,10 +159,10 @@ public class MessageProducer {
                 );
                 return (TransactionSendResult) method.invoke(rocketMQTemplate, topic, message, arg);
             } catch (ReflectiveOperationException innerEx) {
-                throw new IllegalStateException("发送事务消息失败", innerEx);
+                throw SystemException.of("发送事务消息失败", innerEx);
             }
         } catch (ReflectiveOperationException ex) {
-            throw new IllegalStateException("发送事务消息失败", ex);
+            throw SystemException.of("发送事务消息失败", ex);
         }
     }
 }

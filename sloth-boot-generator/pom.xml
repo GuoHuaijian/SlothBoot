@@ -24,7 +24,6 @@
         <dependency>
             <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-core</artifactId>
-            <version>${revision}</version>
         </dependency>
 
         <dependency>

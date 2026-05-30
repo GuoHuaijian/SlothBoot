@@ -76,11 +76,10 @@
         <xxl-job.version>2.4.1</xxl-job.version>
         <easyexcel.version>4.0.3</easyexcel.version>
         <hutool.version>5.8.26</hutool.version>
-        <hutool-core.version>${hutool.version}</hutool-core.version>
-        <hutool-crypto.version>${hutool.version}</hutool-crypto.version>
         <guava.version>33.0.0-jre</guava.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.38</lombok.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <ttl.version>2.14.5</ttl.version>
 
         <!-- Cloud Storage -->
@@ -96,6 +95,9 @@
 
         <!-- Template Engine -->
         <velocity-engine.version>2.4.1</velocity-engine.version>
+
+        <!-- Test Infrastructure -->
+        <embedded-redis.version>0.6</embedded-redis.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
@@ -276,6 +278,13 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!-- Checkstyle 代码规范检查 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
                 </plugin>
 
                 <!-- SpotBugs 静态分析 -->

@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.oss.core;
 
+import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.starter.oss.config.OssProperties;
 import com.sloth.boot.starter.oss.model.OssFile;
 
@@ -43,7 +44,7 @@ public class MinioOssClient implements OssClient {
             );
             return getPresignedUrl(path, 60);
         } catch (Exception ex) {
-            throw new IllegalStateException("MinIO 上传失败", ex);
+            throw SystemException.of("MinIO 上传失败", ex);
         }
     }
 
@@ -56,7 +57,7 @@ public class MinioOssClient implements OssClient {
                 .build())) {
             inputStream.transferTo(outputStream);
         } catch (Exception ex) {
-            throw new IllegalStateException("MinIO 下载失败", ex);
+            throw SystemException.of("MinIO 下载失败", ex);
         }
     }
 
@@ -70,7 +71,7 @@ public class MinioOssClient implements OssClient {
                     .build()
             );
         } catch (Exception ex) {
-            throw new IllegalStateException("MinIO 删除失败", ex);
+            throw SystemException.of("MinIO 删除失败", ex);
         }
     }
 
@@ -81,7 +82,7 @@ public class MinioOssClient implements OssClient {
                 io.minio.GetPresignedObjectUrlArgs.builder().bucket(ossProperties.getBucketName()).object(path)
                     .expiry(expireMinutes * 60).method(io.minio.http.Method.GET).build());
         } catch (Exception ex) {
-            throw new IllegalStateException("MinIO 获取预签名地址失败", ex);
+            throw SystemException.of("MinIO 获取预签名地址失败", ex);
         }
     }
 
@@ -92,7 +93,7 @@ public class MinioOssClient implements OssClient {
                 io.minio.GetPresignedObjectUrlArgs.builder().bucket(ossProperties.getBucketName()).object(objectKey)
                     .expiry((int) expiry.getSeconds()).method(io.minio.http.Method.GET).build());
         } catch (Exception ex) {
-            throw new IllegalStateException("MinIO 获取预签名地址失败", ex);
+            throw SystemException.of("MinIO 获取预签名地址失败", ex);
         }
     }
 
