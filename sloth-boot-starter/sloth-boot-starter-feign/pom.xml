@@ -48,5 +48,11 @@
             <artifactId>micrometer-core</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
