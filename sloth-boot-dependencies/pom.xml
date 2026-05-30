@@ -308,7 +308,7 @@
 
             <dependency>
                 <groupId>com.sloth.boot</groupId>
-                <artifactId>sloth-boot-starter-mq</artifactId>
+                <artifactId>sloth-boot-starter-rocketmq</artifactId>
                 <version>${revision}</version>
             </dependency>
 

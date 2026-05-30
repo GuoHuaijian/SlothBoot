@@ -115,7 +115,7 @@ sloth-boot/
 │   ├── sloth-boot-starter-web       # Web 基础 / 统一异常 / 统一返回 / 参数校验
 │   ├── sloth-boot-starter-ai        # Spring AI 集成 / ChatClient 封装 / OpenAI 模型接入
 │   ├── sloth-boot-starter-redis     # RedisTemplate / 缓存工具 / 分布式锁 / 限流
-│   ├── sloth-boot-starter-mq        # RocketMQ 生产消费封装
+│   ├── sloth-boot-starter-rocketmq  # RocketMQ 生产消费封装
 │   ├── sloth-boot-starter-mybatis   # MyBatis-Plus 插件 / 自动填充 / TypeHandler
 │   ├── sloth-boot-starter-thread-pool  # 线程池 / 上下文透传 / 监控端点
 │   ├── sloth-boot-starter-sentinel  # Sentinel 限流降级 / Nacos 规则源
@@ -168,7 +168,7 @@ sloth-boot/
 | [`starter-gateway`](./sloth-boot-starter/sloth-boot-starter-gateway/README.md) | 全局过滤器、鉴权、动态路由、WebFlux 异常处理 | ✅ |
 | [`starter-monitor`](./sloth-boot-starter/sloth-boot-starter-monitor/README.md) | 健康检查、钉钉/微信告警、JVM 指标、Micrometer Tracing | ✅ |
 | [`starter-feign`](./sloth-boot-starter/sloth-boot-starter-feign/README.md) | 请求头透传、统一错误解码、Fallback 模板 | ✅ |
-| [`starter-mq`](./sloth-boot-starter/sloth-boot-starter-mq/README.md) | RocketMQ 生产消费封装、消息重试、幂等消费 | ✅ |
+| [`starter-rocketmq`](./sloth-boot-starter/sloth-boot-starter-rocketmq/README.md) | RocketMQ 生产消费封装、消息重试、幂等消费 | ✅ |
 | [`starter-oss`](./sloth-boot-starter/sloth-boot-starter-oss/README.md) | 统一 OSS 门面（本地 / MinIO / 阿里云） | ✅ |
 | [`starter-excel`](./sloth-boot-starter/sloth-boot-starter-excel/README.md) | EasyExcel 封装、导入校验、流式导出 | ✅ |
 | [`starter-job`](./sloth-boot-starter/sloth-boot-starter-job/README.md) | XXL-Job 自动注册、任务基类、分片处理 | ✅ |

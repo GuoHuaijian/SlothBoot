@@ -32,7 +32,7 @@
         <module>sloth-boot-starter-ai</module>
         <module>sloth-boot-starter-web</module>
         <module>sloth-boot-starter-redis</module>
-        <module>sloth-boot-starter-mq</module>
+        <module>sloth-boot-starter-rocketmq</module>
         <module>sloth-boot-starter-mybatis</module>
         <module>sloth-boot-starter-thread-pool</module>
         <module>sloth-boot-starter-sentinel</module>
