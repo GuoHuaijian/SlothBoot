@@ -1,6 +1,5 @@
 package com.sloth.boot.common.result;
 
-import com.sloth.boot.common.exception.GlobalErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -63,9 +62,9 @@ class RTest {
     }
 
     @Test
-    @DisplayName("fail(ErrorCode) 使用错误码枚举")
+    @DisplayName("fail(code, msg) 自定义错误码")
     void fail_withErrorCode() {
-        R<Void> r = R.fail(GlobalErrorCode.UNAUTHORIZED);
+        R<Void> r = R.fail(401, "未认证");
         assertThat(r.getCode()).isEqualTo(401);
         assertThat(r.getMsg()).isEqualTo("未认证");
     }

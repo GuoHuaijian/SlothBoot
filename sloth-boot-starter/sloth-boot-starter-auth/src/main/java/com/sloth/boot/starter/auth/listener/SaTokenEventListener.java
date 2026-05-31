@@ -57,8 +57,8 @@ public class SaTokenEventListener implements SaTokenListener {
             // 已有设备登录时，踢掉新登录的设备
             try {
                 cn.dev33.satoken.stp.StpUtil.kickout(loginId, device);
-            } catch (Exception ignored) {
-                // 当前设备可能没有旧会话，忽略
+            } catch (Exception e) {
+                log.debug("[Auth] 踢出旧会话失败(可能无旧会话): loginId={}, device={}", loginId, device, e);
             }
         }
     }
@@ -197,7 +197,8 @@ public class SaTokenEventListener implements SaTokenListener {
         Long userId = null;
         try {
             userId = loginId instanceof Long ? (Long) loginId : Long.parseLong(loginId.toString());
-        } catch (NumberFormatException ignored) {
+        } catch (NumberFormatException e) {
+            log.debug("[Auth] loginId 无法转换为 Long: {}", loginId, e);
         }
         String loginIp = null;
         String userAgent = null;
@@ -214,8 +215,8 @@ public class SaTokenEventListener implements SaTokenListener {
                 loginIp = loginIp.split(",")[0].trim();
             }
             userAgent = request.getHeader("User-Agent");
-        } catch (Exception ignored) {
-            // 非 Web 环境下无法获取请求信息
+        } catch (Exception e) {
+            log.debug("[Auth] 获取请求信息失败(非 Web 环境)", e);
         }
         LoginEvent event = new LoginEvent(this, userId, loginType, loginIp, userAgent, device);
         eventPublisher.publishEvent(event);

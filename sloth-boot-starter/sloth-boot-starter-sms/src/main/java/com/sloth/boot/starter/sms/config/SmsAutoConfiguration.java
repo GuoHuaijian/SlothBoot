@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnClass(SmsClient.class)
 @ConditionalOnProperty(prefix = "sloth.sms", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SmsProperties.class)
 public class SmsAutoConfiguration {

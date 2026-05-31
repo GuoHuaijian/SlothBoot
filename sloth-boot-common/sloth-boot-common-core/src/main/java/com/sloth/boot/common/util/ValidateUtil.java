@@ -88,6 +88,11 @@ public final class ValidateUtil {
     private static final Pattern STRONG_PASSWORD_PATTERN = Pattern.compile(
         "^(?![a-zA-Z]+$)(?!\\d+$)(?![!@#$%^&*_]+$)[a-zA-Z\\d!@#$%^&*_]{8,}$");
 
+    private static final Pattern UPPERCASE_PATTERN = Pattern.compile("[A-Z]");
+    private static final Pattern LOWERCASE_PATTERN = Pattern.compile("[a-z]");
+    private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d");
+    private static final Pattern SPECIAL_CHAR_PATTERN = Pattern.compile("[!@#$%^&*_+=\\-]");
+
     /**
      * 域名正则表达式
      */
@@ -317,16 +322,16 @@ public final class ValidateUtil {
             return false;
         }
         int typeCount = 0;
-        if (Pattern.compile("[A-Z]").matcher(password).find()) {
+        if (UPPERCASE_PATTERN.matcher(password).find()) {
             typeCount++;
         }
-        if (Pattern.compile("[a-z]").matcher(password).find()) {
+        if (LOWERCASE_PATTERN.matcher(password).find()) {
             typeCount++;
         }
-        if (Pattern.compile("\\d").matcher(password).find()) {
+        if (DIGIT_PATTERN.matcher(password).find()) {
             typeCount++;
         }
-        if (Pattern.compile("[!@#$%^&*_+=\\-]").matcher(password).find()) {
+        if (SPECIAL_CHAR_PATTERN.matcher(password).find()) {
             typeCount++;
         }
         return typeCount >= 3;

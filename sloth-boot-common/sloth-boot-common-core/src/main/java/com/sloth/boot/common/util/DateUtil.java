@@ -10,8 +10,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 日期工具类
@@ -46,7 +46,7 @@ public final class DateUtil {
     /**
      * 缓存的常用格式化器
      */
-    private static final Map<String, DateTimeFormatter> FORMATTER_CACHE = new HashMap<>();
+    private static final Map<String, DateTimeFormatter> FORMATTER_CACHE = new ConcurrentHashMap<>();
 
     static {
         FORMATTER_CACHE.put(DEFAULT_DATE_TIME_FORMAT, DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT));

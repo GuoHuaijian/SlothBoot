@@ -11,6 +11,8 @@ package com.sloth.boot.common.util;
  */
 public final class ConditionUtil {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConditionUtil.class);
+
     private ConditionUtil() {
         throw new UnsupportedOperationException("Utility class");
     }
@@ -104,7 +106,8 @@ public final class ConditionUtil {
                     return true;
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.trace("Failed to check active profile '{}'", profile, e);
         }
         return false;
     }

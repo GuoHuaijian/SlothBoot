@@ -73,7 +73,9 @@ management:
       exposure:
         include: health,info,metrics,prometheus,threadPools,appInfo,jvmInfo,metricsSummary,systemResources
       cors:
-        allowed-origins: "*"
+        allowed-origins:
+          - "http://localhost:8080"
+          - "http://127.0.0.1:8080"
         allowed-methods: GET,POST
   endpoint:
     health:

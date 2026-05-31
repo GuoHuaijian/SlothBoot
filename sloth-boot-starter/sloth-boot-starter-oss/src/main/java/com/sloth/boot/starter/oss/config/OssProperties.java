@@ -47,4 +47,9 @@ public class OssProperties {
      * 访问域名。
      */
     private String domain;
+
+    /**
+     * 预签名 URL 过期时间（分钟）。
+     */
+    private int presignedUrlExpiry = 60;
 }

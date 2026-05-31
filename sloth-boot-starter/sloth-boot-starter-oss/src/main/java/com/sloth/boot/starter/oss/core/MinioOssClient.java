@@ -42,7 +42,7 @@ public class MinioOssClient implements OssClient {
                     .stream(inputStream, -1, 10 * 1024 * 1024)
                     .build()
             );
-            return getPresignedUrl(path, 60);
+            return getPresignedUrl(path, ossProperties.getPresignedUrlExpiry());
         } catch (Exception ex) {
             throw SystemException.of("MinIO 上传失败", ex);
         }

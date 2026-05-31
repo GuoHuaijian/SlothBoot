@@ -2,6 +2,7 @@ package com.sloth.boot.starter.web.config;
 
 import com.sloth.boot.common.util.jackson.JacksonConfigUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import tools.jackson.databind.JacksonModule;
@@ -15,6 +16,7 @@ import tools.jackson.databind.JacksonModule;
  * @since 1.0.0
  */
 @AutoConfiguration
+@ConditionalOnClass(JacksonModule.class)
 public class JacksonAutoConfiguration {
 
     @Bean
