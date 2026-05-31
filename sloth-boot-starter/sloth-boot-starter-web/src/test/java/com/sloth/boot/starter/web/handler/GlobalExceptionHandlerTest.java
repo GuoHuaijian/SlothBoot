@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,10 +22,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GlobalExceptionHandlerTest {
 
     private GlobalExceptionHandler handler;
+    private Locale originalLocale;
 
     @BeforeEach
     void setUp() {
+        originalLocale = Locale.getDefault();
+        Locale.setDefault(Locale.CHINA);
         handler = new GlobalExceptionHandler();
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void tearDown() {
+        Locale.setDefault(originalLocale);
     }
 
     @Nested
