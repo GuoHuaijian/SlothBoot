@@ -5,6 +5,7 @@ import com.sloth.boot.starter.es.index.EsAliasManager;
 import com.sloth.boot.starter.es.monitoring.EsSlowQueryLogger;
 import com.sloth.boot.starter.es.support.EsIndexNameResolver;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,6 +30,7 @@ public class EsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(ElasticsearchTemplate.class)
     public EsTemplate esTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
         return new EsTemplate(elasticsearchTemplate, esProperties);
     }
@@ -48,6 +50,7 @@ public class EsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(ElasticsearchOperations.class)
     public EsAliasManager esAliasManager(ElasticsearchOperations elasticsearchOperations) {
         return new EsAliasManager(elasticsearchOperations);
     }

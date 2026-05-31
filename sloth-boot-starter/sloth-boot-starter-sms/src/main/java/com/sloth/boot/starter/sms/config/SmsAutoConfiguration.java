@@ -10,6 +10,7 @@ import com.sloth.boot.starter.sms.metrics.SmsMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -65,6 +66,7 @@ public class SmsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     public SmsMetrics smsMetrics(MeterRegistry registry) {
         return new SmsMetrics(registry);
     }

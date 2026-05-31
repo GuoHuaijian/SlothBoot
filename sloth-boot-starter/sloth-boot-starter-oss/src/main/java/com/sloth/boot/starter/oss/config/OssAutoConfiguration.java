@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.StringUtils;
 
 /**
  * OSS 自动配置。
@@ -37,7 +38,7 @@ public class OssAutoConfiguration {
     @ConditionalOnMissingBean
     public OssClient ossClient(OssProperties properties) {
         String type = properties.getType();
-        if ("aliyun".equalsIgnoreCase(type)) {
+        if ("aliyun".equalsIgnoreCase(type) && StringUtils.hasText(properties.getEndpoint())) {
             OSS oss = new OSSClientBuilder().build(
                 properties.getEndpoint(),
                 properties.getAccessKey(),
@@ -45,7 +46,7 @@ public class OssAutoConfiguration {
             );
             return new AliyunOssClient(oss, properties);
         }
-        if ("minio".equalsIgnoreCase(type)) {
+        if ("minio".equalsIgnoreCase(type) && StringUtils.hasText(properties.getEndpoint())) {
             MinioClient minioClient = MinioClient.builder()
                 .endpoint(properties.getEndpoint())
                 .credentials(properties.getAccessKey(), properties.getSecretKey())

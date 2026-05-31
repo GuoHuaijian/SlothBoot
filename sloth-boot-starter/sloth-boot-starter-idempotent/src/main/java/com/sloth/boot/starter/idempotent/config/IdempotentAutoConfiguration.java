@@ -10,6 +10,7 @@ import com.sloth.boot.starter.idempotent.spi.RedisIdempotentStore;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +32,7 @@ public class IdempotentAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(StringRedisTemplate.class)
     public TokenIdempotentService tokenIdempotentService(StringRedisTemplate stringRedisTemplate,
                                                          IdempotentProperties idempotentProperties) {
         return new TokenIdempotentService(stringRedisTemplate, idempotentProperties);
@@ -38,6 +40,7 @@ public class IdempotentAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(StringRedisTemplate.class)
     public IdempotentStore idempotentStore(StringRedisTemplate stringRedisTemplate) {
         return new RedisIdempotentStore(stringRedisTemplate);
     }
@@ -51,12 +54,14 @@ public class IdempotentAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     public IdempotentMetrics idempotentMetrics(MeterRegistry meterRegistry) {
         return new IdempotentMetrics(meterRegistry);
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(StringRedisTemplate.class)
     public IdempotentAspect idempotentAspect(StringRedisTemplate stringRedisTemplate,
                                               IdempotentProperties idempotentProperties,
                                               ObjectProvider<TokenIdempotentService> tokenServiceProvider,

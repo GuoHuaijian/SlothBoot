@@ -5,7 +5,7 @@ import com.sloth.boot.starter.es.support.EsIndexNameResolver;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -17,7 +17,7 @@ class EsAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withConfiguration(AutoConfigurations.of(EsAutoConfiguration.class))
-        .withBean(ElasticsearchOperations.class, () -> mock(ElasticsearchOperations.class));
+        .withBean(ElasticsearchTemplate.class, () -> mock(ElasticsearchTemplate.class));
 
     @Test
     void should_register_beans_when_elasticsearch_on_classpath() {

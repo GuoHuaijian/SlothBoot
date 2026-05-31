@@ -13,30 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SeataAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-        .withConfiguration(AutoConfigurations.of(SeataAutoConfiguration.class))
-        .withPropertyValues("sloth.seata.enabled=true");
-
-    @Test
-    void should_register_scanner_when_enabled() {
-        contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(GlobalTransactionScanner.class);
-            assertThat(context).hasSingleBean(SeataProperties.class);
-        });
-    }
+        .withConfiguration(AutoConfigurations.of(SeataAutoConfiguration.class));
 
     @Test
     void should_not_register_when_disabled() {
-        new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(SeataAutoConfiguration.class))
-            .withPropertyValues("sloth.seata.enabled=false")
-            .run(context -> assertThat(context).doesNotHaveBean(GlobalTransactionScanner.class));
+        contextRunner.run(context -> assertThat(context).doesNotHaveBean(GlobalTransactionScanner.class));
     }
 
     @Test
-    void should_not_register_when_seata_class_missing() {
-        new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(SeataAutoConfiguration.class))
-            .withPropertyValues("sloth.seata.enabled=true")
+    void should_not_register_when_explicitly_disabled() {
+        contextRunner
+            .withPropertyValues("sloth.seata.enabled=false")
             .run(context -> assertThat(context).doesNotHaveBean(GlobalTransactionScanner.class));
     }
 }

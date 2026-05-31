@@ -11,6 +11,7 @@ import com.sloth.boot.starter.sentinel.metrics.SentinelMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -82,6 +83,7 @@ public class SentinelAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     public SentinelMetrics sentinelMetrics(MeterRegistry registry) {
         return new SentinelMetrics(registry);
     }

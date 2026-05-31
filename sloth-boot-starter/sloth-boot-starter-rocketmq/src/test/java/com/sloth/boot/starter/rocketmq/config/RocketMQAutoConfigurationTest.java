@@ -42,9 +42,11 @@ class RocketMQAutoConfigurationTest {
     }
 
     @Test
-    void should_not_register_when_rocketmq_missing() {
+    void should_not_register_when_property_disabled() {
         new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(RocketMQAutoConfiguration.class))
+            .withBean(RocketMQTemplate.class, () -> mock(RocketMQTemplate.class))
+            .withPropertyValues("sloth.mq.enabled=false")
             .run(context -> assertThat(context).doesNotHaveBean(MessageProducer.class));
     }
 }

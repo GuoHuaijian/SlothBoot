@@ -1,5 +1,7 @@
 package com.sloth.boot.starter.web.config;
 
+import com.sloth.boot.common.event.EventPublisher;
+import com.sloth.boot.common.log.config.LogAutoConfiguration;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
@@ -15,7 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WebAutoConfigurationTest {
 
     private final WebApplicationContextRunner contextRunner =
-        new WebApplicationContextRunner().withConfiguration(AutoConfigurations.of(WebAutoConfiguration.class));
+        new WebApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(LogAutoConfiguration.class, WebAutoConfiguration.class))
+            .withBean(EventPublisher.class, () -> new EventPublisher(event -> {}));
 
     @Test
     @DisplayName("默认配置下注册所有核心 Bean")

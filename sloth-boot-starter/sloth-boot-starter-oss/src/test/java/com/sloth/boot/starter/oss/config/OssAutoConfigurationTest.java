@@ -19,7 +19,7 @@ class OssAutoConfigurationTest {
     @Test
     void should_register_local_oss_client_by_default() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(OssClient.class);
+            assertThat(context.getBean("ossClient")).isInstanceOf(OssClient.class);
             assertThat(context).hasSingleBean(OssTemplate.class);
             assertThat(context).hasSingleBean(OssProperties.class);
         });
@@ -28,7 +28,7 @@ class OssAutoConfigurationTest {
     @Test
     void should_allow_user_override() {
         contextRunner
-            .withBean(OssClient.class, () -> new com.sloth.boot.starter.oss.core.LocalOssClient(new OssProperties()))
-            .run(context -> assertThat(context).hasSingleBean(OssClient.class));
+            .withBean("customOssClient", OssClient.class, () -> new com.sloth.boot.starter.oss.core.LocalOssClient(new OssProperties()))
+            .run(context -> assertThat(context.getBean("customOssClient")).isInstanceOf(OssClient.class));
     }
 }

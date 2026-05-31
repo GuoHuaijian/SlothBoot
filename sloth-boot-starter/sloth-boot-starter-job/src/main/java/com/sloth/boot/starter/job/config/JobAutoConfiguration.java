@@ -6,6 +6,7 @@ import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -59,6 +60,7 @@ public class JobAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     public JobMetrics jobMetrics(MeterRegistry registry) {
         return new JobMetrics(registry);
     }
