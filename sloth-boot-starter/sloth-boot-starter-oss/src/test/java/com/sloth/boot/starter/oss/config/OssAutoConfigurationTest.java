@@ -18,11 +18,13 @@ class OssAutoConfigurationTest {
 
     @Test
     void should_register_local_oss_client_by_default() {
-        contextRunner.run(context -> {
-            assertThat(context.getBean("ossClient")).isInstanceOf(OssClient.class);
-            assertThat(context).hasSingleBean(OssTemplate.class);
-            assertThat(context).hasSingleBean(OssProperties.class);
-        });
+        contextRunner
+            .withPropertyValues("sloth.oss.type=local")
+            .run(context -> {
+                assertThat(context.getBean("ossClient")).isInstanceOf(OssClient.class);
+                assertThat(context).hasSingleBean(OssTemplate.class);
+                assertThat(context).hasSingleBean(OssProperties.class);
+            });
     }
 
     @Test

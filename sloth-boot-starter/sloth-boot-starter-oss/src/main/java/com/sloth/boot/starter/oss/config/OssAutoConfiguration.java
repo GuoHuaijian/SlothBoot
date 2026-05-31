@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -37,23 +38,26 @@ public class OssAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public OssClient ossClient(OssProperties properties) {
-        String type = properties.getType();
-        if ("aliyun".equalsIgnoreCase(type) && StringUtils.hasText(properties.getEndpoint())) {
-            OSS oss = new OSSClientBuilder().build(
-                properties.getEndpoint(),
-                properties.getAccessKey(),
-                properties.getSecretKey()
-            );
-            return new AliyunOssClient(oss, properties);
-        }
-        if ("minio".equalsIgnoreCase(type) && StringUtils.hasText(properties.getEndpoint())) {
-            MinioClient minioClient = MinioClient.builder()
-                .endpoint(properties.getEndpoint())
-                .credentials(properties.getAccessKey(), properties.getSecretKey())
-                .build();
-            return new MinioOssClient(minioClient, properties);
-        }
-        return new LocalOssClient(properties);
+        return switch (properties.getType()) {
+            case ALIYUN -> {
+                Assert.hasText(properties.getEndpoint(), "sloth.oss.endpoint must not be blank for aliyun type");
+                OSS oss = new OSSClientBuilder().build(
+                    properties.getEndpoint(),
+                    properties.getAccessKey(),
+                    properties.getSecretKey()
+                );
+                yield new AliyunOssClient(oss, properties);
+            }
+            case MINIO -> {
+                Assert.hasText(properties.getEndpoint(), "sloth.oss.endpoint must not be blank for minio type");
+                MinioClient minioClient = MinioClient.builder()
+                    .endpoint(properties.getEndpoint())
+                    .credentials(properties.getAccessKey(), properties.getSecretKey())
+                    .build();
+                yield new MinioOssClient(minioClient, properties);
+            }
+            case LOCAL -> new LocalOssClient(properties);
+        };
     }
 
     /**

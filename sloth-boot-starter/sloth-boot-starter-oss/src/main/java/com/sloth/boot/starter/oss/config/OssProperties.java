@@ -16,7 +16,7 @@ public class OssProperties {
     /**
      * OSS 类型。
      */
-    private String type = "minio";
+    private OssTypeEnum type = OssTypeEnum.MINIO;
 
     /**
      * 服务端点。
