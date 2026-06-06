@@ -53,11 +53,6 @@ public class LocalOssClient implements OssClient {
     }
 
     @Override
-    public String getPresignedUrl(String path, int expireMinutes) {
-        return buildUrl(path);
-    }
-
-    @Override
     public String generatePresignedUrl(String objectKey, Duration expiry) {
         return buildUrl(objectKey);
     }

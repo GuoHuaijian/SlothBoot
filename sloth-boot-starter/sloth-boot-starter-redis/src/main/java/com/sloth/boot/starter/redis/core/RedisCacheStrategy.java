@@ -1,6 +1,5 @@
 package com.sloth.boot.starter.redis.core;
 
-import cn.hutool.core.util.StrUtil;
 import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
@@ -39,7 +38,7 @@ public class RedisCacheStrategy {
      * @return 结果值
      */
     public <T> T getOrLoad(String key, Class<T> clazz, Supplier<T> supplier, Duration timeout) {
-        String redisKey = buildKey(key);
+        String redisKey = RedisKeyUtil.buildKey(key, redisProperties);
         Object cached = redisTemplate.opsForValue().get(redisKey);
         if (cached != null) {
             if (NULL_HOLDER.equals(cached)) {
@@ -68,7 +67,7 @@ public class RedisCacheStrategy {
      * @return 缓存值
      */
     public <T> T getWithLogicalExpire(String key, Class<T> clazz, Supplier<T> supplier, Duration timeout) {
-        String redisKey = buildKey(key);
+        String redisKey = RedisKeyUtil.buildKey(key, redisProperties);
         Object cached = redisTemplate.opsForValue().get(redisKey);
         if (cached == null) {
             T loaded = supplier.get();
@@ -103,24 +102,11 @@ public class RedisCacheStrategy {
         return value;
     }
 
-    private String buildKey(String key) {
-        if (StrUtil.isBlank(key)) {
-            return redisProperties.getKeyPrefix();
-        }
-        return key.startsWith(redisProperties.getKeyPrefix()) ? key : redisProperties.getKeyPrefix() + key;
-    }
-
     private <T> T castValue(Object value, Class<T> clazz) {
-        if (value == null || clazz == null) {
-            return null;
-        }
-        if (clazz.isInstance(value)) {
-            return clazz.cast(value);
-        }
         if (value instanceof String str && NULL_HOLDER.equals(str)) {
             return null;
         }
-        return OBJECT_MAPPER.convertValue(value, clazz);
+        return RedisKeyUtil.castValue(value, clazz, OBJECT_MAPPER);
     }
 
     /**

@@ -71,17 +71,17 @@ public final class ObjectUtil {
         if (obj == null) {
             return true;
         }
-        if (obj instanceof String) {
-            return ((String) obj).isEmpty();
+        if (obj instanceof String s) {
+            return s.isEmpty();
         }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).length() == 0;
+        if (obj instanceof CharSequence cs) {
+            return cs.length() == 0;
         }
-        if (obj instanceof Collection) {
-            return ((Collection<?>) obj).isEmpty();
+        if (obj instanceof Collection<?> c) {
+            return c.isEmpty();
         }
-        if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).isEmpty();
+        if (obj instanceof Map<?, ?> m) {
+            return m.isEmpty();
         }
         if (obj.getClass().isArray()) {
             return Array.getLength(obj) == 0;

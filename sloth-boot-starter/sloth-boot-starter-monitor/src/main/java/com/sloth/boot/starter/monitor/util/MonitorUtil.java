@@ -12,6 +12,9 @@ import java.time.format.DateTimeFormatter;
  */
 public final class MonitorUtil {
 
+    private static final DateTimeFormatter TIMESTAMP_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.systemDefault());
+
     private MonitorUtil() {
     }
 
@@ -32,9 +35,7 @@ public final class MonitorUtil {
      * @return 格式化的时间字符串
      */
     public static String formatTimestamp(long millis) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                .withZone(ZoneId.systemDefault())
-                .format(Instant.ofEpochMilli(millis));
+        return TIMESTAMP_FMT.format(Instant.ofEpochMilli(millis));
     }
 
     /**

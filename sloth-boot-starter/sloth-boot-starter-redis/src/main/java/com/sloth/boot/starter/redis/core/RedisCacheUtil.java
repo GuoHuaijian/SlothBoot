@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.redis.core;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
@@ -42,7 +41,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @param value 缓存值
      */
     public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(buildKey(key), value);
+        redisTemplate.opsForValue().set(RedisKeyUtil.buildKey(key, redisProperties), value);
     }
 
     /**
@@ -53,7 +52,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @param timeout 过期时间
      */
     public void set(String key, Object value, Duration timeout) {
-        redisTemplate.opsForValue().set(buildKey(key), value, timeout);
+        redisTemplate.opsForValue().set(RedisKeyUtil.buildKey(key, redisProperties), value, timeout);
     }
 
     /**
@@ -65,8 +64,8 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 缓存值
      */
     public <T> T get(String key, Class<T> clazz) {
-        Object value = redisTemplate.opsForValue().get(buildKey(key));
-        return castValue(value, clazz);
+        Object value = redisTemplate.opsForValue().get(RedisKeyUtil.buildKey(key, redisProperties));
+        return RedisKeyUtil.castValue(value, clazz, OBJECT_MAPPER);
     }
 
     /**
@@ -76,7 +75,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 是否删除成功
      */
     public boolean delete(String key) {
-        Boolean deleted = redisTemplate.delete(buildKey(key));
+        Boolean deleted = redisTemplate.delete(RedisKeyUtil.buildKey(key, redisProperties));
         return Boolean.TRUE.equals(deleted);
     }
 
@@ -90,7 +89,7 @@ public class RedisCacheUtil implements CacheOperations {
         if (CollUtil.isEmpty(keys)) {
             return 0L;
         }
-        Long deleted = redisTemplate.delete(keys.stream().filter(Objects::nonNull).map(this::buildKey).toList());
+        Long deleted = redisTemplate.delete(keys.stream().filter(Objects::nonNull).map(k -> RedisKeyUtil.buildKey(k, redisProperties)).toList());
         return deleted == null ? 0L : deleted;
     }
 
@@ -101,7 +100,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 是否存在
      */
     public boolean hasKey(String key) {
-        Boolean exists = redisTemplate.hasKey(buildKey(key));
+        Boolean exists = redisTemplate.hasKey(RedisKeyUtil.buildKey(key, redisProperties));
         return Boolean.TRUE.equals(exists);
     }
 
@@ -113,7 +112,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 是否设置成功
      */
     public boolean expire(String key, Duration timeout) {
-        Boolean result = redisTemplate.expire(buildKey(key), timeout);
+        Boolean result = redisTemplate.expire(RedisKeyUtil.buildKey(key, redisProperties), timeout);
         return Boolean.TRUE.equals(result);
     }
 
@@ -124,7 +123,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 过期秒数
      */
     public Long getExpire(String key) {
-        return redisTemplate.getExpire(buildKey(key), TimeUnit.SECONDS);
+        return redisTemplate.getExpire(RedisKeyUtil.buildKey(key, redisProperties), TimeUnit.SECONDS);
     }
 
     /**
@@ -135,7 +134,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 自增后值
      */
     public Long increment(String key, long delta) {
-        return redisTemplate.opsForValue().increment(buildKey(key), delta);
+        return redisTemplate.opsForValue().increment(RedisKeyUtil.buildKey(key, redisProperties), delta);
     }
 
     /**
@@ -146,7 +145,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 自减后值
      */
     public Long decrement(String key, long delta) {
-        return redisTemplate.opsForValue().increment(buildKey(key), -delta);
+        return redisTemplate.opsForValue().increment(RedisKeyUtil.buildKey(key, redisProperties), -delta);
     }
 
     /**
@@ -157,7 +156,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @param value 值
      */
     public void hSet(String key, String field, Object value) {
-        redisTemplate.opsForHash().put(buildKey(key), field, value);
+        redisTemplate.opsForHash().put(RedisKeyUtil.buildKey(key, redisProperties), field, value);
     }
 
     /**
@@ -170,8 +169,8 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 字段值
      */
     public <T> T hGet(String key, String field, Class<T> clazz) {
-        Object value = redisTemplate.opsForHash().get(buildKey(key), field);
-        return castValue(value, clazz);
+        Object value = redisTemplate.opsForHash().get(RedisKeyUtil.buildKey(key, redisProperties), field);
+        return RedisKeyUtil.castValue(value, clazz, OBJECT_MAPPER);
     }
 
     /**
@@ -181,7 +180,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return Hash 内容
      */
     public Map<Object, Object> hGetAll(String key) {
-        return redisTemplate.opsForHash().entries(buildKey(key));
+        return redisTemplate.opsForHash().entries(RedisKeyUtil.buildKey(key, redisProperties));
     }
 
     /**
@@ -192,7 +191,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 删除数量
      */
     public Long hDel(String key, Object... fields) {
-        return redisTemplate.opsForHash().delete(buildKey(key), fields);
+        return redisTemplate.opsForHash().delete(RedisKeyUtil.buildKey(key, redisProperties), fields);
     }
 
     /**
@@ -203,7 +202,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 当前长度
      */
     public Long lPush(String key, Object value) {
-        return redisTemplate.opsForList().leftPush(buildKey(key), value);
+        return redisTemplate.opsForList().leftPush(RedisKeyUtil.buildKey(key, redisProperties), value);
     }
 
     /**
@@ -215,7 +214,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 列表数据
      */
     public List<Object> lRange(String key, long start, long end) {
-        List<Object> list = redisTemplate.opsForList().range(buildKey(key), start, end);
+        List<Object> list = redisTemplate.opsForList().range(RedisKeyUtil.buildKey(key, redisProperties), start, end);
         return list == null ? Collections.emptyList() : list;
     }
 
@@ -226,7 +225,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 长度
      */
     public Long lLen(String key) {
-        return redisTemplate.opsForList().size(buildKey(key));
+        return redisTemplate.opsForList().size(RedisKeyUtil.buildKey(key, redisProperties));
     }
 
     /**
@@ -237,7 +236,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 添加数量
      */
     public Long sAdd(String key, Object... values) {
-        return redisTemplate.opsForSet().add(buildKey(key), values);
+        return redisTemplate.opsForSet().add(RedisKeyUtil.buildKey(key, redisProperties), values);
     }
 
     /**
@@ -247,7 +246,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 成员集合
      */
     public Set<Object> sMembers(String key) {
-        Set<Object> members = redisTemplate.opsForSet().members(buildKey(key));
+        Set<Object> members = redisTemplate.opsForSet().members(RedisKeyUtil.buildKey(key, redisProperties));
         return members == null ? Collections.emptySet() : members;
     }
 
@@ -259,7 +258,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 是否包含
      */
     public boolean sIsMember(String key, Object value) {
-        Boolean result = redisTemplate.opsForSet().isMember(buildKey(key), value);
+        Boolean result = redisTemplate.opsForSet().isMember(RedisKeyUtil.buildKey(key, redisProperties), value);
         return Boolean.TRUE.equals(result);
     }
 
@@ -272,7 +271,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 是否成功
      */
     public boolean zAdd(String key, Object value, double score) {
-        Boolean result = redisTemplate.opsForZSet().add(buildKey(key), value, score);
+        Boolean result = redisTemplate.opsForZSet().add(RedisKeyUtil.buildKey(key, redisProperties), value, score);
         return Boolean.TRUE.equals(result);
     }
 
@@ -285,7 +284,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 结果集
      */
     public Set<Object> zRange(String key, long start, long end) {
-        Set<Object> values = redisTemplate.opsForZSet().range(buildKey(key), start, end);
+        Set<Object> values = redisTemplate.opsForZSet().range(RedisKeyUtil.buildKey(key, redisProperties), start, end);
         return values == null ? Collections.emptySet() : values;
     }
 
@@ -298,7 +297,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 结果集
      */
     public Set<Object> zRangeByScore(String key, double min, double max) {
-        Set<Object> values = redisTemplate.opsForZSet().rangeByScore(buildKey(key), min, max);
+        Set<Object> values = redisTemplate.opsForZSet().rangeByScore(RedisKeyUtil.buildKey(key, redisProperties), min, max);
         return values == null ? Collections.emptySet() : values;
     }
 
@@ -310,7 +309,7 @@ public class RedisCacheUtil implements CacheOperations {
      * @return 排名
      */
     public Long zRank(String key, Object value) {
-        return redisTemplate.opsForZSet().rank(buildKey(key), value);
+        return redisTemplate.opsForZSet().rank(RedisKeyUtil.buildKey(key, redisProperties), value);
     }
 
     /**
@@ -332,29 +331,12 @@ public class RedisCacheUtil implements CacheOperations {
     public Set<String> scan(String pattern) {
         return redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
             Set<String> keys = CollUtil.newHashSet();
-            try (Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(buildKey(pattern)).count(redisProperties.getScanCount()).build())) {
+            try (Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(RedisKeyUtil.buildKey(pattern, redisProperties)).count(redisProperties.getScanCount()).build())) {
                 while (cursor.hasNext()) {
                     keys.add(new String(cursor.next(), StandardCharsets.UTF_8));
                 }
             }
             return keys;
         });
-    }
-
-    private String buildKey(String key) {
-        if (StrUtil.isBlank(key)) {
-            return redisProperties.getKeyPrefix();
-        }
-        return key.startsWith(redisProperties.getKeyPrefix()) ? key : redisProperties.getKeyPrefix() + key;
-    }
-
-    private <T> T castValue(Object value, Class<T> clazz) {
-        if (value == null || clazz == null) {
-            return null;
-        }
-        if (clazz.isInstance(value)) {
-            return clazz.cast(value);
-        }
-        return OBJECT_MAPPER.convertValue(value, clazz);
     }
 }

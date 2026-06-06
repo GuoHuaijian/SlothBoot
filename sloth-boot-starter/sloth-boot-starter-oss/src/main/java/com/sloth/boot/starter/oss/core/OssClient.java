@@ -21,7 +21,18 @@ public interface OssClient {
 
     void delete(String path);
 
-    String getPresignedUrl(String path, int expireMinutes);
+    /**
+     * 获取预签名 URL（分钟级过期）。
+     * <p>
+     * 默认实现委托给 {@link #generatePresignedUrl(String, Duration)}。
+     *
+     * @param path         文件路径
+     * @param expireMinutes 过期时间（分钟）
+     * @return 预签名 URL
+     */
+    default String getPresignedUrl(String path, int expireMinutes) {
+        return generatePresignedUrl(path, Duration.ofMinutes(expireMinutes));
+    }
 
     /**
      * 生成预签名访问 URL。

@@ -62,15 +62,6 @@ public class AliyunOssClient implements OssClient {
     }
 
     @Override
-    public String getPresignedUrl(String path, int expireMinutes) {
-        Date expiration = new Date(System.currentTimeMillis() + expireMinutes * 60L * 1000L);
-        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(ossProperties.getBucketName(), path);
-        request.setExpiration(expiration);
-        URL url = ossClient.generatePresignedUrl(request);
-        return url.toString();
-    }
-
-    @Override
     public String generatePresignedUrl(String objectKey, Duration expiry) {
         Date expiration = new Date(System.currentTimeMillis() + expiry.toMillis());
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(ossProperties.getBucketName(), objectKey);

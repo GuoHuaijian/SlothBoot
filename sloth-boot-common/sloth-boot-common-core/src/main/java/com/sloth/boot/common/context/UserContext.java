@@ -2,11 +2,15 @@ package com.sloth.boot.common.context;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +56,27 @@ public class UserContext implements Serializable {
         /**
          * 角色集合
          */
-        private Set<String> roles = new HashSet<>();
+        @Getter(AccessLevel.NONE)
+        @Setter(AccessLevel.NONE)
+        private Set<String> roles = new LinkedHashSet<>();
+
+        /**
+         * 获取用户角色集合（不可修改视图）。
+         *
+         * @return 角色集合
+         */
+        public Set<String> getRoles() {
+            return Collections.unmodifiableSet(roles);
+        }
+
+        /**
+         * 设置用户角色集合。
+         *
+         * @param roles 角色集合
+         */
+        public void setRoles(Set<String> roles) {
+            this.roles = roles != null ? new LinkedHashSet<>(roles) : new LinkedHashSet<>();
+        }
 
         /**
          * 数据范围

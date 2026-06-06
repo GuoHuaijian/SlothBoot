@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.monitor.endpoint;
 
+import com.sloth.boot.starter.monitor.util.MonitorUtil;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -73,7 +74,7 @@ public class InfoEndpoint {
 
         // 运行时信息
         info.put("startTime", FORMATTER.format(startTime));
-        info.put("uptime", formatDuration(ManagementFactory.getRuntimeMXBean().getUptime()));
+        info.put("uptime", MonitorUtil.formatDuration(ManagementFactory.getRuntimeMXBean().getUptime()));
 
         // JDK 信息
         info.put("jdkVersion", System.getProperty("java.version"));
@@ -95,22 +96,5 @@ public class InfoEndpoint {
         info.put("osArch", System.getProperty("os.arch"));
 
         return info;
-    }
-
-    private String formatDuration(long millis) {
-        long seconds = millis / 1000;
-        long days = seconds / 86400;
-        long hours = (seconds % 86400) / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-        if (days > 0) {
-            return String.format("%d天%d小时%d分%d秒", days, hours, minutes, secs);
-        } else if (hours > 0) {
-            return String.format("%d小时%d分%d秒", hours, minutes, secs);
-        } else if (minutes > 0) {
-            return String.format("%d分%d秒", minutes, secs);
-        } else {
-            return String.format("%d秒", secs);
-        }
     }
 }

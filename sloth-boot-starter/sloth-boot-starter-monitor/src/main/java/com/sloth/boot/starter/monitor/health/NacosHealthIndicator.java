@@ -39,16 +39,19 @@ public class NacosHealthIndicator extends AbstractHealthIndicator {
         String url = "http://" + serverAddr + "/nacos/v1/console/health/readiness";
         try {
             HttpURLConnection conn = (HttpURLConnection) URI.create(url).toURL().openConnection();
-            conn.setConnectTimeout(healthConfig.getConnectTimeout());
-            conn.setReadTimeout(healthConfig.getReadTimeout());
-            conn.setRequestMethod("GET");
-            int code = conn.getResponseCode();
-            if (code == 200) {
-                builder.up().withDetail("serverAddr", serverAddr);
-            } else {
-                builder.down().withDetail("serverAddr", serverAddr).withDetail("httpStatus", code);
+            try {
+                conn.setConnectTimeout(healthConfig.getConnectTimeout());
+                conn.setReadTimeout(healthConfig.getReadTimeout());
+                conn.setRequestMethod("GET");
+                int code = conn.getResponseCode();
+                if (code == 200) {
+                    builder.up().withDetail("serverAddr", serverAddr);
+                } else {
+                    builder.down().withDetail("serverAddr", serverAddr).withDetail("httpStatus", code);
+                }
+            } finally {
+                conn.disconnect();
             }
-            conn.disconnect();
         } catch (Exception e) {
             builder.down(e).withDetail("serverAddr", serverAddr);
         }

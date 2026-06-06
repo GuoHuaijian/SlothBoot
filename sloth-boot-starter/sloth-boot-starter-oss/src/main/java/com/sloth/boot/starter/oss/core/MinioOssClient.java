@@ -76,17 +76,6 @@ public class MinioOssClient implements OssClient {
     }
 
     @Override
-    public String getPresignedUrl(String path, int expireMinutes) {
-        try {
-            return minioClient.getPresignedObjectUrl(
-                io.minio.GetPresignedObjectUrlArgs.builder().bucket(ossProperties.getBucketName()).object(path)
-                    .expiry(expireMinutes * 60).method(io.minio.http.Method.GET).build());
-        } catch (Exception ex) {
-            throw SystemException.of("MinIO 获取预签名地址失败", ex);
-        }
-    }
-
-    @Override
     public String generatePresignedUrl(String objectKey, Duration expiry) {
         try {
             return minioClient.getPresignedObjectUrl(

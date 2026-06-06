@@ -24,21 +24,13 @@ public class GlobalBlockHandler {
      * @return 统一响应
      */
     public R<Void> handle(BlockException exception) {
-        if (exception instanceof FlowException) {
-            return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
-        }
-        if (exception instanceof DegradeException) {
-            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
-        }
-        if (exception instanceof ParamFlowException) {
-            return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
-        }
-        if (exception instanceof SystemBlockException) {
-            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_system"));
-        }
-        if (exception instanceof AuthorityException) {
-            return R.fail(403, I18nUtil.getMessage("sloth.error.sentinel_authority"));
-        }
-        return R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_blocked"));
+        return switch (exception) {
+            case FlowException e -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
+            case DegradeException e -> R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
+            case ParamFlowException e -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
+            case SystemBlockException e -> R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_system"));
+            case AuthorityException e -> R.fail(403, I18nUtil.getMessage("sloth.error.sentinel_authority"));
+            default -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_blocked"));
+        };
     }
 }

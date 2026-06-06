@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.monitor.service;
 
 import com.sloth.boot.starter.monitor.model.JvmInfo;
+import com.sloth.boot.starter.monitor.util.MonitorUtil;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -44,12 +45,12 @@ public class JvmInfoService implements JvmInfoProvider {
                 : 0;
 
         return JvmInfo.builder()
-                .heapUsed(bytesToMB(heapUsage.getUsed()))
-                .heapMax(bytesToMB(heapUsage.getMax()))
-                .heapCommitted(bytesToMB(heapUsage.getCommitted()))
+                .heapUsed(MonitorUtil.bytesToMB(heapUsage.getUsed()))
+                .heapMax(MonitorUtil.bytesToMB(heapUsage.getMax()))
+                .heapCommitted(MonitorUtil.bytesToMB(heapUsage.getCommitted()))
                 .heapUsagePercent(Math.round(heapUsagePercent * 100.0) / 100.0)
-                .nonHeapUsed(bytesToMB(nonHeapUsage.getUsed()))
-                .nonHeapCommitted(bytesToMB(nonHeapUsage.getCommitted()))
+                .nonHeapUsed(MonitorUtil.bytesToMB(nonHeapUsage.getUsed()))
+                .nonHeapCommitted(MonitorUtil.bytesToMB(nonHeapUsage.getCommitted()))
                 .threadCount(threadMXBean.getThreadCount())
                 .peakThreadCount(threadMXBean.getPeakThreadCount())
                 .daemonThreadCount(threadMXBean.getDaemonThreadCount())
@@ -57,9 +58,5 @@ public class JvmInfoService implements JvmInfoProvider {
                 .cpuProcessors(Runtime.getRuntime().availableProcessors())
                 .systemLoadAverage(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage())
                 .build();
-    }
-
-    static String bytesToMB(long bytes) {
-        return String.format("%.2f MB", bytes / (1024.0 * 1024.0));
     }
 }

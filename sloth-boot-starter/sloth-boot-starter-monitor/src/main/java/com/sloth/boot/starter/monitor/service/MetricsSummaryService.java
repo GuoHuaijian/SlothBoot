@@ -2,6 +2,7 @@ package com.sloth.boot.starter.monitor.service;
 
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
@@ -24,6 +25,11 @@ public class MetricsSummaryService implements MetricsSummaryProvider {
 
     private final MeterRegistry meterRegistry;
 
+    private Map<String, String> extractTags(Meter.Id id) {
+        return id.getTags().stream()
+                .collect(Collectors.toMap(Tag::getKey, Tag::getValue, (a, b) -> b));
+    }
+
     /**
      * 获取指标汇总信息。
      *
@@ -35,16 +41,14 @@ public class MetricsSummaryService implements MetricsSummaryProvider {
 
         meterRegistry.getMeters().forEach(meter -> {
             if (meter instanceof Counter counter) {
-                Map<String, String> tags = counter.getId().getTags().stream()
-                        .collect(Collectors.toMap(Tag::getKey, Tag::getValue, (a, b) -> b));
+                Map<String, String> tags = extractTags(counter.getId());
                 counters.add(MetricSummary.CounterInfo.builder()
                         .name(counter.getId().getName())
                         .tags(tags)
                         .count(counter.count())
                         .build());
             } else if (meter instanceof Timer timer) {
-                Map<String, String> tags = timer.getId().getTags().stream()
-                        .collect(Collectors.toMap(Tag::getKey, Tag::getValue, (a, b) -> b));
+                Map<String, String> tags = extractTags(timer.getId());
                 timers.add(MetricSummary.TimerInfo.builder()
                         .name(timer.getId().getName())
                         .tags(tags)
