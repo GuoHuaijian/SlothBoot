@@ -68,7 +68,7 @@ public class MybatisAutoConfiguration {
     public MybatisPlusInterceptor mybatisPlusInterceptor(MybatisPlusProperties properties, Environment environment,
                                                          DataSource dataSource) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(detectDbType(dataSource)));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(detectDbType(environment, dataSource)));
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         if (isDevProfile(environment)) {
@@ -197,42 +197,47 @@ public class MybatisAutoConfiguration {
 
     /**
      * 根据数据源 JDBC URL 自动检测数据库类型。
+     * <p>
+     * 优先从 Environment 读取 spring.datasource.url，避免打开物理连接。
      *
      * @param dataSource 数据源
      * @return 数据库类型，默认返回 {@link DbType#MYSQL}
      */
-    private DbType detectDbType(DataSource dataSource) {
-        try (Connection connection = dataSource.getConnection()) {
-            String url = connection.getMetaData().getURL();
-            if (url == null) {
+    private DbType detectDbType(Environment environment, DataSource dataSource) {
+        String url = environment.getProperty("spring.datasource.url");
+        if (url == null) {
+            try (Connection connection = dataSource.getConnection()) {
+                url = connection.getMetaData().getURL();
+            } catch (SQLException e) {
+                log.warn("[MyBatis] 检测数据库类型失败, 将使用默认 MySQL 方言", e);
                 return DbType.MYSQL;
             }
-            if (url.startsWith("jdbc:mysql:")) {
-                return DbType.MYSQL;
-            } else if (url.startsWith("jdbc:postgresql:")) {
-                return DbType.POSTGRE_SQL;
-            } else if (url.startsWith("jdbc:oracle:")) {
-                return DbType.ORACLE;
-            } else if (url.startsWith("jdbc:sqlserver:")) {
-                return DbType.SQL_SERVER;
-            } else if (url.startsWith("jdbc:mariadb:")) {
-                return DbType.MARIADB;
-            } else if (url.startsWith("jdbc:h2:")) {
-                return DbType.H2;
-            } else if (url.startsWith("jdbc:sqlite:")) {
-                return DbType.SQLITE;
-            } else if (url.startsWith("jdbc:dm:")) {
-                return DbType.DM;
-            } else if (url.startsWith("jdbc:kingbase:")) {
-                return DbType.KINGBASE_ES;
-            } else if (url.startsWith("jdbc:oceanbase:")) {
-                return DbType.OCEAN_BASE;
-            }
-            log.warn("[MyBatis] 无法识别数据库类型, JDBC URL: {}, 将使用默认 MySQL 方言", url);
-            return DbType.MYSQL;
-        } catch (SQLException e) {
-            log.warn("[MyBatis] 检测数据库类型失败, 将使用默认 MySQL 方言", e);
+        }
+        if (url == null) {
             return DbType.MYSQL;
         }
+        if (url.startsWith("jdbc:mysql:")) {
+            return DbType.MYSQL;
+        } else if (url.startsWith("jdbc:postgresql:")) {
+            return DbType.POSTGRE_SQL;
+        } else if (url.startsWith("jdbc:oracle:")) {
+            return DbType.ORACLE;
+        } else if (url.startsWith("jdbc:sqlserver:")) {
+            return DbType.SQL_SERVER;
+        } else if (url.startsWith("jdbc:mariadb:")) {
+            return DbType.MARIADB;
+        } else if (url.startsWith("jdbc:h2:")) {
+            return DbType.H2;
+        } else if (url.startsWith("jdbc:sqlite:")) {
+            return DbType.SQLITE;
+        } else if (url.startsWith("jdbc:dm:")) {
+            return DbType.DM;
+        } else if (url.startsWith("jdbc:kingbase:")) {
+            return DbType.KINGBASE_ES;
+        } else if (url.startsWith("jdbc:oceanbase:")) {
+            return DbType.OCEAN_BASE;
+        }
+        log.warn("[MyBatis] 无法识别数据库类型, JDBC URL: {}, 将使用默认 MySQL 方言", url);
+        return DbType.MYSQL;
     }
 }

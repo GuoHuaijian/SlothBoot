@@ -1,6 +1,8 @@
 package com.sloth.boot.starter.oss.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -26,11 +28,15 @@ public class OssProperties {
     /**
      * AccessKey。
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String accessKey;
 
     /**
      * SecretKey。
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String secretKey;
 
     /**

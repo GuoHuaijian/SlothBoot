@@ -2,6 +2,7 @@ package com.sloth.boot.starter.web.config;
 
 import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.config.LogAutoConfiguration;
+import com.sloth.boot.common.security.config.SecurityAutoConfiguration;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
@@ -18,7 +19,7 @@ class WebAutoConfigurationTest {
 
     private final WebApplicationContextRunner contextRunner =
         new WebApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(LogAutoConfiguration.class, WebAutoConfiguration.class))
+            .withConfiguration(AutoConfigurations.of(LogAutoConfiguration.class, SecurityAutoConfiguration.class, WebAutoConfiguration.class))
             .withBean(EventPublisher.class, () -> new EventPublisher(event -> {}));
 
     @Test
@@ -38,7 +39,7 @@ class WebAutoConfigurationTest {
         contextRunner.run(context -> {
             SlothWebProperties props = context.getBeansOfType(SlothWebProperties.class).values().iterator().next();
             assertThat(props.isResponseWrapper()).isTrue();
-            assertThat(props.isXssEnabled()).isTrue();
+            assertThat(props.isBodyCacheEnabled()).isFalse();
         });
     }
 

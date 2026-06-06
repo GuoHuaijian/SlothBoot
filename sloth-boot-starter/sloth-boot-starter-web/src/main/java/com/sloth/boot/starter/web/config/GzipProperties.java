@@ -2,6 +2,9 @@ package com.sloth.boot.starter.web.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.Min;
 
 /**
  * Gzip 压缩配置。
@@ -10,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.web.gzip")
 public class GzipProperties {
 
@@ -21,6 +25,7 @@ public class GzipProperties {
     /**
      * 启用压缩的最小响应体大小（字节）。
      */
+    @Min(1)
     private int minSize = 1024;
 
     /**

@@ -2,6 +2,9 @@ package com.sloth.boot.starter.web.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.Min;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.Set;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.web.cors")
 public class CorsConfiguration {
 
@@ -40,5 +44,6 @@ public class CorsConfiguration {
     /**
      * 最大年龄。
      */
+    @Min(0)
     private long maxAge = 3600;
 }
