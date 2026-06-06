@@ -92,6 +92,7 @@
         <mica-xss.version>4.0.2</mica-xss.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
         <jbcrypt.version>0.4</jbcrypt.version>
+        <springdoc.version>2.8.6</springdoc.version>
 
         <!-- Template Engine -->
         <velocity-engine.version>2.4.1</velocity-engine.version>

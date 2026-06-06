@@ -146,6 +146,23 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
+            <!-- 覆盖 Knife4j 传递的旧版 springdoc，兼容 Spring Framework 7.x -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-common</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
             <!-- Scheduled Task -->
             <dependency>
                 <groupId>com.xuxueli</groupId>
