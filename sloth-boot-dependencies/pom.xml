@@ -163,6 +163,12 @@
                 <version>${springdoc.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger-annotations.version}</version>
+            </dependency>
+
             <!-- Scheduled Task -->
             <dependency>
                 <groupId>com.xuxueli</groupId>

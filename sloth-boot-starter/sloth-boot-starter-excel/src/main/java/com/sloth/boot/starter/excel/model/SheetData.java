@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.excel.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,21 +18,25 @@ import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor
+@Schema(description = "Sheet 数据对象（多Sheet导出）")
 public class SheetData {
 
     /**
      * Sheet 名称。
      */
+    @Schema(description = "Sheet 名称", example = "用户数据")
     private String sheetName;
 
     /**
      * 表头类型。
      */
+    @Schema(description = "表头类型（Java 类）")
     private Class<?> head;
 
     /**
      * 数据列表。
      */
+    @Schema(description = "数据列表")
     private List<?> data;
 
     public SheetData(String sheetName, Class<?> head, List<?> data) {

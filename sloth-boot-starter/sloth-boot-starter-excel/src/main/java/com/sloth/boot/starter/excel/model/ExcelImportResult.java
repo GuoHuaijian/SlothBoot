@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.excel.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -15,31 +16,37 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
+@Schema(description = "Excel 导入结果")
 public class ExcelImportResult<T> {
 
     /**
      * 成功导入的数据。
      */
+    @Schema(description = "成功导入的数据列表")
     private List<T> data;
 
     /**
      * 错误详情列表。
      */
+    @Schema(description = "错误详情列表")
     private List<ExcelErrorDetail> errors;
 
     /**
      * 成功行数。
      */
+    @Schema(description = "成功行数", example = "95")
     private int successRows;
 
     /**
      * 失败行数。
      */
+    @Schema(description = "失败行数", example = "5")
     private int failedRows;
 
     /**
      * 是否全部成功。
      */
+    @Schema(description = "是否全部成功", example = "true")
     private boolean allSuccess;
 
     public ExcelImportResult() {
