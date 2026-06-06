@@ -200,6 +200,7 @@ sloth:
       - /api/auth/current-user
       - /api/monitor/**
       - /doc.html
+      - /webjars/**
       - /swagger-ui/**
       - /v3/api-docs/**
       - /actuator/**
