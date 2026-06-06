@@ -1,6 +1,6 @@
 package com.sloth.boot.common.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.springframework.lang.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

@@ -8,7 +8,6 @@ import org.springframework.core.env.Environment;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
