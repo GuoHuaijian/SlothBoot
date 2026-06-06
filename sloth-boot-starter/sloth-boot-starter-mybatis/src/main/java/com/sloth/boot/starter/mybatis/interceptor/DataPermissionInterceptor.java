@@ -73,8 +73,9 @@ public class DataPermissionInterceptor implements Interceptor {
         try {
             String newSql = appendCondition(sql, condition);
             metaObject.setValue("delegate.boundSql.sql", newSql);
-        } catch (Exception e) {
-            log.warn("[DataPermission] SQL 改写失败，降级为原始 SQL: {}", e.getMessage());
+        } catch (JSQLParserException e) {
+            log.error("[DataPermission] SQL 改写失败: {}", e.getMessage(), e);
+            throw new RuntimeException("[DataPermission] SQL 改写失败，拒绝执行未过滤的 SQL", e);
         }
 
         return invocation.proceed();
@@ -127,7 +128,7 @@ public class DataPermissionInterceptor implements Interceptor {
                 return select.toString();
             }
         } catch (JSQLParserException e) {
-            log.debug("[DataPermission] JSqlParser 解析失败，使用字符串拼接: {}", e.getMessage());
+            log.debug("[DataPermission] JSqlParser 解析失败，使用字符串拼接", e);
         }
         // 降级：字符串拼接
         String lowerSql = sql.trim().toLowerCase();
@@ -179,8 +180,8 @@ public class DataPermissionInterceptor implements Interceptor {
                     return clazz.getAnnotation(DataPermission.class);
                 }
             }
-        } catch (Exception e) {
-            log.debug("[DataPermission] 获取注解失败: {}", e.getMessage());
+        } catch (ReflectiveOperationException e) {
+            log.debug("[DataPermission] 获取注解失败", e);
         }
         return null;
     }

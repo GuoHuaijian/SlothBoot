@@ -25,16 +25,22 @@ public class EventPublisher {
     }
 
     /**
-     * 同步发布事件
+     * 同步发布事件。
+     * <p>
+     * 异常将直接抛给调用方，由调用方决定如何处理。
      *
      * @param event 事件
+     * @throws RuntimeException 如果事件监听器抛出异常
      */
     public void publish(Object event) {
         applicationEventPublisher.publishEvent(event);
     }
 
     /**
-     * 异步发布事件（使用默认虚拟线程执行器）
+     * 异步发布事件（使用默认虚拟线程执行器）。
+     * <p>
+     * 异步执行期间的异常会被捕获并记录到日志，不会传播给调用方。
+     * 如果事件发布失败需要重试或补偿，请使用同步 {@link #publish(Object)} 方法。
      *
      * @param event 事件
      */
@@ -43,7 +49,9 @@ public class EventPublisher {
     }
 
     /**
-     * 异步发布事件（使用自定义执行器）
+     * 异步发布事件（使用自定义执行器）。
+     * <p>
+     * 异步执行期间的异常会被捕获并记录到日志，不会传播给调用方。
      *
      * @param event    事件
      * @param executor 自定义执行器

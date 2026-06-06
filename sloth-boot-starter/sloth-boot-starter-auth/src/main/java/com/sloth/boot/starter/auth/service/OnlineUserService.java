@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class OnlineUserService {
+public class OnlineUserService implements OnlineUserManager {
 
     /**
      * 踢出指定用户（使其 Token 失效）。
@@ -80,14 +80,16 @@ public class OnlineUserService {
 
     /**
      * 获取当前在线用户数量（通过 Sa-Token Session 估算）。
+     * <p>
+     * 失败时返回 {@code -1}，调用方应检查此哨兵值。
      *
-     * @return 在线用户数
+     * @return 在线用户数，获取失败返回 {@code -1}
      */
     public long getOnlineCount() {
         try {
             return StpUtil.searchTokenSessionId("", 0, -1, false).size();
         } catch (Exception e) {
-            log.warn("[Auth] 获取在线用户数失败: {}", e.getMessage());
+            log.warn("[Auth] 获取在线用户数失败", e);
             return -1;
         }
     }

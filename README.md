@@ -151,7 +151,7 @@ sloth-boot/
 | `common-log` | TraceId 过滤器、HTTP 请求日志、`@OperateLog` 操作日志注解与切面、慢操作事件 | ✅ |
 | `common-security` | AES/RSA 加解密、HMAC 签名验签、数据脱敏、XSS 过滤 | — |
 | `common-doc` | Knife4j / OpenAPI 3 自动配置，开箱即用文档 | — |
-| `common-test` | `BaseSpringBootTest`、`BaseMockMvcTest`、`BaseMapperTest` 测试基类、`@MockUser` | — |
+| `common-test` | `BaseSpringBootTest`、`BaseMockMvcTest` 测试基类、`@MockUser` | — |
 
 ### Starter 能力层
 
@@ -162,7 +162,7 @@ sloth-boot/
 | [`starter-ai`](./sloth-boot-starter/sloth-boot-starter-ai/README.md) | Spring AI 多模型接入、流式响应（SSE）、Function Calling | ✅ 新增 |
 | [`starter-web`](./sloth-boot-starter/sloth-boot-starter-web/README.md) | 全局异常处理、统一返回包装、参数校验、XSS 过滤 | ✅ |
 | [`starter-redis`](./sloth-boot-starter/sloth-boot-starter-redis/README.md) | 缓存工具、分布式锁、滑动窗口限流、幂等、延迟队列 | ✅ |
-| [`starter-mybatis`](./sloth-boot-starter/sloth-boot-starter-mybatis/README.md) | MyBatis-Plus 增强、自动填充、数据权限、慢 SQL | ✅ |
+| [`starter-mybatis`](./sloth-boot-starter/sloth-boot-starter-mybatis/README.md) | MyBatis-Plus 增强、自动填充、数据权限、慢 SQL、`BaseMapperTest` 测试基类 | ✅ |
 | [`starter-thread-pool`](./sloth-boot-starter/sloth-boot-starter-thread-pool/README.md) | 动态线程池、TTL 上下文透传、虚拟线程、Actuator 监控 | ✅ |
 | [`starter-auth`](./sloth-boot-starter/sloth-boot-starter-auth/README.md) | Sa-Token 认证授权、登录/登出、权限注解、UserContext 集成 | ✅ 新增 |
 | [`starter-gateway`](./sloth-boot-starter/sloth-boot-starter-gateway/README.md) | 全局过滤器、鉴权、动态路由、WebFlux 异常处理 | ✅ |

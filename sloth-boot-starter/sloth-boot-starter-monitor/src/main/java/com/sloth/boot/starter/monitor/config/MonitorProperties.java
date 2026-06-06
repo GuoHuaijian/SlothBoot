@@ -34,6 +34,11 @@ public class MonitorProperties {
     private Alarm alarm = new Alarm();
 
     /**
+     * 健康检查配置。
+     */
+    private Health health = new Health();
+
+    /**
      * 告警配置对象。
      *
      * @author sloth-boot
@@ -76,5 +81,25 @@ public class MonitorProperties {
          * 磁盘使用率告警阈值（百分比），超过此值触发告警。
          */
         private double diskThreshold = 90.0;
+    }
+
+    /**
+     * 健康检查配置。
+     *
+     * @author sloth-boot
+     * @since 1.0.0
+     */
+    @Data
+    public static class Health {
+
+        /**
+         * 健康检查 HTTP 连接超时，单位毫秒。
+         */
+        private int connectTimeout = 3000;
+
+        /**
+         * 健康检查 HTTP 读取超时，单位毫秒。
+         */
+        private int readTimeout = 3000;
     }
 }

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class JvmInfoService {
+public class JvmInfoService implements JvmInfoProvider {
 
     /**
      * 获取 JVM 详细信息。

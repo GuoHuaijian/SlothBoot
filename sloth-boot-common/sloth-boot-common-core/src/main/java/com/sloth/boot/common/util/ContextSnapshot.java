@@ -38,6 +38,14 @@ import java.util.concurrent.Callable;
  */
 public final class ContextSnapshot {
 
+    private static final boolean MDC_AVAILABLE;
+    private static final boolean REQUESTContextHolder_AVAILABLE;
+
+    static {
+        MDC_AVAILABLE = isClassPresent("org.slf4j.MDC");
+        REQUESTContextHolder_AVAILABLE = isClassPresent("org.springframework.web.context.request.RequestContextHolder");
+    }
+
     private final TraceContext.TraceInfo traceInfo;
     private final UserContext.UserInfo userInfo;
     private final Map<String, String> mdcContext;
@@ -59,16 +67,9 @@ public final class ContextSnapshot {
     public static ContextSnapshot capture() {
         TraceContext.TraceInfo traceInfo = TraceContext.get();
         UserContext.UserInfo userInfo = UserContext.get();
-        Map<String, String> mdcContext = null;
-        try {
-            mdcContext = MDC.getCopyOfContextMap();
-        } catch (NoClassDefFoundError ignored) {
-        }
-        RequestAttributes requestAttributes = null;
-        try {
-            requestAttributes = RequestContextHolder.getRequestAttributes();
-        } catch (NoClassDefFoundError ignored) {
-        }
+        Map<String, String> mdcContext = MDC_AVAILABLE ? MDC.getCopyOfContextMap() : null;
+        RequestAttributes requestAttributes = REQUESTContextHolder_AVAILABLE
+            ? RequestContextHolder.getRequestAttributes() : null;
         return new ContextSnapshot(traceInfo, userInfo, mdcContext, requestAttributes);
     }
 
@@ -82,22 +83,15 @@ public final class ContextSnapshot {
         if (userInfo != null) {
             UserContext.set(userInfo);
         }
-        if (mdcContext != null) {
-            try {
+        if (MDC_AVAILABLE) {
+            if (mdcContext != null) {
                 MDC.setContextMap(mdcContext);
-            } catch (NoClassDefFoundError ignored) {
-            }
-        } else {
-            try {
+            } else {
                 MDC.clear();
-            } catch (NoClassDefFoundError ignored) {
             }
         }
-        if (requestAttributes != null) {
-            try {
-                RequestContextHolder.setRequestAttributes(requestAttributes);
-            } catch (NoClassDefFoundError ignored) {
-            }
+        if (REQUESTContextHolder_AVAILABLE && requestAttributes != null) {
+            RequestContextHolder.setRequestAttributes(requestAttributes);
         }
     }
 
@@ -107,13 +101,11 @@ public final class ContextSnapshot {
     public void clear() {
         TraceContext.clear();
         UserContext.clear();
-        try {
+        if (MDC_AVAILABLE) {
             MDC.clear();
-        } catch (NoClassDefFoundError ignored) {
         }
-        try {
+        if (REQUESTContextHolder_AVAILABLE) {
             RequestContextHolder.resetRequestAttributes();
-        } catch (NoClassDefFoundError ignored) {
         }
     }
 
@@ -150,5 +142,14 @@ public final class ContextSnapshot {
                 clear();
             }
         };
+    }
+
+    private static boolean isClassPresent(String className) {
+        try {
+            Class.forName(className, false, ContextSnapshot.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

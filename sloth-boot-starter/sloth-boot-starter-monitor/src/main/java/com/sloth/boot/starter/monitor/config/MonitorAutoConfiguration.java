@@ -90,8 +90,8 @@ public class MonitorAutoConfiguration {
     @Bean
     @ConditionalOnClass(name = "com.alibaba.cloud.nacos.NacosServiceManager")
     @ConditionalOnMissingBean(name = "nacosHealthIndicator")
-    public NacosHealthIndicator nacosHealthIndicator(Environment environment) {
-        return new NacosHealthIndicator(environment);
+    public NacosHealthIndicator nacosHealthIndicator(Environment environment, MonitorProperties monitorProperties) {
+        return new NacosHealthIndicator(environment, monitorProperties);
     }
 
     /**

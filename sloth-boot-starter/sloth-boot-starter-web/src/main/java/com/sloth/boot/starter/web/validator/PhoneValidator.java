@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.web.validator;
 
-import com.sloth.boot.common.util.ValidateUtil;
+import com.sloth.boot.common.util.CnValidateUtil;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -22,6 +22,6 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value == null || value.isBlank() || ValidateUtil.isMobile(value);
+        return value == null || value.isBlank() || CnValidateUtil.isMobile(value);
     }
 }

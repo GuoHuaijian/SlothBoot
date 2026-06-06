@@ -30,7 +30,7 @@ import java.util.concurrent.Executor;
  * @since 1.0.0
  */
 @Slf4j
-public class DynamicRouteService implements DisposableBean {
+public class DynamicRouteService implements DynamicRouteManager, DisposableBean {
 
     private final RouteDefinitionWriter routeDefinitionWriter;
     private final GatewayProperties gatewayProperties;
@@ -90,7 +90,7 @@ public class DynamicRouteService implements DisposableBean {
         }
     }
 
-    private void refreshRoutes(String configInfo) {
+    public void refreshRoutes(String configInfo) {
         try {
             List<RouteDefinition> routes = JsonUtil.parseObject(configInfo, new TypeReference<List<RouteDefinition>>() {
             });

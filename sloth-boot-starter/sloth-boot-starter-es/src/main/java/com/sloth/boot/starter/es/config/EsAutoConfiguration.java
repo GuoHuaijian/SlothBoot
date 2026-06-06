@@ -1,5 +1,8 @@
 package com.sloth.boot.starter.es.config;
 
+import com.sloth.boot.starter.es.core.EsDocumentTemplate;
+import com.sloth.boot.starter.es.core.EsIndexTemplate;
+import com.sloth.boot.starter.es.core.EsSearchTemplate;
 import com.sloth.boot.starter.es.core.EsTemplate;
 import com.sloth.boot.starter.es.index.EsAliasManager;
 import com.sloth.boot.starter.es.monitoring.EsSlowQueryLogger;
@@ -31,8 +34,29 @@ public class EsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(ElasticsearchTemplate.class)
-    public EsTemplate esTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
-        return new EsTemplate(elasticsearchTemplate, esProperties);
+    public EsIndexTemplate esIndexTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
+        return new EsIndexTemplate(elasticsearchTemplate, esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(ElasticsearchTemplate.class)
+    public EsDocumentTemplate esDocumentTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
+        return new EsDocumentTemplate(elasticsearchTemplate, esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(ElasticsearchTemplate.class)
+    public EsSearchTemplate esSearchTemplate(ElasticsearchTemplate elasticsearchTemplate, EsProperties esProperties) {
+        return new EsSearchTemplate(elasticsearchTemplate, esProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EsTemplate esTemplate(EsIndexTemplate esIndexTemplate, EsDocumentTemplate esDocumentTemplate,
+                                 EsSearchTemplate esSearchTemplate) {
+        return new EsTemplate(esIndexTemplate, esDocumentTemplate, esSearchTemplate);
     }
 
     @Bean

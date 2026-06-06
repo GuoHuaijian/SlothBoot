@@ -5,16 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.common.util.JsonUtil;
 import com.sloth.boot.starter.redis.config.RedisProperties;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * Redis 缓存工具类。
@@ -31,9 +27,8 @@ import java.util.function.Supplier;
  * @since 1.0.0
  */
 @RequiredArgsConstructor
-public class RedisCacheUtil {
+public class RedisCacheUtil implements CacheOperations {
 
-    private static final Object NULL_HOLDER = "__NULL__";
     private static final ObjectMapper OBJECT_MAPPER = JsonUtil.getObjectMapper();
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -318,81 +313,6 @@ public class RedisCacheUtil {
     }
 
     /**
-     * 获取缓存，未命中时加载并回填，带空值缓存保护。
-     *
-     * @param key      缓存键
-     * @param clazz    目标类型
-     * @param supplier 加载函数
-     * @param timeout  过期时间
-     * @param <T>      类型参数
-     * @return 结果值
-     */
-    public <T> T getOrLoad(String key, Class<T> clazz, Supplier<T> supplier, Duration timeout) {
-        String redisKey = buildKey(key);
-        Object cached = redisTemplate.opsForValue().get(redisKey);
-        if (cached != null) {
-            if (NULL_HOLDER.equals(cached)) {
-                return null;
-            }
-            return castValue(cached, clazz);
-        }
-        T loaded = supplier.get();
-        if (loaded == null) {
-            redisTemplate.opsForValue().set(redisKey, NULL_HOLDER,
-                Duration.ofSeconds(redisProperties.getNullValueExpireSeconds()));
-            return null;
-        }
-        redisTemplate.opsForValue().set(redisKey, loaded, timeout);
-        return loaded;
-    }
-
-    /**
-     * 获取逻辑过期缓存，过期时触发异步重建。
-     *
-     * @param key      缓存键
-     * @param clazz    目标类型
-     * @param supplier 数据加载函数
-     * @param timeout  逻辑过期时间
-     * @param <T>      类型参数
-     * @return 缓存值
-     */
-    public <T> T getWithLogicalExpire(String key, Class<T> clazz, Supplier<T> supplier, Duration timeout) {
-        String redisKey = buildKey(key);
-        Object cached = redisTemplate.opsForValue().get(redisKey);
-        if (cached == null) {
-            T loaded = supplier.get();
-            if (loaded == null) {
-                return null;
-            }
-            RedisCacheData cacheData = new RedisCacheData();
-            cacheData.setData(loaded);
-            cacheData.setExpireTime(LocalDateTime.now().plusSeconds(timeout.toSeconds()));
-            redisTemplate.opsForValue().set(redisKey, cacheData, timeout.plusMinutes(5));
-            return loaded;
-        }
-        RedisCacheData cacheData = OBJECT_MAPPER.convertValue(cached, RedisCacheData.class);
-        T value = castValue(cacheData.getData(), clazz);
-        if (cacheData.getExpireTime() != null && cacheData.getExpireTime().isAfter(LocalDateTime.now())) {
-            return value;
-        }
-        String rebuildLockKey = redisKey + ":logical:rebuild";
-        Boolean locked = redisTemplate.opsForValue().setIfAbsent(rebuildLockKey, "1", Duration.ofSeconds(30));
-        if (Boolean.TRUE.equals(locked)) {
-            try {
-                T refreshed = supplier.get();
-                RedisCacheData refreshedData = new RedisCacheData();
-                refreshedData.setData(refreshed);
-                refreshedData.setExpireTime(LocalDateTime.now().plusSeconds(timeout.toSeconds()));
-                redisTemplate.opsForValue().set(redisKey, refreshedData, timeout.plusMinutes(5));
-                value = refreshed;
-            } finally {
-                redisTemplate.delete(rebuildLockKey);
-            }
-        }
-        return value;
-    }
-
-    /**
      * 执行 pipeline 批量操作。
      *
      * @param redisCallback Redis 回调
@@ -411,7 +331,7 @@ public class RedisCacheUtil {
     public Set<String> scan(String pattern) {
         return redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
             Set<String> keys = CollUtil.newHashSet();
-            try (var cursor = connection.scan(ScanOptions.scanOptions().match(buildKey(pattern)).count(500).build())) {
+            try (var cursor = connection.scan(ScanOptions.scanOptions().match(buildKey(pattern)).count(redisProperties.getScanCount()).build())) {
                 while (cursor.hasNext()) {
                     keys.add(new String(cursor.next(), StandardCharsets.UTF_8));
                 }
@@ -434,31 +354,6 @@ public class RedisCacheUtil {
         if (clazz.isInstance(value)) {
             return clazz.cast(value);
         }
-        if (value instanceof String str && NULL_HOLDER.equals(str)) {
-            return null;
-        }
         return OBJECT_MAPPER.convertValue(value, clazz);
-    }
-
-    /**
-     * 逻辑过期缓存包装对象。
-     *
-     * @author sloth-boot
-     * @since 1.0.0
-     */
-    @Data
-    public static class RedisCacheData implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * 业务数据。
-         */
-        private Object data;
-
-        /**
-         * 逻辑过期时间。
-         */
-        private LocalDateTime expireTime;
     }
 }

@@ -4,6 +4,12 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * 商品创建请求参数
+ *
+ * @author sloth-boot
+ * @since 1.0.0
+ */
 @Data
 public class ProductCreateRequest {
 

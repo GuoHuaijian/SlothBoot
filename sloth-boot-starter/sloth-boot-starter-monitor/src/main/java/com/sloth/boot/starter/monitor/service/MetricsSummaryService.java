@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 @RequiredArgsConstructor
-public class MetricsSummaryService {
+public class MetricsSummaryService implements MetricsSummaryProvider {
 
     private final MeterRegistry meterRegistry;
 

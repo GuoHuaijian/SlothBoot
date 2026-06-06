@@ -5,6 +5,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 订单数据传输对象
+ *
+ * @author sloth-boot
+ * @since 1.0.0
+ */
 @Data
 public class OrderDTO {
 

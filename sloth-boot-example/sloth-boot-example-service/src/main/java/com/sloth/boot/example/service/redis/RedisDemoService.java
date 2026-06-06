@@ -11,6 +11,7 @@ import com.sloth.boot.example.model.order.request.OrderCreateRequest;
 import com.sloth.boot.example.model.product.dto.ProductDTO;
 import com.sloth.boot.example.model.product.request.ProductCreateRequest;
 import com.sloth.boot.starter.redis.bloom.RedisBloomFilter;
+import com.sloth.boot.starter.redis.core.RedisCacheStrategy;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
 import com.sloth.boot.starter.redis.pubsub.RedisPubSubTemplate;
 import jakarta.annotation.PostConstruct;
@@ -57,6 +58,7 @@ public class RedisDemoService {
     private static final int MAX_EVENTS = 100;
 
     private final RedisCacheUtil cacheUtil;
+    private final RedisCacheStrategy cacheStrategy;
     private final ProductMapper productMapper;
     private final OrderMapper orderMapper;
 
@@ -110,7 +112,7 @@ public class RedisDemoService {
             return null;
         }
 
-        return cacheUtil.getWithLogicalExpire("product:" + id, ProductDTO.class,
+        return cacheStrategy.getWithLogicalExpire("product:" + id, ProductDTO.class,
                 () -> {
                     Product product = productMapper.selectById(id);
                     return product != null ? toProductDTO(product) : null;
@@ -298,13 +300,13 @@ public class RedisDemoService {
 
         // 策略2: getOrLoad（带空值保护）
         long start2 = System.currentTimeMillis();
-        String val2 = cacheUtil.getOrLoad(key, String.class, slowSupplier, Duration.ofMinutes(10));
+        String val2 = cacheStrategy.getOrLoad(key, String.class, slowSupplier, Duration.ofMinutes(10));
         long time2 = System.currentTimeMillis() - start2;
         result.put("getOrLoad", Map.of("value", val2, "timeMs", time2));
 
         // 策略3: 逻辑过期（异步重建）
         long start3 = System.currentTimeMillis();
-        String val3 = cacheUtil.getWithLogicalExpire(key, String.class, slowSupplier, Duration.ofMinutes(10));
+        String val3 = cacheStrategy.getWithLogicalExpire(key, String.class, slowSupplier, Duration.ofMinutes(10));
         long time3 = System.currentTimeMillis() - start3;
         result.put("logicalExpire", Map.of("value", val3, "timeMs", time3));
 

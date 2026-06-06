@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "sloth.doc", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(DocProperties.class)
 public class DocAutoConfiguration {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocAutoConfiguration.class);
 
     /**
      * 注册 OpenAPI 描述对象。
@@ -156,8 +159,14 @@ public class DocAutoConfiguration {
             }
             String url = "http://" + host + ":" + port + contextPath;
             servers.add(new Server().url(url).description("自动检测"));
-        } catch (Exception ignored) {
-            // 自动检测失败时忽略
+        } catch (UnknownHostException e) {
+            log.debug("自动检测服务器地址失败，使用 localhost 作为 fallback: {}", e.getMessage());
+            String port = environment.getProperty("server.port", "8080");
+            String contextPath = environment.getProperty("server.servlet.context-path", "");
+            if (contextPath.endsWith("/")) {
+                contextPath = contextPath.substring(0, contextPath.length() - 1);
+            }
+            servers.add(new Server().url("http://localhost:" + port + contextPath).description("本地回环"));
         }
 
         return servers;

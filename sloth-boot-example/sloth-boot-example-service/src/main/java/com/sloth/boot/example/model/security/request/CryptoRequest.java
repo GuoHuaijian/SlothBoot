@@ -4,6 +4,12 @@ import lombok.Data;
 
 import java.util.Map;
 
+/**
+ * 加解密请求参数
+ *
+ * @author sloth-boot
+ * @since 1.0.0
+ */
 @Data
 public class CryptoRequest {
 

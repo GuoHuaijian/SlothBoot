@@ -6,6 +6,12 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * 系统用户视图对象
+ *
+ * @author sloth-boot
+ * @since 1.0.0
+ */
 @Data
 public class SystemUserVO {
 

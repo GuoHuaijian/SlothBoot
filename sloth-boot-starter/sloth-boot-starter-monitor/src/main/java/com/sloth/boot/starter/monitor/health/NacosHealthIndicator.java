@@ -1,5 +1,6 @@
 package com.sloth.boot.starter.monitor.health;
 
+import com.sloth.boot.starter.monitor.config.MonitorProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.health.contributor.AbstractHealthIndicator;
 import org.springframework.boot.health.contributor.Health;
@@ -20,9 +21,11 @@ import java.net.URI;
 public class NacosHealthIndicator extends AbstractHealthIndicator {
 
     private final Environment environment;
+    private final MonitorProperties.Health healthConfig;
 
-    public NacosHealthIndicator(Environment environment) {
+    public NacosHealthIndicator(Environment environment, MonitorProperties monitorProperties) {
         this.environment = environment;
+        this.healthConfig = monitorProperties.getHealth();
     }
 
     @Override
@@ -36,8 +39,8 @@ public class NacosHealthIndicator extends AbstractHealthIndicator {
         String url = "http://" + serverAddr + "/nacos/v1/console/health/readiness";
         try {
             HttpURLConnection conn = (HttpURLConnection) URI.create(url).toURL().openConnection();
-            conn.setConnectTimeout(3000);
-            conn.setReadTimeout(3000);
+            conn.setConnectTimeout(healthConfig.getConnectTimeout());
+            conn.setReadTimeout(healthConfig.getReadTimeout());
             conn.setRequestMethod("GET");
             int code = conn.getResponseCode();
             if (code == 200) {

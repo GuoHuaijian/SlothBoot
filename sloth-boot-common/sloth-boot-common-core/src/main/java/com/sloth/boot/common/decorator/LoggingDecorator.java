@@ -30,10 +30,16 @@ import org.slf4j.LoggerFactory;
 public abstract class LoggingDecorator<T> extends AbstractDecorator<T> {
 
     protected final Logger log;
+    private final long slowThresholdMs;
 
     protected LoggingDecorator(T target) {
+        this(target, 1000L);
+    }
+
+    protected LoggingDecorator(T target, long slowThresholdMs) {
         super(target);
         this.log = LoggerFactory.getLogger(getClass());
+        this.slowThresholdMs = slowThresholdMs;
     }
 
     @Override
@@ -47,7 +53,7 @@ public abstract class LoggingDecorator<T> extends AbstractDecorator<T> {
     protected void after(String methodName, Object result, long elapsed) {
         if (log.isDebugEnabled()) {
             log.debug("[{}] 出参: {}, 耗时: {}ms", methodName, result, elapsed);
-        } else if (elapsed > 1000) {
+        } else if (elapsed > slowThresholdMs) {
             log.warn("[{}] 慢调用, 耗时: {}ms", methodName, elapsed);
         }
     }

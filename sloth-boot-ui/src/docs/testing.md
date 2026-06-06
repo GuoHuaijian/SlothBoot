@@ -44,9 +44,11 @@ class MyControllerTest extends BaseMockMvcTest {
 
 ### BaseMapperTest
 
-MyBatis Mapper 测试基类，使用 H2 内存数据库。
+MyBatis Mapper 测试基类，使用 H2 内存数据库。位于 `sloth-boot-starter-mybatis` 模块（test scope）。
 
 ```java
+import com.sloth.boot.starter.mybatis.core.BaseMapperTest;
+
 class MyMapperTest extends BaseMapperTest {
 
     @Autowired

@@ -1,6 +1,8 @@
 # sloth-boot-common-test
 
-> SlothBoot 测试基类模块，提供 SpringBoot 测试、MockMvc 测试、MyBatis Mapper 测试的基类和 Mock 工具。
+> SlothBoot 测试基类模块，提供 SpringBoot 测试、MockMvc 测试的基类和 Mock 工具。
+>
+> MyBatis Mapper 测试基类 `BaseMapperTest` 已迁移至 `sloth-boot-starter-mybatis` 模块（test scope），以保持模块层级边界。
 
 ## Maven 依赖
 
@@ -18,9 +20,10 @@
 |------|------|
 | `BaseSpringBootTest` | SpringBoot 集成测试基类 |
 | `BaseMockMvcTest` | MockMvc 控制器测试基类 |
-| `BaseMapperTest` | MyBatis Mapper 测试基类（H2 内存数据库） |
 | `@MockUser` | 测试用户注解，自动注入 UserContext |
 | `MockUserTestExecutionListener` | 测试执行监听器，配合 `@MockUser` 使用 |
+
+> `BaseMapperTest` 已迁移至 `sloth-boot-starter-mybatis`（test scope），见该模块 README。
 
 ## 使用示例
 
@@ -75,7 +78,11 @@ class OrderServiceTest extends BaseSpringBootTest {
 
 ### Mapper 测试
 
+> 需要引入 `sloth-boot-starter-mybatis` 依赖，`BaseMapperTest` 位于该模块的 test scope。
+
 ```java
+import com.sloth.boot.starter.mybatis.core.BaseMapperTest;
+
 class UserMapperTest extends BaseMapperTest {
 
     @Autowired

@@ -44,6 +44,11 @@ public class RedisProperties {
     private long nullValueExpireSeconds = 60L;
 
     /**
+     * SCAN 命令每次迭代的 count 提示值。
+     */
+    private int scanCount = 500;
+
+    /**
      * 多级缓存配置。
      */
     private MultiCache multiCache = new MultiCache();

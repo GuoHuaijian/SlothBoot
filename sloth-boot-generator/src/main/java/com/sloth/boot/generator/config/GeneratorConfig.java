@@ -21,17 +21,17 @@ public class GeneratorConfig {
     /**
      * 数据库 URL
      */
-    private String url = "jdbc:mysql://127.0.0.1:3306/sloth_boot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
+    private String url = "";
 
     /**
      * 数据库用户名
      */
-    private String username = "root";
+    private String username = "";
 
     /**
      * 数据库密码
      */
-    private String password = "root";
+    private String password = "";
 
     // ==================== 包配置 ====================
 
@@ -98,6 +98,16 @@ public class GeneratorConfig {
      * 表名前缀（生成时会移除）
      */
     private String[] tablePrefixes = {"sys_", "biz_"};
+
+    /**
+     * 逻辑删除字段名
+     */
+    private String logicDeleteColumnName = "deleted";
+
+    /**
+     * 乐观锁字段名
+     */
+    private String versionColumnName = "version";
 
     // ==================== 模板配置 ====================
 

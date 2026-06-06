@@ -1,7 +1,7 @@
-package com.sloth.boot.common.test;
+package com.sloth.boot.starter.mybatis.core;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.sloth.boot.starter.mybatis.core.BaseEntity;
+import com.sloth.boot.common.test.BaseSpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 继承自 {@link BaseSpringBootTest}，自动注入 {@link BaseMapper} 实例， 提供通用的 CRUD
  * 辅助方法，子类可直接调用以简化 Mapper 层单元测试。
  *
- * @param <T> 实体类型，必须继承 {@link com.sloth.boot.starter.mybatis.core.BaseEntity}
+ * @param <T> 实体类型，必须继承 {@link BaseEntity}
  * @author sloth-boot
  * @since 1.0.0
  */

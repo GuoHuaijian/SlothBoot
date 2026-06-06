@@ -1,5 +1,7 @@
 package com.sloth.boot.common.util;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+
 /**
  * 条件判断工具类
  * <p>
@@ -57,7 +59,8 @@ public final class ConditionUtil {
     public static boolean hasProperty(String key) {
         try {
             return SpringContextUtil.getProperty(key) != null;
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchBeanDefinitionException e) {
+            log.trace("Failed to check property '{}'", key, e);
             return false;
         }
     }
@@ -73,7 +76,8 @@ public final class ConditionUtil {
         try {
             String value = SpringContextUtil.getProperty(key);
             return value != null ? value : defaultValue;
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchBeanDefinitionException e) {
+            log.trace("Failed to get property '{}'", key, e);
             return defaultValue;
         }
     }
@@ -87,7 +91,8 @@ public final class ConditionUtil {
     public static boolean isBeanPresent(Class<?> beanClass) {
         try {
             return SpringContextUtil.getApplicationContext().containsBean(beanClass.getName());
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchBeanDefinitionException e) {
+            log.trace("Failed to check bean '{}'", beanClass.getSimpleName(), e);
             return false;
         }
     }
@@ -106,7 +111,7 @@ public final class ConditionUtil {
                     return true;
                 }
             }
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchBeanDefinitionException e) {
             log.trace("Failed to check active profile '{}'", profile, e);
         }
         return false;

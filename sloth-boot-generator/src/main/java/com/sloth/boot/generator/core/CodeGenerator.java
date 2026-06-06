@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 
 import com.sloth.boot.generator.config.GeneratorConfig;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Sloth Boot 代码生成器。
  * <p>
@@ -29,6 +31,7 @@ import com.sloth.boot.generator.config.GeneratorConfig;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 public class CodeGenerator {
 
     private final GeneratorConfig config;
@@ -77,8 +80,8 @@ public class CodeGenerator {
                     .enableLombok()
                     .enableTableFieldAnnotation()
                     .enableRemoveIsPrefix()
-                    .logicDeleteColumnName("deleted")
-                    .versionColumnName("version");
+                    .logicDeleteColumnName(config.getLogicDeleteColumnName())
+                    .versionColumnName(config.getVersionColumnName());
 
                 // 表前缀（移除表名前缀生成更简洁的类名）
                 if (config.getTablePrefixes() != null && config.getTablePrefixes().length > 0) {
@@ -129,8 +132,8 @@ public class CodeGenerator {
      */
     public static void main(String[] args) {
         if (args.length < 5) {
-            System.out.println("用法: java -jar sloth-boot-generator.jar <url> <username> <password> <outputDir> <table1> [table2] ...");
-            System.out.println("示例: java -jar sloth-boot-generator.jar jdbc:mysql://localhost:3306/mydb root root ./output sys_user sys_role");
+            log.info("用法: java -jar sloth-boot-generator.jar <url> <username> <password> <outputDir> <table1> [table2] ...");
+            log.info("示例: java -jar sloth-boot-generator.jar jdbc:mysql://localhost:3306/mydb root root ./output sys_user sys_role");
             return;
         }
         String url = args[0];
@@ -141,6 +144,6 @@ public class CodeGenerator {
         System.arraycopy(args, 4, tables, 0, tables.length);
 
         quickGenerate(url, username, password, tables, outputDir);
-        System.out.println("代码生成完成！输出目录: " + outputDir);
+        log.info("代码生成完成！输出目录: {}", outputDir);
     }
 }
