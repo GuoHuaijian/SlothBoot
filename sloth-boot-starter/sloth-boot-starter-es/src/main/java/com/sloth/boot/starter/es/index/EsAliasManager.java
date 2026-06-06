@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.core.index.AliasActions;
 import org.springframework.data.elasticsearch.core.index.AliasData;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -86,7 +87,7 @@ public class EsAliasManager {
      * @return 别名集合，不会返回 null
      */
     public Set<String> getAliases(String index) {
-        var aliasMap = elasticsearchOperations.indexOps(IndexCoordinates.of(index)).getAliases();
+        Map<String, Set<AliasData>> aliasMap = elasticsearchOperations.indexOps(IndexCoordinates.of(index)).getAliases();
         return aliasMap.getOrDefault(index, Set.of()).stream()
             .map(AliasData::getAlias)
             .collect(Collectors.toSet());

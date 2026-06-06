@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.mybatis.interceptor;
 
 import com.sloth.boot.common.context.UserContext;
+import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.starter.mybatis.annotation.DataPermission;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -75,7 +76,7 @@ public class DataPermissionInterceptor implements Interceptor {
             metaObject.setValue("delegate.boundSql.sql", newSql);
         } catch (JSQLParserException e) {
             log.error("[DataPermission] SQL 改写失败: {}", e.getMessage(), e);
-            throw new RuntimeException("[DataPermission] SQL 改写失败，拒绝执行未过滤的 SQL", e);
+            throw SystemException.of("[DataPermission] SQL 改写失败，拒绝执行未过滤的 SQL", e);
         }
 
         return invocation.proceed();

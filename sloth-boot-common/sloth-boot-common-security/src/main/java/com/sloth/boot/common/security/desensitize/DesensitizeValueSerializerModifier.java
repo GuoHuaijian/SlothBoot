@@ -31,7 +31,7 @@ public class DesensitizeValueSerializerModifier extends ValueSerializerModifier 
                 }
                 if (annotation != null) {
                     @SuppressWarnings("unchecked")
-                    var serializer = (tools.jackson.databind.ValueSerializer<Object>)
+                    tools.jackson.databind.ValueSerializer<Object> serializer = (tools.jackson.databind.ValueSerializer<Object>)
                             (tools.jackson.databind.ValueSerializer<?>) new DesensitizeSerializer(annotation);
                     writer.assignSerializer(serializer);
                 }

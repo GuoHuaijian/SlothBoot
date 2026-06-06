@@ -8,6 +8,7 @@ import com.sloth.boot.starter.redis.config.RedisProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
@@ -331,7 +332,7 @@ public class RedisCacheUtil implements CacheOperations {
     public Set<String> scan(String pattern) {
         return redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
             Set<String> keys = CollUtil.newHashSet();
-            try (var cursor = connection.scan(ScanOptions.scanOptions().match(buildKey(pattern)).count(redisProperties.getScanCount()).build())) {
+            try (Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(buildKey(pattern)).count(redisProperties.getScanCount()).build())) {
                 while (cursor.hasNext()) {
                     keys.add(new String(cursor.next(), StandardCharsets.UTF_8));
                 }

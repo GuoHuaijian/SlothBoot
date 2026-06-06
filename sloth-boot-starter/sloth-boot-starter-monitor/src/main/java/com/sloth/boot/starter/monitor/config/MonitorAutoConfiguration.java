@@ -192,6 +192,11 @@ public class MonitorAutoConfiguration {
         return new MetricsSummaryEndpoint(metricsSummaryService);
     }
 
+    /**
+     * 注册系统资源端点。
+     *
+     * @return 系统资源端点
+     */
     @Bean
     @ConditionalOnClass(Endpoint.class)
     @ConditionalOnMissingBean
@@ -298,6 +303,7 @@ public class MonitorAutoConfiguration {
     @Configuration(proxyBeanMethods = false)
     @EnableScheduling
     @ConditionalOnProperty(prefix = "sloth.monitor", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "sloth.monitor", name = "scheduling-enabled", havingValue = "true", matchIfMissing = true)
     static class SchedulingConfiguration {
     }
 }

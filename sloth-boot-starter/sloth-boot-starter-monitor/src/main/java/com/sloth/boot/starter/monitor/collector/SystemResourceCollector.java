@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class SystemResourceCollector {
      * @return 内存使用率百分比
      */
     public double getMemoryUsage() {
-        var heapUsage = memoryBean.getHeapMemoryUsage();
+        MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
         long used = heapUsage.getUsed();
         long max = heapUsage.getMax();
         if (max <= 0) {

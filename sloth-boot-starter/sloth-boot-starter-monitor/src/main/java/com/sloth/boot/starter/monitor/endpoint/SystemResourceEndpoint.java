@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class SystemResourceEndpoint {
         result.put("cpuCores", processors);
 
         // Memory: bytes
-        var heapUsage = memoryBean.getHeapMemoryUsage();
+        MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
         result.put("memoryUsed", heapUsage.getUsed());
         result.put("memoryTotal", heapUsage.getMax() > 0 ? heapUsage.getMax() : heapUsage.getCommitted());
 

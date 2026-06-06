@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -33,13 +34,12 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 @AutoConfiguration
 @ConditionalOnClass(OpenAPI.class)
 @ConditionalOnProperty(prefix = "sloth.doc", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(DocProperties.class)
 public class DocAutoConfiguration {
-
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocAutoConfiguration.class);
 
     /**
      * 注册 OpenAPI 描述对象。

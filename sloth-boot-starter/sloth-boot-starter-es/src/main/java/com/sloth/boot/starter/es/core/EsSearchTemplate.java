@@ -11,8 +11,10 @@ import com.sloth.boot.starter.es.query.EsPageQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.AggregationsContainer;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -203,7 +205,7 @@ public class EsSearchTemplate {
             return QueryBuilders.matchAll(m -> m);
         }
 
-        var boolBuilder = new BoolQuery.Builder();
+        BoolQuery.Builder boolBuilder = new BoolQuery.Builder();
         if (pageQuery.getQuery() != null) {
             boolBuilder.must(pageQuery.getQuery().getQuery());
         }
@@ -281,9 +283,9 @@ public class EsSearchTemplate {
         // 再遍历每个聚合项转为字符串形式的 Map（key=聚合名, value=聚合结果JSON）
         if (!pageQuery.getAggregations().isEmpty()) {
             Map<String, Object> aggs = new HashMap<>();
-            var container = hits.getAggregations();
+            AggregationsContainer<?> container = hits.getAggregations();
             if (container instanceof ElasticsearchAggregations esAggs) {
-                for (var entry : esAggs.aggregationsAsMap().entrySet()) {
+                for (Map.Entry<String, ElasticsearchAggregation> entry : esAggs.aggregationsAsMap().entrySet()) {
                     aggs.put(entry.getKey(), entry.getValue().aggregation().getAggregate().toString());
                 }
             }

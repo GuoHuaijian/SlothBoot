@@ -23,8 +23,11 @@ import java.util.UUID;
 @Service
 public class SecurityDemoService {
 
+    // DEMO ONLY — 生产环境请通过 application.yml 配置
     private static final String DEFAULT_AES_KEY = "slothboot12345678";
+    // DEMO ONLY — 生产环境请通过 application.yml 配置
     private static final String DEFAULT_AES_IV = "slothboot12345678";
+    // DEMO ONLY — 生产环境请通过 application.yml 配置
     private static final String DEFAULT_SECRET_KEY = "demo-secret-key";
 
     // ==================== AES 对称加密 ====================

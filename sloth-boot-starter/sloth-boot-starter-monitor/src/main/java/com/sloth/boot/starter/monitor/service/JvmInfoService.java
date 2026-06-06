@@ -4,6 +4,7 @@ import com.sloth.boot.starter.monitor.model.JvmInfo;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.lang.management.ThreadMXBean;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class JvmInfoService implements JvmInfoProvider {
         MemoryUsage nonHeapUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
 
         // 线程信息
-        var threadMXBean = ManagementFactory.getThreadMXBean();
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
         // GC 信息
         List<JvmInfo.GcInfo> gcInfos = ManagementFactory.getGarbageCollectorMXBeans().stream()

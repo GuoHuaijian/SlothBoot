@@ -95,7 +95,7 @@ public class SpringAiChatClient implements AiChatClient {
     @Override
     public ChatResponse chat(ChatRequest request) {
         validatePrompt(request.getUserPrompt());
-        var spec = buildPromptSpec(request);
+        ChatClient.ChatClientRequestSpec spec = buildPromptSpec(request);
 
         org.springframework.ai.chat.model.ChatResponse springResponse = spec.call().chatResponse();
         return extractChatResponse(springResponse);
@@ -107,7 +107,7 @@ public class SpringAiChatClient implements AiChatClient {
     @Override
     public Flux<String> chatStream(ChatRequest request) {
         validatePrompt(request.getUserPrompt());
-        var spec = buildPromptSpec(request);
+        ChatClient.ChatClientRequestSpec spec = buildPromptSpec(request);
         return spec.stream().content();
     }
 
@@ -159,7 +159,7 @@ public class SpringAiChatClient implements AiChatClient {
                 .systemPrompt(request.getSystemPrompt()).conversationId(request.getConversationId())
                 .model(request.getModel()).temperature(request.getTemperature()).topP(request.getTopP())
                 .maxTokens(request.getMaxTokens()).variables(request.getVariables()).tools(request.getTools()).build();
-        var spec = buildPromptSpec(structuredRequest);
+        ChatClient.ChatClientRequestSpec spec = buildPromptSpec(structuredRequest);
         String content = spec.call().content();
         return converter.convert(content);
     }

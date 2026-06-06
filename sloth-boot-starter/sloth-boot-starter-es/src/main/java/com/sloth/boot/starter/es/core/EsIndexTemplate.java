@@ -4,6 +4,7 @@ import com.sloth.boot.starter.es.config.EsProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
@@ -40,7 +41,7 @@ public class EsIndexTemplate {
      * @param settingsJson Settings JSON，为空则跳过
      */
     public boolean createIndex(String index, String mappingJson, String settingsJson) {
-        var ops = elasticsearchTemplate.indexOps(IndexCoordinates.of(index));
+        IndexOperations ops = elasticsearchTemplate.indexOps(IndexCoordinates.of(index));
         if (settingsJson != null && mappingJson != null) {
             Map<String, Object> settings = Document.parse(settingsJson);
             Document mapping = Document.parse(mappingJson);

@@ -1,5 +1,6 @@
 package com.sloth.boot.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
@@ -11,9 +12,8 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
  * @author sloth-boot
  * @since 1.0.0
  */
+@Slf4j
 public final class ConditionUtil {
-
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConditionUtil.class);
 
     private ConditionUtil() {
         throw new UnsupportedOperationException("Utility class");
