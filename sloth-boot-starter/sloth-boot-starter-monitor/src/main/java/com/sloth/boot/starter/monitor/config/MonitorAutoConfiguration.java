@@ -253,7 +253,7 @@ public class MonitorAutoConfiguration {
     @Bean
     @ConditionalOnClass(WebEndpointProperties.class)
     @ConditionalOnMissingBean(name = "monitorActuatorExposurePostProcessor")
-    public BeanPostProcessor monitorActuatorExposurePostProcessor() {
+    public static BeanPostProcessor monitorActuatorExposurePostProcessor() {
         return new BeanPostProcessor() {
             @Override
             public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.redis.config;
 import tools.jackson.databind.ObjectMapper;
 import com.sloth.boot.starter.redis.bloom.RedisBloomFilter;
 import com.sloth.boot.starter.redis.cache.MultiLevelCacheManager;
+import com.sloth.boot.starter.redis.core.RedisCacheStrategy;
 import com.sloth.boot.starter.redis.core.RedisCacheUtil;
 import com.sloth.boot.starter.redis.delay.RedisDelayQueue;
 import com.sloth.boot.starter.redis.id.RedisIdGenerator;
@@ -98,6 +99,20 @@ public class RedisAutoConfiguration {
     public RedisCacheUtil redisCacheUtil(@Qualifier("slothRedisTemplate") RedisTemplate<String, Object> redisTemplate,
                                          RedisProperties redisProperties) {
         return new RedisCacheUtil(redisTemplate, redisProperties);
+    }
+
+    /**
+     * 注册 Redis 缓存策略类。
+     *
+     * @param redisTemplate   RedisTemplate
+     * @param redisProperties Redis 配置
+     * @return Redis 缓存策略类
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public RedisCacheStrategy redisCacheStrategy(@Qualifier("slothRedisTemplate") RedisTemplate<String, Object> redisTemplate,
+                                                  RedisProperties redisProperties) {
+        return new RedisCacheStrategy(redisTemplate, redisProperties);
     }
 
     /**
