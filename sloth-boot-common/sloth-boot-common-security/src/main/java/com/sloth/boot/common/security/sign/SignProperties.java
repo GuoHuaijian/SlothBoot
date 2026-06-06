@@ -34,5 +34,5 @@ public class SignProperties {
     /**
      * 是否启用签名验证
      */
-    private boolean enabled = true;
+    private boolean enabled = false;
 }

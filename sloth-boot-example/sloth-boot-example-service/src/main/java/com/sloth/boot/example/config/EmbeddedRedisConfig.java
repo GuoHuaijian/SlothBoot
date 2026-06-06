@@ -20,7 +20,7 @@ import redis.embedded.RedisServer;
  * @since 1.0.0
  */
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class EmbeddedRedisConfig {
 
     private static final int EMBEDDED_REDIS_PORT = 16379;

@@ -1,6 +1,8 @@
 package com.sloth.boot.starter.sms.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -26,11 +28,15 @@ public class SmsProperties {
     /**
      * 访问 Key Id。
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String accessKeyId;
 
     /**
      * 访问 Key Secret。
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String accessKeySecret;
 
     /**

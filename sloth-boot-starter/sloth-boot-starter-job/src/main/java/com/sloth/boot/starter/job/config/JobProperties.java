@@ -1,6 +1,8 @@
 package com.sloth.boot.starter.job.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -19,6 +21,8 @@ public class JobProperties {
     private boolean enabled = true;
 
     private String adminAddresses;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String accessToken;
     private String appname;
     private String address;

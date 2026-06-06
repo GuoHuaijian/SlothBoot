@@ -7,17 +7,6 @@
       "description": "Whether to wrap controller responses with R."
     },
     {
-      "name": "sloth.web.xss-enabled",
-      "type": "java.lang.Boolean",
-      "defaultValue": true,
-      "description": "Whether to enable XSS filter for servlet requests."
-    },
-    {
-      "name": "sloth.web.xss-exclude-urls",
-      "type": "java.util.Set<java.lang.String>",
-      "description": "Request paths excluded from the XSS filter."
-    },
-    {
       "name": "sloth.web.cors.allowed-origins",
       "type": "java.util.Set<java.lang.String>",
       "description": "Allowed origin patterns for CORS."

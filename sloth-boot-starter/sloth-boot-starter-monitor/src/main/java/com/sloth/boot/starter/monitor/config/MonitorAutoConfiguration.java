@@ -65,6 +65,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "sloth.monitor.alarm", name = "enabled", havingValue = "true")
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
@@ -302,7 +303,6 @@ public class MonitorAutoConfiguration {
      */
     @Configuration(proxyBeanMethods = false)
     @EnableScheduling
-    @ConditionalOnProperty(prefix = "sloth.monitor", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnProperty(prefix = "sloth.monitor", name = "scheduling-enabled", havingValue = "true", matchIfMissing = true)
     static class SchedulingConfiguration {
     }

@@ -24,7 +24,6 @@ class MonitorAutoConfigurationTest {
     @DisplayName("默认配置下注册核心 Bean")
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
-            assertThat(context.getBeansOfType(RestTemplate.class)).isNotEmpty();
             assertThat(context.getBeansOfType(JvmMetricsConfig.class)).isNotEmpty();
             assertThat(context.getBeansOfType(BusinessMetrics.class)).isNotEmpty();
         });
@@ -34,16 +33,24 @@ class MonitorAutoConfigurationTest {
     @DisplayName("sloth.monitor.enabled=false 时不注册任何 Bean")
     void disabledByProperty() {
         contextRunner.withPropertyValues("sloth.monitor.enabled=false").run(context -> {
-            assertThat(context).doesNotHaveBean(RestTemplate.class);
             assertThat(context).doesNotHaveBean(JvmMetricsConfig.class);
             assertThat(context).doesNotHaveBean(BusinessMetrics.class);
         });
     }
 
     @Test
+    @DisplayName("告警开启时注册 RestTemplate")
+    void alarmEnabledRegistersRestTemplate() {
+        contextRunner.withPropertyValues("sloth.monitor.alarm.enabled=true").run(context -> {
+            assertThat(context.getBeansOfType(RestTemplate.class)).isNotEmpty();
+        });
+    }
+
+    @Test
     @DisplayName("用户自定义 RestTemplate 可覆盖默认")
     void customRestTemplateOverrides() {
-        contextRunner.withBean("customRestTemplate", RestTemplate.class, () -> mock(RestTemplate.class))
+        contextRunner.withPropertyValues("sloth.monitor.alarm.enabled=true")
+            .withBean("customRestTemplate", RestTemplate.class, () -> mock(RestTemplate.class))
             .run(context -> {
                 assertThat(context.getBeansOfType(RestTemplate.class)).isNotEmpty();
             });
