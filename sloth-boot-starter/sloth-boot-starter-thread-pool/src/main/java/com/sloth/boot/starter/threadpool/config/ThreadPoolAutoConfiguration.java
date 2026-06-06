@@ -34,6 +34,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 线程池自动配置。
+ * <p>
+ * 注册 {@link ThreadPoolRegistry}、{@link TaskDecorator}、{@link VisibleThreadPoolExecutor}、
+ * 虚拟线程执行器、{@link AsyncConfigurer}、{@link AsyncExceptionHandler}、
+ * {@link ScheduledThreadPoolExecutor}、{@link ThreadPoolMetrics}、{@link ThreadPoolEndpoint}、
+ * {@link ThreadPoolManager}、{@link ThreadPoolAlarmTask}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

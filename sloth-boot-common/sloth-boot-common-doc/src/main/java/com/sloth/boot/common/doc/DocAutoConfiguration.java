@@ -27,7 +27,8 @@ import java.util.List;
 /**
  * 接口文档自动配置。
  * <p>
- * 提供 OpenAPI 描述、Bearer Token 安全方案、服务器地址自动检测、多分组支持。
+ * 注册 {@link OpenAPI}、{@link GroupedOpenApi}（默认分组 + 自定义分组），
+ * 提供 Bearer Token 安全方案、服务器地址自动检测、多分组支持，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

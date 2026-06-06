@@ -20,6 +20,10 @@ import org.springframework.core.env.Environment;
 
 /**
  * Gateway 自动配置。
+ * <p>
+ * 注册 {@link TraceIdGlobalFilter}、{@link HeaderForwardingFilter}、{@link RequestLogGlobalFilter}、
+ * {@link BlackListGlobalFilter}、{@link GatewayExceptionHandler}、{@link SentinelFallbackHandler}、
+ * {@link DynamicRouteService}、{@link RetryGlobalFilter}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

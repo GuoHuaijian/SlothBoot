@@ -20,6 +20,9 @@ import org.springframework.core.env.Environment;
 
 /**
  * Seata 自动配置。
+ * <p>
+ * 注册 {@link GlobalTransactionScanner}、{@link SeataHealthIndicator}、{@link SeataMetrics}、
+ * {@link SeataTracingFilter}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

@@ -22,6 +22,9 @@ import org.springframework.core.env.Environment;
 
 /**
  * Sentinel 自动配置。
+ * <p>
+ * 注册 {@link GlobalBlockHandler}、{@link SentinelBlockExceptionHandler}、{@link NacosDataSourceConfig}、
+ * {@link SentinelHealthIndicator}、{@link SentinelMetrics}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

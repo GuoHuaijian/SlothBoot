@@ -90,6 +90,13 @@ public class DynamicRouteService implements DynamicRouteManager, DisposableBean 
         }
     }
 
+    /**
+     * 刷新路由配置。
+     * <p>
+     * 解析 JSON 格式的路由定义列表，写入新路由并清理不再存在的旧路由。
+     *
+     * @param configInfo 路由配置 JSON 字符串
+     */
     public void refreshRoutes(String configInfo) {
         try {
             List<RouteDefinition> routes = JsonUtil.parseObject(configInfo, new TypeReference<List<RouteDefinition>>() {
@@ -116,6 +123,9 @@ public class DynamicRouteService implements DynamicRouteManager, DisposableBean 
         }
     }
 
+    /**
+     * 销毁回调，关闭 Nacos ConfigService 释放连接资源。
+     */
     @Override
     public void destroy() {
         if (configService != null) {

@@ -28,6 +28,16 @@ public class DefaultIdempotentKeyStrategy implements IdempotentKeyStrategy {
 
     private final IdempotentProperties properties;
 
+    /**
+     * 构建幂等 Key。
+     * <p>
+     * 若注解配置了自定义 key 表达式，则使用 SpEL 解析；否则按 "方法签名:用户ID" 规则生成。
+     * 未登录用户以客户端 IP 替代用户 ID。
+     *
+     * @param joinPoint  切点
+     * @param idempotent 幂等注解
+     * @return 幂等 Redis Key
+     */
     @Override
     public String buildKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
         String prefix = properties.getKeyPrefix();

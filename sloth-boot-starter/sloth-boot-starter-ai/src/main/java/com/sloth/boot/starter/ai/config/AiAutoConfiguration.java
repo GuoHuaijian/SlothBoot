@@ -22,6 +22,9 @@ import com.sloth.boot.starter.ai.function.AiFunctionRegistry;
 
 /**
  * AI Starter 自动配置。
+ * <p>
+ * 注册 {@link ChatMemory}、{@link ChatClient}、{@link AiChatClient}、{@link AiFunctionRegistry}，
+ * 支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

@@ -35,6 +35,12 @@ import org.springframework.scripting.support.ResourceScriptSource;
 
 /**
  * Redis 自动配置。
+ * <p>
+ * 注册 {@link RedisTemplate}、{@link StringRedisTemplate}、{@link RedisCacheUtil}、
+ * {@link DistributedLock}、{@link DistributedLockAspect}、{@link RateLimiterAspect}、
+ * {@link RedisDelayQueue}、{@link RedisIdGenerator}、{@link DistributedReadWriteLock}、
+ * {@link MultiLevelCacheManager}、{@link RedisBloomFilter}、{@link RedisPubSubTemplate}，
+ * 支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

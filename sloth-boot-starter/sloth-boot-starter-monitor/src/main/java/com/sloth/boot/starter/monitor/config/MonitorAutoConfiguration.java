@@ -43,6 +43,12 @@ import java.util.Set;
 
 /**
  * 监控自动配置。
+ * <p>
+ * 注册 {@link RestTemplate}、{@link AlarmService}、{@link NacosHealthIndicator}、
+ * {@link HttpMetricsFilter}、{@link SlowOperationEventListener}、{@link JvmMetricsConfig}、
+ * {@link InfoEndpoint}、{@link JvmInfoEndpoint}、{@link MetricsSummaryEndpoint}、
+ * {@link SystemResourceEndpoint}、{@link BusinessMetrics}、{@link JvmInfoService}、
+ * {@link MetricsSummaryService}、{@link SystemResourceCollector}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

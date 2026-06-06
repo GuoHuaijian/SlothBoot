@@ -20,6 +20,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * 幂等自动配置。
+ * <p>
+ * 注册 {@link TokenIdempotentService}、{@link RedisIdempotentStore}（{@link IdempotentStore}）、
+ * {@link IdempotentKeyStrategy}、{@link IdempotentMetrics}、{@link IdempotentAspect}，
+ * 支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

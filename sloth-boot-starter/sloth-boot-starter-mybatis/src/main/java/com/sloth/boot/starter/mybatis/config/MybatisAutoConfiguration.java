@@ -39,6 +39,10 @@ import java.sql.SQLException;
 
 /**
  * MyBatis Plus 自动配置。
+ * <p>
+ * 注册 {@link MybatisPlusInterceptor}、{@link MetaObjectHandler}、{@link SlowSqlInterceptor}、
+ * {@link DataScopeInterceptor}、{@link DataPermissionInterceptor}、{@link ISqlInjector}、
+ * {@link SqlSessionFactory}、{@link SqlSessionTemplate}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

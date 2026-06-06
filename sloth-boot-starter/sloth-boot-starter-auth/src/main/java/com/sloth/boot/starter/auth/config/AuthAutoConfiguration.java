@@ -29,6 +29,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Sa-Token 认证授权自动配置。
+ * <p>
+ * 注册 {@link SaTokenConfig}、{@link DefaultStpInterface}、{@link SaTokenContextHandler}、
+ * 认证拦截器 {@link WebMvcConfigurer}、{@link SaTokenEventListener}、{@link OnlineUserService}、
+ * Token 续期过滤器、{@link PermissionService}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

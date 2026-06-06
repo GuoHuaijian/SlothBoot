@@ -17,6 +17,12 @@ public class SpringContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
+    /**
+     * Spring 容器回调，注入 ApplicationContext。
+     *
+     * @param applicationContext Spring 应用上下文
+     * @throws BeansException 异常
+     */
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         SpringContextUtil.applicationContext = applicationContext;

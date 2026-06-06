@@ -25,6 +25,9 @@ import org.springframework.context.annotation.Import;
 
 /**
  * Feign 自动配置。
+ * <p>
+ * 注册 {@link RequestInterceptor}、{@link Decoder}、{@link ErrorDecoder}、{@link Retryer}、
+ * {@link FeignHealthIndicator}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0

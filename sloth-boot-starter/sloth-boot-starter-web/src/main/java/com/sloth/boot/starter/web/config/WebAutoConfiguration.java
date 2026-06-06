@@ -35,6 +35,10 @@ import java.io.IOException;
 
 /**
  * Web 自动配置。
+ * <p>
+ * 注册 {@link UserContextInterceptor}、{@link WebMvcConfiguration}、{@link GlobalExceptionHandler}、
+ * {@link GlobalResponseAdvice}、{@link RequestLogFilter}、{@link OperateLogAspect}、
+ * XSS 过滤器、CORS 过滤器、请求体缓存过滤器、访问日志事件过滤器，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0
