@@ -230,23 +230,24 @@ public class EsSearchTemplate {
         List<String> fields = config.getFields();
         if (fields == null || fields.isEmpty()) return;
 
+        // 将 EsHighlightConfig 中的高亮参数映射为 Spring Data ES 的 HighlightFieldParameters
         HighlightFieldParameters.HighlightFieldParametersBuilder paramsBuilder =
             HighlightFieldParameters.builder()
-                .withPreTags(config.getPreTag())
-                .withPostTags(config.getPostTag());
+                .withPreTags(config.getPreTag())       // 高亮前缀标签，如 <em>
+                .withPostTags(config.getPostTag());     // 高亮后缀标签，如 </em>
 
         if (config.getFragmentSize() > 0) {
-            paramsBuilder.withFragmentSize(config.getFragmentSize());
+            paramsBuilder.withFragmentSize(config.getFragmentSize());         // 每个高亮片段最大字符数
         }
         if (config.getNumberOfFragments() > 0) {
-            paramsBuilder.withNumberOfFragments(config.getNumberOfFragments());
+            paramsBuilder.withNumberOfFragments(config.getNumberOfFragments()); // 返回的高亮片段数量
         }
         if (config.getType() != null) {
-            paramsBuilder.withType(config.getType().name());
+            paramsBuilder.withType(config.getType().name());                  // 高亮实现类型，如 unified、plain、fvh
         }
 
+        // 为每个字段应用相同的高亮参数
         HighlightFieldParameters params = paramsBuilder.build();
-
         List<HighlightField> highlightFields = fields.stream()
             .map(field -> new HighlightField(field, params))
             .collect(Collectors.toList());
@@ -265,7 +266,7 @@ public class EsSearchTemplate {
         result.setTotal(hits.getTotalHits());
         result.setMaxScore(hits.getMaxScore());
 
-        // 高亮
+        // 高亮结果提取：按文档 ID 收集每个命中的高亮字段
         if (pageQuery.getHighlight() != null) {
             Map<String, Map<String, List<String>>> highlights = new HashMap<>();
             for (SearchHit<T> hit : hits.getSearchHits()) {
@@ -276,7 +277,8 @@ public class EsSearchTemplate {
             result.setHighlights(highlights);
         }
 
-        // 聚合
+        // 聚合结果提取：先尝试转为 Spring Data ES 的 ElasticsearchAggregations，
+        // 再遍历每个聚合项转为字符串形式的 Map（key=聚合名, value=聚合结果JSON）
         if (!pageQuery.getAggregations().isEmpty()) {
             Map<String, Object> aggs = new HashMap<>();
             var container = hits.getAggregations();

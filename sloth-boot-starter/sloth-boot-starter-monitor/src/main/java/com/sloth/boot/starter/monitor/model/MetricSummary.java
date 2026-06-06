@@ -16,8 +16,10 @@ import java.util.Map;
 @Builder
 public class MetricSummary {
 
+    /** 计数器列表 */
     private List<CounterInfo> counters;
 
+    /** 计时器列表 */
     private List<TimerInfo> timers;
 
     /**
@@ -27,10 +29,13 @@ public class MetricSummary {
     @Builder
     public static class CounterInfo {
 
+        /** 指标名称 */
         private String name;
 
+        /** 标签键值对 */
         private Map<String, String> tags;
 
+        /** 当前计数值 */
         private double count;
     }
 
@@ -41,16 +46,22 @@ public class MetricSummary {
     @Builder
     public static class TimerInfo {
 
+        /** 指标名称 */
         private String name;
 
+        /** 标签键值对 */
         private Map<String, String> tags;
 
+        /** 采样次数 */
         private long count;
 
+        /** 总耗时 */
         private String totalTime;
 
+        /** 平均耗时 */
         private String mean;
 
+        /** 最大耗时 */
         private String max;
     }
 }

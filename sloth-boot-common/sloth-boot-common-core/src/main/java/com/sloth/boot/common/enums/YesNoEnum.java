@@ -8,7 +8,9 @@ package com.sloth.boot.common.enums;
  */
 public enum YesNoEnum implements IBaseEnum {
 
+    /** 是 */
     YES(1, "是"),
+    /** 否 */
     NO(0, "否");
 
     private final int code;

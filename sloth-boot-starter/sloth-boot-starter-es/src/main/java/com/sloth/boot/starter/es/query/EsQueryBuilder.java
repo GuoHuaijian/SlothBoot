@@ -208,6 +208,15 @@ public class EsQueryBuilder {
 
     // ========== 工具方法 ==========
 
+    /**
+     * 将 Java 对象转换为 ES 字段值类型 {@link FieldValue}。
+     * <p>
+     * 支持的类型：String、Long、Integer、Double、Float、Boolean。
+     * 对于其他类型，统一通过 {@code String.valueOf()} 转为字符串兜底。
+     *
+     * @param value Java 对象值
+     * @return ES 字段值
+     */
     private static FieldValue toFieldValue(Object value) {
         if (value instanceof String s) {
             return FieldValue.of(s);
@@ -269,19 +278,20 @@ public class EsQueryBuilder {
 
         public EsQueryBuilder build() {
             BoolQuery boolQuery = BoolQuery.of(b -> {
+                // 只有列表非空时才设置对应条件，避免 ES 报 "empty bool query" 错误
                 if (!must.isEmpty()) {
-                    b.must(must);
+                    b.must(must);       // 必须匹配（影响评分）
                 }
                 if (!should.isEmpty()) {
-                    b.should(should);
+                    b.should(should);   // 任意匹配（影响评分）
                 }
                 if (!filter.isEmpty()) {
-                    b.filter(filter);
+                    b.filter(filter);   // 必须匹配（不影响评分，可缓存）
                 }
                 if (!mustNot.isEmpty()) {
-                    b.mustNot(mustNot);
+                    b.mustNot(mustNot); // 必须不匹配
                 }
-                b.boost(boost);
+                b.boost(boost);         // 整体评分权重
                 return b;
             });
             return new EsQueryBuilder(boolQuery._toQuery());

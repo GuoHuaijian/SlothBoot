@@ -47,8 +47,11 @@ public final class IpUtil {
      * 内网 IP 前缀
      */
     private static final String IP_PREFIX_10 = "10.";
+    /** 172.16.0.0 ~ 172.31.255.255（B 类内网），需额外校验第二段范围 */
     private static final String IP_PREFIX_172 = "172.";
+    /** 192.168.0.0 ~ 192.168.255.255（C 类内网） */
     private static final String IP_PREFIX_192 = "192.168.";
+    /** 127.0.0.0 ~ 127.255.255.255（本地回环地址） */
     private static final String IP_PREFIX_127 = "127.";
 
     /**

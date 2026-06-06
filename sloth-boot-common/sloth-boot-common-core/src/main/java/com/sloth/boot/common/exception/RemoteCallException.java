@@ -23,24 +23,54 @@ public class RemoteCallException extends BaseException {
      */
     private final String url;
 
+    /**
+     * 构造远程调用异常（无 URL，使用默认 INTERNAL_ERROR 错误码）。
+     *
+     * @param serviceName 远程服务名称
+     * @param message     异常消息
+     */
     public RemoteCallException(String serviceName, String message) {
         super(GlobalErrorCode.INTERNAL_ERROR, message);
         this.serviceName = serviceName;
         this.url = null;
     }
 
+    /**
+     * 构造远程调用异常（无 URL，自定义错误码）。
+     *
+     * @param serviceName 远程服务名称
+     * @param errorCode   错误码枚举
+     * @param message     异常消息
+     */
     public RemoteCallException(String serviceName, ErrorCode errorCode, String message) {
         super(errorCode, message);
         this.serviceName = serviceName;
         this.url = null;
     }
 
+    /**
+     * 构造远程调用异常（带请求 URL）。
+     *
+     * @param serviceName 远程服务名称
+     * @param errorCode   错误码枚举
+     * @param message     异常消息
+     * @param url         请求的 URL 地址
+     */
     public RemoteCallException(String serviceName, ErrorCode errorCode, String message, String url) {
         super(errorCode, message);
         this.serviceName = serviceName;
         this.url = url;
     }
 
+    /**
+     * 构造远程调用异常（带请求 URL 和原因链）。
+     *
+     * @param serviceName 远程服务名称
+     * @param errorCode   错误码枚举
+     * @param message     异常消息
+     * @param url         请求的 URL 地址
+     * @param cause       原始异常
+     */
     public RemoteCallException(String serviceName, ErrorCode errorCode, String message, String url, Throwable cause) {
         super(errorCode, message, cause);
         this.serviceName = serviceName;

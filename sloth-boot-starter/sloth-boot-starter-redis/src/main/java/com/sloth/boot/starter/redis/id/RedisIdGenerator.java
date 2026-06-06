@@ -29,14 +29,24 @@ import java.util.Collections;
 @Slf4j
 public class RedisIdGenerator {
 
+    /** 日期格式化器，用于生成 yyyyMMdd 格式的日期部分作为 Redis key 和 ID 的一部分 */
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    /** 序列号取模基数，序列号在 1~9999 范围内循环，避免 ID 尾部过长 */
     private static final int SEQ_MODULO = 10000;
+    /** Redis key 过期时间（秒），2 天过期，避免历史 key 无限膨胀 */
     private static final long EXPIRE_SECONDS = 2 * 24 * 60 * 60;
 
     private final StringRedisTemplate stringRedisTemplate;
     private final RedisProperties redisProperties;
     private final DefaultRedisScript<Long> incrScript;
 
+    /**
+     * 构造 Redis ID 生成器。
+     *
+     * @param stringRedisTemplate    Redis 操作模板
+     * @param redisProperties        Redis 配置属性（含 key 前缀、workerId 等）
+     * @param idGeneratorScriptSource Lua 脚本资源，用于原子执行 INCR + EXPIRE
+     */
     public RedisIdGenerator(StringRedisTemplate stringRedisTemplate, RedisProperties redisProperties,
                             ResourceScriptSource idGeneratorScriptSource) {
         this.stringRedisTemplate = stringRedisTemplate;

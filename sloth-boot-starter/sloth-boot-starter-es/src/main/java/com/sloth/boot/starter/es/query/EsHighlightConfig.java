@@ -61,6 +61,11 @@ public class EsHighlightConfig implements Serializable {
      * 高亮器类型。
      */
     public enum HighlighterType {
-        UNIFIED, PLAIN, FVH
+        /** 统一高亮器（默认，适用于大多数场景） */
+        UNIFIED,
+        /** 纯文本高亮器（适用于大字段） */
+        PLAIN,
+        /** 快速向量高亮器（需要 term_vector 支持，性能最优） */
+        FVH
     }
 }

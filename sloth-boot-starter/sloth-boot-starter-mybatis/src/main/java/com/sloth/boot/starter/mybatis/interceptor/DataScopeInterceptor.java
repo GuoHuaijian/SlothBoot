@@ -101,7 +101,8 @@ public class DataScopeInterceptor implements Interceptor {
         } catch (Exception e) {
             log.warn("[MyBatis] DataScope SQL 解析失败, 降级为字符串拼接, sql={}", sql, e);
         }
-        // 降级：简单字符串拼接
+        // 降级：JSqlParser 解析复杂 SQL（如 UNION、子查询嵌套等）失败时，退化为简单字符串拼接
+        // 此方式不解析 AST，仅做字符串层面的 WHERE/AND 追加，适用于绝大多数单表查询场景
         if (sql.toLowerCase().contains(" where ")) {
             return sql + " AND " + condition;
         }
@@ -129,6 +130,7 @@ public class DataScopeInterceptor implements Interceptor {
 
         String safeUserId = String.valueOf(userId);
         return switch (dataScopeType) {
+            // 仅本人数据：直接按创建人 ID 过滤
             case SCOPE_SELF -> {
                 String userAlias = validateAlias(dataScope.userAlias());
                 if (userAlias.isEmpty()) {
@@ -136,6 +138,7 @@ public class DataScopeInterceptor implements Interceptor {
                 }
                 yield userAlias + ".create_by = " + safeUserId;
             }
+            // 本部门数据：通过子查询获取当前用户所属部门，再按部门 ID 过滤
             case SCOPE_DEPT -> {
                 String deptAlias = validateAlias(dataScope.deptAlias());
                 String userAlias = validateAlias(dataScope.userAlias());
@@ -143,9 +146,12 @@ public class DataScopeInterceptor implements Interceptor {
                     yield null;
                 }
                 yield userAlias.isEmpty()
+                    // 无别名：用子查询查出当前用户 dept_id，直接 IN 过滤
                     ? "dept_id IN (SELECT dept_id FROM sys_user WHERE user_id = " + safeUserId + ")"
+                    // 有别名：通过关联条件同时限制部门和用户
                     : deptAlias + ".dept_id = " + userAlias + ".dept_id AND " + userAlias + ".user_id = " + safeUserId;
             }
+            // 本部门及以下数据：利用 ancestors 字段 + find_in_set 递归匹配所有下级部门
             case SCOPE_DEPT_AND_BELOW -> {
                 String deptAlias = validateAlias(dataScope.deptAlias());
                 if (deptAlias.isEmpty()) {

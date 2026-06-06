@@ -14,7 +14,16 @@ import lombok.Getter;
 @Getter
 public class GlobalTransactionEvent extends BaseEvent {
 
-    public enum Status { BEGIN, COMMITTED, ROLLED_BACK, TIMEOUT }
+    public enum Status {
+        /** 事务开始 */
+        BEGIN,
+        /** 事务已提交 */
+        COMMITTED,
+        /** 事务已回滚 */
+        ROLLED_BACK,
+        /** 事务超时 */
+        TIMEOUT
+    }
 
     private final String xid;
     private final Status status;

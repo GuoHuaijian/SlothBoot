@@ -230,6 +230,7 @@ public class ExcelExportBuilder<T> {
             case "#FFA500" -> IndexedColors.ORANGE.getIndex();
             case "#800080" -> IndexedColors.VIOLET.getIndex();
             case "#808080" -> IndexedColors.GREY_50_PERCENT.getIndex();
+            // 默认返回白色：避免因传入未知颜色值导致 POI 抛异常或产生不可预期的背景色
             default -> IndexedColors.WHITE.getIndex();
         };
     }

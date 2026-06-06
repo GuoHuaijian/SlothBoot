@@ -8,7 +8,9 @@ package com.sloth.boot.common.enums;
  */
 public enum DeletedEnum implements IBaseEnum {
 
+    /** 正常（未删除） */
     NORMAL(0, "正常"),
+    /** 已删除 */
     DELETED(1, "已删除");
 
     private final int code;

@@ -10,9 +10,13 @@ import com.sloth.boot.common.enums.IBaseEnum;
  */
 public enum DataScopeEnum implements IBaseEnum {
 
+    /** 全部数据权限 */
     ALL(1, "全部数据"),
+    /** 本部门数据权限 */
     DEPT(2, "本部门数据"),
+    /** 本部门及以下数据权限 */
     SUB_DEPT(3, "本部门及以下数据"),
+    /** 仅本人数据权限 */
     SELF(4, "仅本人数据");
 
     private final int code;
