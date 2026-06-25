@@ -79,7 +79,7 @@ class PlaceOrderCommandTest {
         order.setProductName("测试商品");
         order.setQuantity(2);
         order.setTotalPrice(BigDecimal.valueOf(199.98));
-        order.setStatus(OrderStatus.CREATED.getCode());
+        order.setStatus(OrderStatus.CREATED);
 
         when(productMapper.selectById(100L)).thenReturn(product);
         when(orderConvert.toEntity(form)).thenReturn(order);
