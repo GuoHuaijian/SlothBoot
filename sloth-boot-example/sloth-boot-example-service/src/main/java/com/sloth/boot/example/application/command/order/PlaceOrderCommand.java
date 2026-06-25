@@ -60,9 +60,10 @@ public class PlaceOrderCommand {
             throw BizException.of(OrderErrorCode.ORDER_PRODUCT_NOT_FOUND,
                 String.format("商品不存在: productId=%d", form.getProductId()));
         }
-        if (product.getStock() <= 0) {
+        if (product.getStock() < form.getQuantity()) {
             throw BizException.of(OrderErrorCode.ORDER_PRODUCT_OUT_OF_STOCK,
-                String.format("商品库存不足: productId=%d, 当前库存=%d", form.getProductId(), product.getStock()));
+                String.format("商品库存不足: productId=%d, 当前库存=%d, 需求数量=%d",
+                    form.getProductId(), product.getStock(), form.getQuantity()));
         }
 
         // 组装订单

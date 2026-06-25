@@ -4,7 +4,7 @@ import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.example.application.model.enums.order.OrderErrorCode;
 import com.sloth.boot.example.application.model.enums.order.OrderStatus;
-import com.sloth.boot.example.application.model.convert.order.OrderConvert;
+import com.sloth.boot.example.application.helper.order.OrderAssembler;
 import com.sloth.boot.example.application.model.form.order.OrderCreateForm;
 import com.sloth.boot.example.infrastructure.model.po.order.DemoOrder;
 import com.sloth.boot.example.infrastructure.model.po.product.Product;
@@ -40,7 +40,7 @@ class PlaceOrderCommandTest {
     private ProductMapper productMapper;
 
     @Mock
-    private OrderConvert orderConvert;
+    private OrderAssembler orderAssembler;
 
     @Mock
     private RedisDemoCommand redisDemoCommand;
@@ -82,7 +82,7 @@ class PlaceOrderCommandTest {
         order.setStatus(OrderStatus.CREATED);
 
         when(productMapper.selectById(100L)).thenReturn(product);
-        when(orderConvert.toEntity(form)).thenReturn(order);
+        when(orderAssembler.assembleOrder(form, product, 1001L)).thenReturn(order);
         when(orderMapper.insert(any(DemoOrder.class))).thenReturn(1);
 
         // 执行测试
@@ -90,10 +90,10 @@ class PlaceOrderCommandTest {
 
         // 验证结果
         assertEquals(1L, orderId);
-        assertEquals(OrderStatus.CREATED.getCode(), order.getStatus());
+        assertEquals(OrderStatus.CREATED, order.getStatus());
         assertEquals(1001L, order.getUserId());
         verify(productMapper).selectById(100L);
-        verify(orderConvert).toEntity(form);
+        verify(orderAssembler).assembleOrder(form, product, 1001L);
         verify(orderMapper).insert(order);
         verify(redisDemoCommand).publishOrderEvent(eq(1L), eq(OrderStatus.CREATED.getCode()), eq("订单已创建"));
     }

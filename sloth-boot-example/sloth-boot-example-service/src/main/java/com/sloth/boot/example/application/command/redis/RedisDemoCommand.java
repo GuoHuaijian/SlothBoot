@@ -12,7 +12,7 @@ import com.sloth.boot.starter.redis.pubsub.RedisPubSubTemplate;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

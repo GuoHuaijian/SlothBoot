@@ -5,6 +5,7 @@ import com.sloth.boot.example.application.model.form.order.OrderCreateForm;
 import com.sloth.boot.example.application.model.vo.order.OrderVO;
 import com.sloth.boot.example.infrastructure.model.po.order.DemoOrder;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface OrderConvert {
 
     /**

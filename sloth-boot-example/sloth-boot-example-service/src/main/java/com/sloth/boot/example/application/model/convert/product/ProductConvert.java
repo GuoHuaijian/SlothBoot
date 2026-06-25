@@ -4,6 +4,7 @@ import com.sloth.boot.example.application.model.form.product.ProductCreateForm;
 import com.sloth.boot.example.application.model.vo.product.ProductVO;
 import com.sloth.boot.example.infrastructure.model.po.product.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductConvert {
 
     /**

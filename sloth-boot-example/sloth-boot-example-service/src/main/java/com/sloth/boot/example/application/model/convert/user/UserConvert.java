@@ -6,6 +6,7 @@ import com.sloth.boot.example.application.model.query.user.UserPageQry;
 import com.sloth.boot.example.application.model.vo.user.SysUserVO;
 import com.sloth.boot.example.infrastructure.model.po.user.SysUser;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * @author sloth-boot
  * @since 1.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserConvert {
 
     /**
