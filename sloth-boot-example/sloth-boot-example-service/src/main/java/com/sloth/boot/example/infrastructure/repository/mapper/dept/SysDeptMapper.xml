@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.infrastructure.repository.mapper.dept.SysDeptMapper">
+
+    <resultMap id="deptResultMap" type="com.sloth.boot.example.infrastructure.model.po.dept.SysDept">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="sort" column="sort"/>
+        <result property="leader" column="leader"/>
+        <result property="status" column="status"/>
+        <result property="ancestors" column="ancestors"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dept (id, name, parent_id, sort, leader, status, ancestors,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES (#{id}, #{name}, #{parentId}, #{sort}, #{leader}, #{status}, #{ancestors},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, 0, 1)
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO sys_dept (id, name, parent_id, sort, leader, status, ancestors,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES
+        <foreach collection="list" item="d" separator=",">
+            (#{d.id}, #{d.name}, #{d.parentId}, #{d.sort}, #{d.leader}, #{d.status}, #{d.ancestors},
+            #{d.createBy}, #{d.createTime}, #{d.updateBy}, #{d.updateTime}, 0, 1)
+        </foreach>
+    </insert>
+
+    <select id="selectById" resultMap="deptResultMap">
+        SELECT * FROM sys_dept WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="listDept" resultMap="deptResultMap">
+        SELECT * FROM sys_dept WHERE deleted = 0 ORDER BY sort ASC
+    </select>
+
+    <select id="listDeptWithScope" resultMap="deptResultMap">
+        SELECT d.* FROM sys_dept d
+        <where>
+            d.deleted = 0
+        </where>
+        ORDER BY d.sort ASC
+    </select>
+
+    <update id="updateById">
+        UPDATE sys_dept
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="status != null">status = #{status},</if>
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            version = version + 1
+        </set>
+        WHERE id = #{id} AND deleted = 0 AND version = #{version}
+    </update>
+
+    <update id="deleteById">
+        UPDATE sys_dept SET deleted = 1 WHERE id = #{id} AND deleted = 0
+    </update>
+
+</mapper>

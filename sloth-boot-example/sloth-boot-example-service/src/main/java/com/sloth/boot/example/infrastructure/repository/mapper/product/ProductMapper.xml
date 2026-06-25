@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.infrastructure.repository.mapper.product.ProductMapper">
+
+    <resultMap id="productResultMap" type="com.sloth.boot.example.infrastructure.model.po.product.Product">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+        <result property="stock" column="stock"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product (id, name, price, stock, description, status,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES (#{id}, #{name}, #{price}, #{stock}, #{description}, #{status},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, 0, 1)
+    </insert>
+
+    <select id="selectById" resultMap="productResultMap">
+        SELECT * FROM product WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="listProduct" resultMap="productResultMap">
+        SELECT * FROM product WHERE deleted = 0 ORDER BY create_time DESC
+    </select>
+
+    <update id="deleteById">
+        UPDATE product SET deleted = 1 WHERE id = #{id} AND deleted = 0
+    </update>
+
+</mapper>

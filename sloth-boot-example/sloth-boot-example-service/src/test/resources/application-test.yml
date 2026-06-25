@@ -1,0 +1,43 @@
+# 测试环境配置
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_db;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 16379
+      database: 0
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:com/sloth/boot/example/infrastructure/repository/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# Sloth Boot 配置
+sloth:
+  web:
+    response-wrapper: false
+    xss-enabled: false
+  redis:
+    key-prefix: "test:"
+  mybatis:
+    tenant-enabled: false
+  auth:
+    enabled: false
+  ai:
+    enabled: false
+  job:
+    enabled: false
+  thread-pool:
+    dynamic: false
+  monitor:
+    slow-api-enabled: false

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.infrastructure.repository.mapper.order.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.sloth.boot.example.infrastructure.model.po.order.DemoOrder">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO demo_order (id, user_id, product_id, product_name, quantity, total_price, status,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES (#{id}, #{userId}, #{productId}, #{productName}, #{quantity}, #{totalPrice}, #{status},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, 0, 1)
+    </insert>
+
+    <select id="selectById" resultMap="orderResultMap">
+        SELECT * FROM demo_order WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <select id="listOrder" resultMap="orderResultMap">
+        SELECT * FROM demo_order WHERE deleted = 0 ORDER BY create_time DESC
+    </select>
+
+    <update id="updateById">
+        UPDATE demo_order
+        <set>
+            <if test="status != null">status = #{status},</if>
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            version = version + 1
+        </set>
+        WHERE id = #{id} AND deleted = 0
+    </update>
+
+</mapper>

@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0.0
  */
 @SpringBootApplication(scanBasePackages = Application.BASE_PACKAGE)
-@MapperScan("com.sloth.boot.example.domain.mapper")
+@MapperScan("com.sloth.boot.example.infrastructure.repository.mapper")
 public class Application {
 
     /**

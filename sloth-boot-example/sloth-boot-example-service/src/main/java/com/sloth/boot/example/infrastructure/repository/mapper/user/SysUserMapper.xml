@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.infrastructure.repository.mapper.user.SysUserMapper">
+
+    <resultMap id="userResultMap" type="com.sloth.boot.example.infrastructure.model.po.user.SysUser">
+        <id property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="username" column="username"/>
+        <result property="phone" column="phone"/>
+        <result property="idCard" column="id_card"/>
+        <result property="email" column="email"/>
+        <result property="gender" column="gender"/>
+        <result property="status" column="status"/>
+        <result property="extraInfo" column="extra_info"
+                typeHandler="com.sloth.boot.starter.mybatis.handler.JsonTypeHandler"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user (id, dept_id, username, phone, id_card, email, gender, status, extra_info,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES (#{id}, #{deptId}, #{username}, #{phone}, #{idCard}, #{email}, #{gender}, #{status}, #{extraInfo},
+        #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, 0, 1)
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO sys_user (id, dept_id, username, phone, id_card, email, gender, status, extra_info,
+        create_by, create_time, update_by, update_time, deleted, version)
+        VALUES
+        <foreach collection="list" item="u" separator=",">
+            (#{u.id}, #{u.deptId}, #{u.username}, #{u.phone}, #{u.idCard}, #{u.email}, #{u.gender}, #{u.status},
+            #{u.extraInfo}, #{u.createBy}, #{u.createTime}, #{u.updateBy}, #{u.updateTime}, 0, 1)
+        </foreach>
+    </insert>
+
+    <select id="selectById" resultMap="userResultMap">
+        SELECT * FROM sys_user WHERE id = #{id} AND deleted = 0
+    </select>
+
+    <sql id="conditionWhere">
+        <where>
+            deleted = 0
+            <if test="username != null and username != ''">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="listUser" resultMap="userResultMap">
+        SELECT * FROM sys_user
+        <include refid="conditionWhere"/>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="pageWithPermission" resultMap="userResultMap">
+        SELECT u.* FROM sys_user u
+        <where>
+            u.deleted = 0
+            <if test="condition.username != null and condition.username != ''">
+                AND u.username LIKE CONCAT('%', #{condition.username}, '%')
+            </if>
+            <if test="condition.phone != null and condition.phone != ''">
+                AND u.phone LIKE CONCAT('%', #{condition.phone}, '%')
+            </if>
+            <if test="condition.deptId != null">
+                AND u.dept_id = #{condition.deptId}
+            </if>
+            <if test="condition.status != null">
+                AND u.status = #{condition.status}
+            </if>
+        </where>
+        ORDER BY u.create_time DESC
+    </select>
+
+    <update id="updateById">
+        UPDATE sys_user
+        <set>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="extraInfo != null">extra_info = #{extraInfo},</if>
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            version = version + 1
+        </set>
+        WHERE id = #{id} AND deleted = 0 AND version = #{version}
+    </update>
+
+    <update id="deleteById">
+        UPDATE sys_user SET deleted = 1 WHERE id = #{id} AND deleted = 0
+    </update>
+
+</mapper>

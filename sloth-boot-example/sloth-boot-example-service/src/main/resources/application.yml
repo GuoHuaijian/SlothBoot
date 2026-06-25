@@ -61,7 +61,7 @@ spring:
 
 # ===== MyBatis-Plus 配置 =====
 mybatis-plus:
-  mapper-locations: classpath*:mapper/**/*.xml
+  mapper-locations: classpath*:com/sloth/boot/example/infrastructure/repository/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -130,6 +130,17 @@ sloth:
     tenant-ignore-tables:
       - sys_dict
     slow-sql-threshold: 1000
+    encrypt-key: "SlothBoot2026AES"  # 字段加密密钥
+
+  # 定时任务配置（XXL-Job）
+  job:
+    enabled: false  # 示例模块默认禁用，需要时改为 true 并配置 XXL-Job 地址
+    admin-addresses: http://localhost:8080/xxl-job-admin
+    access-token: default_token
+    appname: sloth-example
+    port: 9999
+    log-path: ./logs/xxl-job
+    log-retention-days: 30
 
   # 线程池配置
   thread-pool:
@@ -167,7 +178,7 @@ sloth:
     contact-name: "sloth-boot"
     contact-email: "564559079@qq.com"
     base-packages:
-      - com.sloth.boot.example.controller
+      - com.sloth.boot.example.adapter.controller
 
   # 日志配置
   log:
