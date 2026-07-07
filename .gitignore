@@ -41,6 +41,7 @@ coverage/
 # Claude Code / AI tools
 .claude/
 .mcp.json
+.mimocode/
 docs/superpowers/
 Ai工作空间/
 
