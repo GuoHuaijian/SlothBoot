@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- `sloth-boot-example-observability`: OpenTelemetry + Tempo + Prometheus + Loki + Grafana 可观测性演示模块
 - `sloth-boot-ui`: Vue 3 + TypeScript + Vite 前端展示应用（落地页、6 个在线演示、文档中心、模块浏览器）
 - 5 个 common 模块独立 README（common-core、common-log、common-security、common-doc、common-test）
 - 18 个 starter 模块独立 README（每个模块含配置项、使用示例、FAQ）
