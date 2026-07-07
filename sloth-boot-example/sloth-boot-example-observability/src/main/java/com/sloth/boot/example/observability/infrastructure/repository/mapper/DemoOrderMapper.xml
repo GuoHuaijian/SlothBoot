@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.observability.infrastructure.repository.mapper.DemoOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.sloth.boot.example.observability.infrastructure.model.po.order.DemoOrder">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+        <result column="quantity" property="quantity"/>
+        <result column="amount" property="amount"/>
+        <result column="status" property="status"
+                typeHandler="com.sloth.boot.example.observability.application.model.enums.order.OrderStatusTypeHandler"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="deleted" property="deleted"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, order_no, user_id, product_id, product_name, quantity, amount, status,
+        create_time, update_time, create_by, update_by, deleted, version
+    </sql>
+
+    <select id="selectPageOrder" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM demo_order
+        WHERE deleted = 0
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByUserAndProduct" resultMap="BaseResultMap">
+        SELECT o.id, o.order_no, o.user_id, o.product_id, o.product_name, o.quantity, o.amount, o.status,
+               o.create_time, o.update_time, o.create_by, o.update_by, o.deleted, o.version
+        FROM demo_order o
+        LEFT JOIN demo_user u ON o.user_id = u.id
+        LEFT JOIN demo_product p ON o.product_id = p.id
+        WHERE o.deleted = 0
+        <if test="userId != null">
+            AND o.user_id = #{userId}
+        </if>
+        <if test="productId != null">
+            AND o.product_id = #{productId}
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+
+</mapper>

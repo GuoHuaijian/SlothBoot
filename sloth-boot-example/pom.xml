@@ -35,5 +35,6 @@
 
     <modules>
         <module>sloth-boot-example-service</module>
+        <module>sloth-boot-example-observability</module>
     </modules>
 </project>

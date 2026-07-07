@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sloth.boot.example.observability.infrastructure.repository.mapper.DemoProductMapper">
+
+    <resultMap id="BaseResultMap" type="com.sloth.boot.example.observability.infrastructure.model.po.product.DemoProduct">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+        <result column="category" property="category"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="deleted" property="deleted"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, price, stock, category, create_time, update_time, create_by, update_by, deleted, version
+    </sql>
+
+    <select id="selectAllOrdered" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM demo_product
+        WHERE deleted = 0
+        ORDER BY id ASC
+    </select>
+
+</mapper>

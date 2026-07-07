@@ -1,0 +1,135 @@
+# ===== OpenTelemetry Collector 生产级配置 =====
+# 三大信号统一经此 Collector 转发，按生产实践配置：
+#   memory_limiter  防 OOM（任何 pipeline 最前）
+#   resource        注入 deployment.environment / service.namespace / host.name
+#   filter          剔除健康检查等噪声 span
+#   attributes      削高基数/敏感标签
+#   spanmetrics     spans 转 spanmetrics 指标供 Prometheus
+#   batch           批量上报降低下游压力
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # 内存限制：生产必备，置于所有 pipeline 最前
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+  # 资源属性：按 env/version/host 筛选，统一部署上下文
+  resource/env:
+    attributes:
+      - key: deployment.environment
+        value: demo
+        action: upsert
+      - key: service.namespace
+        value: sloth-boot
+        action: upsert
+
+  # 自动探测 host.name / cloud / os 等资源属性
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+    override: false
+
+  # Trace 过滤：剔除 actuator 健康检查噪声 span（0.112.0 OTTL 语法）
+  filter/healthcheck:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["http.route"] == "/actuator/health" or attributes["http.route"] == "/actuator/info"'
+
+  # 削高基数/敏感 span 属性
+  attributes/cleanup:
+    actions:
+      - key: http.request.header.cookie
+        action: delete
+      - key: http.request.header.authorization
+        action: delete
+      - key: http.response.header.set-cookie
+        action: delete
+
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+    send_batch_max_size: 4096
+
+  # Logs 专用：剥离 service.namespace，使 loki exporter 派生的 service_name
+  # label 为纯服务名（sloth-observability-demo），与 prometheus 指标的
+  # service_name label 保持一致，便于 Grafana 变量跨数据源联动
+  transform/loki_labels:
+    log_statements:
+      - context: resource
+        statements:
+          - delete_key(attributes, "service.namespace")
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    resource_to_telemetry_conversion:
+      enabled: true
+    send_timestamps: true
+    metric_expiration: 5m
+
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    # Loki 默认以 OTLP resource attributes 作 labels，
+    # 在此显式控制 label 集，避免高基数（trace_id/span_id 不作 label）
+    default_labels_enabled:
+      exporter: false
+      job: true
+      instance: false
+      level: true
+      otel_scope_name: false
+
+  debug:
+    verbosity: basic
+
+# spanmetrics connector：spans 入 traces 后衍生为 spanmetrics 指标导出到 Prometheus
+connectors:
+  spanmetrics:
+    namespace: traces
+    histogram:
+      explicit:
+        buckets: [5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s]
+    dimensions:
+      - name: http.method
+      - name: http.route
+      - name: http.response.status_code
+      # service.name 由 spanmetrics 默认维度提供，无需显式声明
+    dimensions_cache_size: 1000
+    aggregation_temporality: AGGREGATION_TEMPORALITY_CUMULATIVE
+    resource_metrics_key_attributes:
+      - service.name
+      - deployment.environment
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource/env, filter/healthcheck, attributes/cleanup, batch]
+      exporters: [spanmetrics, otlp/tempo, debug]
+    # spanmetrics 由 traces connector 衍生后送 metrics pipeline
+    metrics/spanmetrics:
+      receivers: [spanmetrics]
+      processors: [batch]
+      exporters: [prometheus]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource/env, batch]
+      exporters: [prometheus, debug]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource/env, transform/loki_labels, batch]
+      exporters: [loki, debug]

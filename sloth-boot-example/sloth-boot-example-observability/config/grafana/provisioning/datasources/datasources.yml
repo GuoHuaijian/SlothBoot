@@ -1,0 +1,63 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    uid: prometheus
+    isDefault: true
+    editable: true
+    jsonData:
+      # timeInterval 决定 Grafana 计算 $__rate_interval 的下限：
+      # rate_interval = max(4 * timeInterval, 60s)。设 30s → 2m 窗口，
+      # 避免稀疏指标（如仅在请求到来时更新的 http_server_request_duration）
+      # 在窄窗口内样本不足导致 rate 返回空序列、面板无数据。
+      timeInterval: "30s"
+      # 启用 exemplar，使 metric panel 可由 trace exemplar 跳 Tempo
+      exemplarTraceIdLabel: trace_id
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    uid: tempo
+    editable: true
+    jsonData:
+      httpMethod: GET
+      tracesToLogsV2:
+        datasourceUid: loki
+        filterByTraceID: true
+        filterBySpanID: true
+        tags:
+          - service.name
+          - http.route
+      tracesToMetrics:
+        datasourceUid: prometheus
+        queries:
+          - name: "Request rate"
+            query: "sum(rate(http_server_request_duration_seconds_count{$$__tags}[1m]))"
+          - name: "Error rate"
+            query: "sum(rate(http_server_request_duration_seconds_count{$$__tags, http_response_status_code=~\"5..\"}[1m]))"
+          - name: "P99 latency"
+            query: "histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket{$$__tags}[5m])) by (le))"
+      nodeGraph:
+        enabled: true
+      serviceMap:
+        datasourceUid: prometheus
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    uid: loki
+    editable: true
+    jsonData:
+      maxLines: 1000
+      # 日志行内 traceId 可点击跳 Tempo，形成 log→trace 闭环
+      derivedFields:
+        - name: TraceID
+          matcherRegex: "traceId=(\\w+)|\\[(\\w{32})\\]"
+          url: "/explore?orgId=1&left=%7B%22datasource%22:%22tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22uid%22:%22tempo%22,%22type%22:%22tempo%22%7D,%22queryType%22:%22traceql%22,%22expr%22:%22$$__value%22%7D%5D%7D"
+          datasourceUid: tempo
+          urlDisplayName: "View trace"

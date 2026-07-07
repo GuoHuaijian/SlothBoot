@@ -1,0 +1,76 @@
+# ===== 可观测性演示服务配置 =====
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  application:
+    name: sloth-observability-demo
+  profiles:
+    active: dev
+  # H2 内存库 + 自动执行 schema/data 初始化
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:sloth_observability;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_UPPER=FALSE
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# ===== MyBatis-Plus 配置 =====
+mybatis-plus:
+  mapper-locations: classpath*:com/sloth/boot/example/observability/infrastructure/repository/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# ===== Actuator 配置 =====
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# ===== Sloth Boot 自定义配置 =====
+sloth:
+  web:
+    response-wrapper: true
+    response-wrapper-exclude-urls:
+      - /actuator/**
+      - /h2-console/**
+    xss-enabled: false
+    cors:
+      allowed-origins:
+        - "http://localhost:3000"
+        - "http://localhost:3001"
+        - "http://127.0.0.1:3000"
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers:
+        - "*"
+      allow-credentials: true
+      max-age: 3600
+  doc:
+    title: "可观测性演示 API"
+    description: "OpenTelemetry + Tempo + Prometheus + Loki + Grafana 演示"
+    version: "1.0.0"
+    base-packages:
+      - com.sloth.boot.example.observability.adapter.controller
+  log:
+    print-access-log: false
+    print-response-log: false
