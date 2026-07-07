@@ -18,6 +18,7 @@
 [![Issues](https://img.shields.io/github/issues/GuoHuaijian/SlothBoot?style=flat-square&logo=github)](https://github.com/GuoHuaijian/SlothBoot/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=git&logoColor=white)](./docs/CONTRIBUTING.md)
 [![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](./CHANGELOG.md)
+[![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-CNCF-blue?style=flat-square&logo=opentelemetry&logoColor=white)](./sloth-boot-example/sloth-boot-example-observability)
 
 <br/>
 
