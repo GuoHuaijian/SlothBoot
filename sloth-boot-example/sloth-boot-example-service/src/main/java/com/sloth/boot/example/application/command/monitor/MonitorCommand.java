@@ -5,8 +5,6 @@ import com.sloth.boot.starter.monitor.model.JvmInfo;
 import com.sloth.boot.starter.monitor.model.MetricSummary;
 import com.sloth.boot.starter.monitor.service.JvmInfoService;
 import com.sloth.boot.starter.monitor.service.MetricsSummaryService;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
 import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
@@ -30,8 +28,6 @@ public class MonitorCommand {
 
     private final JvmInfoService jvmInfoService;
     private final MetricsSummaryService metricsSummaryService;
-    private final ThreadPoolManager threadPoolManager;
-    private final ThreadPoolRegistry threadPoolRegistry;
     private final BusinessMetrics businessMetrics;
 
     /**
@@ -58,7 +54,7 @@ public class MonitorCommand {
      * @return 线程池名称到快照的映射
      */
     public Map<String, ThreadPoolSnapshot> getThreadPoolSnapshots() {
-        return threadPoolRegistry.getAllSnapshots();
+        return ThreadPools.getAllSnapshots();
     }
 
     /**
@@ -68,7 +64,7 @@ public class MonitorCommand {
      * @return 线程池快照，不存在时返回null
      */
     public ThreadPoolSnapshot getThreadPoolSnapshot(String name) {
-        return threadPoolManager.getSnapshot(name);
+        return ThreadPools.getSnapshot(name);
     }
 
     /**
@@ -79,7 +75,7 @@ public class MonitorCommand {
      * @param maxSize  最大线程数
      */
     public void resizeThreadPool(String name, int coreSize, int maxSize) {
-        threadPoolManager.updatePoolSize(name, coreSize, maxSize);
+        ThreadPools.resize(name, coreSize, maxSize);
     }
 
     /**
@@ -149,7 +145,7 @@ public class MonitorCommand {
         result.put("timestamp", java.time.LocalDateTime.now().toString());
 
         Map<String, Object> threadPools = new LinkedHashMap<>();
-        Map<String, ThreadPoolSnapshot> snapshots = threadPoolRegistry.getAllSnapshots();
+        Map<String, ThreadPoolSnapshot> snapshots = ThreadPools.getAllSnapshots();
         for (Map.Entry<String, ThreadPoolSnapshot> entry : snapshots.entrySet()) {
             ThreadPoolSnapshot s = entry.getValue();
             Map<String, Object> info = new LinkedHashMap<>();

@@ -1,5 +1,8 @@
 package com.sloth.boot.starter.threadpool.core;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * 线程池统一访问入口。
  * <p>
@@ -116,5 +119,45 @@ public final class ThreadPools {
      */
     public static boolean exists(String name) {
         return registry != null && registry.getPool(name) != null;
+    }
+
+    // ==================== 运行时查询 ====================
+
+    /**
+     * 获取所有线程池的运行时快照。
+     *
+     * @return 线程池名称到快照的映射
+     */
+    public static Map<String, ThreadPoolSnapshot> getAllSnapshots() {
+        return registry != null ? registry.getAllSnapshots() : Collections.emptyMap();
+    }
+
+    /**
+     * 获取指定线程池的运行时快照。
+     *
+     * @param name 线程池名称
+     * @return 快照信息，不存在时返回 null
+     */
+    public static ThreadPoolSnapshot getSnapshot(String name) {
+        VisibleThreadPoolExecutor pool = getPool(name);
+        return pool != null ? pool.snapshot() : null;
+    }
+
+    // ==================== 动态管理 ====================
+
+    /**
+     * 动态调整线程池的核心线程数和最大线程数。
+     *
+     * @param name     线程池名称
+     * @param coreSize 新的核心线程数
+     * @param maxSize  新的最大线程数
+     */
+    public static void resize(String name, int coreSize, int maxSize) {
+        VisibleThreadPoolExecutor pool = getPool(name);
+        if (pool == null) {
+            return;
+        }
+        pool.setCorePoolSize(coreSize);
+        pool.setMaximumPoolSize(maxSize);
     }
 }
