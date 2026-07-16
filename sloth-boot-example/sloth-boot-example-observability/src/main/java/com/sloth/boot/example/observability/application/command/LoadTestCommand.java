@@ -1,8 +1,6 @@
 package com.sloth.boot.example.observability.application.command;
 
 import com.sloth.boot.example.observability.application.model.vo.LoadTestResultVO;
-import com.sloth.boot.starter.threadpool.config.ThreadPoolProperties;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 压测演示业务命令。
  * <p>
  * 并发调用各演示端点，用于在可观测性面板上批量产生指标、链路与日志数据。
+ * 使用预置的 {@code http-client} 线程池。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -27,28 +26,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class LoadTestCommand {
 
-    private static final String POOL_NAME = "load-test";
-
     private final RestTemplate restTemplate;
     private final String baseUrl;
     private final VisibleThreadPoolExecutor executor;
 
     public LoadTestCommand(RestTemplate restTemplate,
                            @Value("${server.port:8080}") int serverPort,
-                           ThreadPoolRegistry threadPoolRegistry,
-                           ThreadPoolBuilderFactory builderFactory) {
+                           ThreadPoolRegistry threadPoolRegistry) {
         this.restTemplate = restTemplate;
         this.baseUrl = "http://localhost:" + serverPort;
-
-        ThreadPoolProperties.PoolConfig config = new ThreadPoolProperties.PoolConfig();
-        config.setCoreSize(20);
-        config.setMaxSize(20);
-        config.setQueueCapacity(512);
-        config.setThreadNamePrefix("load-test-");
-        config.setRejectedPolicy("CALLER_RUNS");
-
-        this.executor = builderFactory.buildExecutor(POOL_NAME, config);
-        threadPoolRegistry.register(POOL_NAME, executor);
+        this.executor = threadPoolRegistry.getPool("http-client");
     }
 
     /**

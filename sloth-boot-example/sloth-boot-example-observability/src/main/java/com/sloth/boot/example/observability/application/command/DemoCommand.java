@@ -3,8 +3,6 @@ package com.sloth.boot.example.observability.application.command;
 import com.sloth.boot.example.observability.application.model.vo.MetricsDemoVO;
 import com.sloth.boot.example.observability.application.model.vo.SlowOperationVO;
 import com.sloth.boot.example.observability.application.model.vo.TraceDemoVO;
-import com.sloth.boot.starter.threadpool.config.ThreadPoolProperties;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import io.opentelemetry.api.metrics.DoubleHistogram;
@@ -20,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <p>
  * 承载慢操作、模拟异常、链路追踪、自定义指标等演示逻辑，并通过 OTel Agent 注入的
  * {@link Meter} 注册自定义业务指标。
+ * 使用预置的 {@code default} 线程池。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -28,25 +27,13 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class DemoCommand {
 
-    private static final String POOL_NAME = "trace-demo";
-
     private final VisibleThreadPoolExecutor executor;
     private final LongCounter errorCounter;
     private final LongCounter customCounter;
     private final DoubleHistogram processingTimer;
 
-    public DemoCommand(Meter meter,
-                       ThreadPoolRegistry threadPoolRegistry,
-                       ThreadPoolBuilderFactory builderFactory) {
-        ThreadPoolProperties.PoolConfig config = new ThreadPoolProperties.PoolConfig();
-        config.setCoreSize(4);
-        config.setMaxSize(4);
-        config.setQueueCapacity(128);
-        config.setThreadNamePrefix("trace-demo-");
-        config.setRejectedPolicy("CALLER_RUNS");
-
-        this.executor = builderFactory.buildExecutor(POOL_NAME, config);
-        threadPoolRegistry.register(POOL_NAME, executor);
+    public DemoCommand(Meter meter, ThreadPoolRegistry threadPoolRegistry) {
+        this.executor = threadPoolRegistry.getPool("default");
 
         this.errorCounter = meter.counterBuilder("demo.errors")
                 .setDescription("Business errors")
