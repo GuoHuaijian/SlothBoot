@@ -38,6 +38,8 @@ public class TraceFilter extends OncePerRequestFilter {
         this.logProperties = logProperties;
     }
 
+    private final org.springframework.util.AntPathMatcher pathMatcher = new org.springframework.util.AntPathMatcher();
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         if (request.getAttribute(TRACE_GUARD) != null) {
@@ -45,7 +47,7 @@ public class TraceFilter extends OncePerRequestFilter {
         }
         String requestUri = request.getRequestURI();
         for (String excludeUrl : logProperties.getExcludeUrls()) {
-            if (requestUri.startsWith(excludeUrl) || requestUri.matches(excludeUrl)) {
+            if (pathMatcher.match(excludeUrl, requestUri)) {
                 return true;
             }
         }

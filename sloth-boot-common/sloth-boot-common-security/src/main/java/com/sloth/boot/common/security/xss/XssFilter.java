@@ -18,6 +18,7 @@ import java.io.IOException;
 public class XssFilter extends OncePerRequestFilter {
 
     private final XssProperties xssProperties;
+    private final org.springframework.util.AntPathMatcher pathMatcher = new org.springframework.util.AntPathMatcher();
 
     /**
      * 构造 XSS 过滤器。
@@ -46,7 +47,7 @@ public class XssFilter extends OncePerRequestFilter {
         }
         String requestUri = request.getRequestURI();
         for (String excludeUrl : xssProperties.getExcludeUrls()) {
-            if (requestUri.startsWith(excludeUrl) || requestUri.matches(excludeUrl)) {
+            if (pathMatcher.match(excludeUrl, requestUri)) {
                 filterChain.doFilter(request, response);
                 return;
             }
