@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.threadpool.config;
 
 import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
@@ -8,7 +9,6 @@ import com.sloth.boot.starter.threadpool.decorator.TtlTaskDecorator;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolAlarmTask;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolEndpoint;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolMetrics;
-import com.sloth.boot.starter.threadpool.reject.LogRejectedExecutionHandler;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -21,16 +21,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * 线程池自动配置。
@@ -60,6 +56,17 @@ public class ThreadPoolAutoConfiguration {
     }
 
     /**
+     * 注册线程池构建工厂。
+     *
+     * @return 构建工厂
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public ThreadPoolBuilderFactory threadPoolBuilderFactory() {
+        return new ThreadPoolBuilderFactory();
+    }
+
+    /**
      * 注册任务装饰器。
      *
      * @return 任务装饰器
@@ -80,9 +87,10 @@ public class ThreadPoolAutoConfiguration {
     @Bean(name = "slothTaskExecutor")
     @ConditionalOnMissingBean(name = "slothTaskExecutor")
     public VisibleThreadPoolExecutor slothTaskExecutor(ThreadPoolProperties properties,
-                                                       ThreadPoolRegistry threadPoolRegistry) {
+                                                       ThreadPoolRegistry threadPoolRegistry,
+                                                       ThreadPoolBuilderFactory builderFactory) {
         ThreadPoolProperties.PoolConfig poolConfig = properties.getPools().getOrDefault("default", new ThreadPoolProperties.PoolConfig());
-        VisibleThreadPoolExecutor executor = buildExecutor("default", poolConfig);
+        VisibleThreadPoolExecutor executor = builderFactory.buildExecutor("default", poolConfig);
         threadPoolRegistry.register("default", executor);
         return executor;
     }
@@ -146,15 +154,13 @@ public class ThreadPoolAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ScheduledThreadPoolExecutor scheduledThreadPoolExecutor(ThreadPoolProperties properties,
-                                                                   ThreadPoolRegistry threadPoolRegistry) {
+                                                                   ThreadPoolRegistry threadPoolRegistry,
+                                                                   ThreadPoolBuilderFactory builderFactory) {
         ThreadPoolProperties.PoolConfig poolConfig = properties.getPools().getOrDefault("scheduled", new ThreadPoolProperties.PoolConfig());
-        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
-            poolConfig.getCoreSize(),
-            buildThreadFactory(poolConfig.getThreadNamePrefix()),
-            new LogRejectedExecutionHandler("scheduled", true)
-        );
+        ScheduledThreadPoolExecutor executor = builderFactory.buildScheduledExecutor("scheduled", poolConfig);
         executor.setKeepAliveTime(poolConfig.getKeepAliveTime(), TimeUnit.SECONDS);
         executor.setRemoveOnCancelPolicy(true);
+        threadPoolRegistry.registerScheduled("scheduled", executor);
         return executor;
     }
 
@@ -186,40 +192,6 @@ public class ThreadPoolAutoConfiguration {
                                                  ThreadPoolManager threadPoolManager) {
         return new ThreadPoolEndpoint(threadPoolRegistry, threadPoolManager);
     }
-
-    private VisibleThreadPoolExecutor buildExecutor(String poolName, ThreadPoolProperties.PoolConfig poolConfig) {
-        BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(poolConfig.getQueueCapacity());
-        LogRejectedExecutionHandler rejectedHandler = new LogRejectedExecutionHandler(
-            poolName,
-            "CALLER_RUNS".equalsIgnoreCase(poolConfig.getRejectedPolicy())
-        );
-        return new VisibleThreadPoolExecutor(
-            poolName,
-            poolConfig.getCoreSize(),
-            poolConfig.getMaxSize(),
-            poolConfig.getKeepAliveTime(),
-            TimeUnit.SECONDS,
-            queue,
-            buildThreadFactory(poolConfig.getThreadNamePrefix()),
-            (runnable, executor) -> {
-                if (executor instanceof VisibleThreadPoolExecutor visibleThreadPoolExecutor) {
-                    visibleThreadPoolExecutor.incrementRejectedCount();
-                }
-                rejectedHandler.rejectedExecution(runnable, executor);
-            }
-        );
-    }
-
-    private ThreadFactory buildThreadFactory(String prefix) {
-        AtomicInteger counter = new AtomicInteger(1);
-        return runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setName(prefix + counter.getAndIncrement());
-            thread.setDaemon(true);
-            return thread;
-        };
-    }
-
 
     /**
      * 注册线程池动态管理器。
