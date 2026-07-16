@@ -20,6 +20,7 @@ public final class I18nUtil {
     private static volatile MessageSource messageSource;
 
     private I18nUtil() {
+        throw new UnsupportedOperationException("Utility class");
     }
 
     /**

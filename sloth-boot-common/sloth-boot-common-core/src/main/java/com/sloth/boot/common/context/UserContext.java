@@ -1,6 +1,5 @@
 package com.sloth.boot.common.context;
 
-import cn.hutool.core.collection.CollUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -142,7 +141,7 @@ public class UserContext implements Serializable {
      */
     public static Set<String> getRoles() {
         UserInfo userInfo = get();
-        return userInfo != null ? userInfo.getRoles() : CollUtil.newHashSet();
+        return userInfo != null ? userInfo.getRoles() : Collections.emptySet();
     }
 
     /**

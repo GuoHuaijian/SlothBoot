@@ -23,6 +23,7 @@ package com.sloth.boot.common.constant;
 public final class CommonConstant {
 
     private CommonConstant() {
+        throw new UnsupportedOperationException("Utility class");
     }
 
     /**

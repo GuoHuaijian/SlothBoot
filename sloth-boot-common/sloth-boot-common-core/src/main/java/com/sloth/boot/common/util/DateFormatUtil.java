@@ -1,5 +1,7 @@
 package com.sloth.boot.common.util;
 
+import com.sloth.boot.common.constant.CommonConstant;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,17 +27,17 @@ public final class DateFormatUtil {
     /**
      * 默认日期时间格式
      */
-    public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEFAULT_DATE_TIME_FORMAT = CommonConstant.DEFAULT_DATE_TIME_FORMAT;
 
     /**
      * 默认日期格式
      */
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DEFAULT_DATE_FORMAT = CommonConstant.DEFAULT_DATE_FORMAT;
 
     /**
      * 默认时间格式
      */
-    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
+    public static final String DEFAULT_TIME_FORMAT = CommonConstant.DEFAULT_TIME_FORMAT;
 
     /**
      * 缓存的常用格式化器

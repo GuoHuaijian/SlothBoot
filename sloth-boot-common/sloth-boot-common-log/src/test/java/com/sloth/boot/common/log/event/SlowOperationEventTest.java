@@ -26,7 +26,7 @@ class SlowOperationEventTest {
         assertThat(event.getCostTimeMs()).isEqualTo(1500);
         assertThat(event.getThresholdMs()).isEqualTo(500);
         assertThat(event.getContext()).isNull();
-        assertThat(event.getSource()).isEqualTo(this.toString());
+        assertThat(event.getEventSource()).isEqualTo(this.toString());
     }
 
     @Test

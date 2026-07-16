@@ -25,9 +25,9 @@ public class BaseEvent extends ApplicationEvent {
     private final LocalDateTime eventTime;
 
     /**
-     * 事件来源
+     * 事件来源描述
      */
-    private final String source;
+    private final String eventSource;
 
     /**
      * 构造函数
@@ -38,7 +38,7 @@ public class BaseEvent extends ApplicationEvent {
         super(source);
         this.traceId = TraceContext.getTraceId();
         this.eventTime = LocalDateTime.now();
-        this.source = source.toString();
+        this.eventSource = source.toString();
     }
 
     /**
@@ -60,11 +60,11 @@ public class BaseEvent extends ApplicationEvent {
     }
 
     /**
-     * 获取事件来源
+     * 获取事件来源描述
      *
-     * @return 事件来源
+     * @return 事件来源描述
      */
-    public String getSource() {
-        return source;
+    public String getEventSource() {
+        return eventSource;
     }
 }
