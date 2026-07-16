@@ -1,10 +1,10 @@
 package com.sloth.boot.starter.gateway.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -29,6 +29,7 @@ public class CorsConfig {
      * @return 跨域过滤器
      */
     @Bean
+    @ConditionalOnMissingBean
     public CorsWebFilter corsWebFilter(GatewayCorsProperties corsProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(corsProperties.isAllowCredentials());

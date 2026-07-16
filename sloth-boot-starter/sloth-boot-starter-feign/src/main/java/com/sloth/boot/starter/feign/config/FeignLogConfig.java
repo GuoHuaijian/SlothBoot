@@ -1,6 +1,7 @@
 package com.sloth.boot.starter.feign.config;
 
 import feign.Logger;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -21,6 +22,7 @@ public class FeignLogConfig {
      * @return 日志级别
      */
     @Bean
+    @ConditionalOnMissingBean
     public Logger.Level feignLoggerLevel(Environment environment) {
         for (String profile : environment.getActiveProfiles()) {
             if ("dev".equalsIgnoreCase(profile)) {

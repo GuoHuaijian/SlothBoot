@@ -7,7 +7,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -61,7 +61,7 @@ public class AiAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "slothAiChatClient")
     public ChatClient slothAiChatClient(ChatModel chatModel, AiProperties aiProperties,
-                                        @Autowired(required = false) ChatMemory chatMemory) {
+                                        ObjectProvider<ChatMemory> chatMemoryProvider) {
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         if (StringUtils.hasText(aiProperties.getDefaultSystemPrompt())) {
             builder.defaultSystem(aiProperties.getDefaultSystemPrompt());
@@ -85,9 +85,9 @@ public class AiAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public AiChatClient aiChatClient(ChatClient chatClient, @Autowired(required = false) ChatMemory chatMemory,
+    public AiChatClient aiChatClient(ChatClient chatClient, ObjectProvider<ChatMemory> chatMemoryProvider,
                                      ObjectMapper objectMapper) {
-        return new SpringAiChatClient(chatClient, chatMemory, objectMapper);
+        return new SpringAiChatClient(chatClient, chatMemoryProvider.getIfAvailable(), objectMapper);
     }
 
     /**

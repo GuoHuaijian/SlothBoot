@@ -53,6 +53,7 @@ public class AuthAutoConfiguration {
      */
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public SaTokenConfig saTokenConfig(AuthProperties authProperties) {
         SaTokenConfig config = new SaTokenConfig();
         config.setTokenName(authProperties.getTokenName());

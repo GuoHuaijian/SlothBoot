@@ -3,6 +3,7 @@ package com.sloth.boot.starter.web.config;
 import org.apache.coyote.http11.Http11NioProtocol;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
@@ -29,6 +30,7 @@ public class GzipAutoConfiguration {
      * @return Tomcat 服务器工厂自定义器
      */
     @Bean
+    @ConditionalOnMissingBean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> gzipServerFactoryCustomizer(
         GzipProperties gzipProperties) {
         return factory -> factory.addConnectorCustomizers(connector -> {
