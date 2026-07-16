@@ -1,7 +1,10 @@
 package com.sloth.boot.example.observability.application.command;
 
 import com.sloth.boot.example.observability.application.model.vo.LoadTestResultVO;
-import jakarta.annotation.PreDestroy;
+import com.sloth.boot.starter.threadpool.config.ThreadPoolProperties;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,8 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,14 +27,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class LoadTestCommand {
 
+    private static final String POOL_NAME = "load-test";
+
     private final RestTemplate restTemplate;
     private final String baseUrl;
-    private final ExecutorService executor = Executors.newFixedThreadPool(20);
+    private final VisibleThreadPoolExecutor executor;
 
     public LoadTestCommand(RestTemplate restTemplate,
-                          @Value("${server.port:8080}") int serverPort) {
+                           @Value("${server.port:8080}") int serverPort,
+                           ThreadPoolRegistry threadPoolRegistry,
+                           ThreadPoolBuilderFactory builderFactory) {
         this.restTemplate = restTemplate;
         this.baseUrl = "http://localhost:" + serverPort;
+
+        ThreadPoolProperties.PoolConfig config = new ThreadPoolProperties.PoolConfig();
+        config.setCoreSize(20);
+        config.setMaxSize(20);
+        config.setQueueCapacity(512);
+        config.setThreadNamePrefix("load-test-");
+        config.setRejectedPolicy("CALLER_RUNS");
+
+        this.executor = builderFactory.buildExecutor(POOL_NAME, config);
+        threadPoolRegistry.register(POOL_NAME, executor);
     }
 
     /**
@@ -101,21 +116,5 @@ public class LoadTestCommand {
 
         return new LoadTestResultVO(count, successCount.get(), errorCount.get(),
                 elapsed, count > 0 ? elapsed / count : 0);
-    }
-
-    /**
-     * 应用关闭时优雅关闭压测线程池。
-     */
-    @PreDestroy
-    public void shutdown() {
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
     }
 }

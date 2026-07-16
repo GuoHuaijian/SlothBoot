@@ -40,6 +40,11 @@
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-starter-thread-pool</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-common-log</artifactId>
         </dependency>
 

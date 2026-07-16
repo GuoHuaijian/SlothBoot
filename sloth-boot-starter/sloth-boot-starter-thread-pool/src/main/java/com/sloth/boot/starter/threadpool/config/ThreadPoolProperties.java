@@ -46,6 +46,8 @@ public class ThreadPoolProperties {
 
     private Map<String, PoolConfig> buildDefaultPools() {
         Map<String, PoolConfig> poolConfigs = new LinkedHashMap<>();
+
+        // 默认异步线程池
         PoolConfig defaultPool = new PoolConfig();
         defaultPool.setCoreSize(8);
         defaultPool.setMaxSize(32);
@@ -55,6 +57,7 @@ public class ThreadPoolProperties {
         defaultPool.setRejectedPolicy("CALLER_RUNS");
         poolConfigs.put("default", defaultPool);
 
+        // 定时任务线程池
         PoolConfig scheduledPool = new PoolConfig();
         scheduledPool.setCoreSize(4);
         scheduledPool.setMaxSize(4);
@@ -63,6 +66,37 @@ public class ThreadPoolProperties {
         scheduledPool.setThreadNamePrefix("sloth-scheduled-");
         scheduledPool.setRejectedPolicy("CALLER_RUNS");
         poolConfigs.put("scheduled", scheduledPool);
+
+        // HTTP 客户端线程池（适用于 Feign/RestTemplate 异步调用）
+        PoolConfig httpClientPool = new PoolConfig();
+        httpClientPool.setCoreSize(4);
+        httpClientPool.setMaxSize(16);
+        httpClientPool.setQueueCapacity(256);
+        httpClientPool.setKeepAliveTime(60);
+        httpClientPool.setThreadNamePrefix("sloth-http-");
+        httpClientPool.setRejectedPolicy("CALLER_RUNS");
+        poolConfigs.put("http-client", httpClientPool);
+
+        // 消息队列消费线程池
+        PoolConfig mqConsumerPool = new PoolConfig();
+        mqConsumerPool.setCoreSize(4);
+        mqConsumerPool.setMaxSize(16);
+        mqConsumerPool.setQueueCapacity(512);
+        mqConsumerPool.setKeepAliveTime(60);
+        mqConsumerPool.setThreadNamePrefix("sloth-mq-");
+        mqConsumerPool.setRejectedPolicy("CALLER_RUNS");
+        poolConfigs.put("mq-consumer", mqConsumerPool);
+
+        // 数据同步线程池（适用于批量导入、ES 同步等）
+        PoolConfig dataSyncPool = new PoolConfig();
+        dataSyncPool.setCoreSize(2);
+        dataSyncPool.setMaxSize(8);
+        dataSyncPool.setQueueCapacity(1024);
+        dataSyncPool.setKeepAliveTime(120);
+        dataSyncPool.setThreadNamePrefix("sloth-sync-");
+        dataSyncPool.setRejectedPolicy("CALLER_RUNS");
+        poolConfigs.put("data-sync", dataSyncPool);
+
         return poolConfigs;
     }
 

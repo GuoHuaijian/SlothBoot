@@ -3,17 +3,17 @@ package com.sloth.boot.example.observability.application.command;
 import com.sloth.boot.example.observability.application.model.vo.MetricsDemoVO;
 import com.sloth.boot.example.observability.application.model.vo.SlowOperationVO;
 import com.sloth.boot.example.observability.application.model.vo.TraceDemoVO;
+import com.sloth.boot.starter.threadpool.config.ThreadPoolProperties;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
+import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 可观测性演示业务命令。
@@ -28,13 +28,26 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class DemoCommand {
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private static final String POOL_NAME = "trace-demo";
 
+    private final VisibleThreadPoolExecutor executor;
     private final LongCounter errorCounter;
     private final LongCounter customCounter;
     private final DoubleHistogram processingTimer;
 
-    public DemoCommand(Meter meter) {
+    public DemoCommand(Meter meter,
+                       ThreadPoolRegistry threadPoolRegistry,
+                       ThreadPoolBuilderFactory builderFactory) {
+        ThreadPoolProperties.PoolConfig config = new ThreadPoolProperties.PoolConfig();
+        config.setCoreSize(4);
+        config.setMaxSize(4);
+        config.setQueueCapacity(128);
+        config.setThreadNamePrefix("trace-demo-");
+        config.setRejectedPolicy("CALLER_RUNS");
+
+        this.executor = builderFactory.buildExecutor(POOL_NAME, config);
+        threadPoolRegistry.register(POOL_NAME, executor);
+
         this.errorCounter = meter.counterBuilder("demo.errors")
                 .setDescription("Business errors")
                 .build();
@@ -117,22 +130,6 @@ public class DemoCommand {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    /**
-     * 应用关闭时优雅关闭链路追踪子任务线程池。
-     */
-    @PreDestroy
-    public void shutdown() {
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }
