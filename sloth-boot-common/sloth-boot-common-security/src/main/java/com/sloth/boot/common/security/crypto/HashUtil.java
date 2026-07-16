@@ -16,7 +16,11 @@ import java.util.HexFormat;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class HashUtil {
+public final class HashUtil {
+
+    private HashUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 计算 MD5 摘要。

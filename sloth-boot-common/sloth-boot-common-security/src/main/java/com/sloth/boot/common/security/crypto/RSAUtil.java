@@ -23,7 +23,11 @@ import java.util.Base64;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class RSAUtil {
+public final class RSAUtil {
+
+    private RSAUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 加密算法

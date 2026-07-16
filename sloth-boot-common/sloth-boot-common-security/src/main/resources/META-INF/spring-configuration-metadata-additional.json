@@ -4,7 +4,7 @@
       "name": "sloth.sign.enabled",
       "type": "java.lang.Boolean",
       "description": "是否启用请求签名验证。",
-      "defaultValue": true
+      "defaultValue": false
     },
     {
       "name": "sloth.sign.secret-key",

@@ -33,8 +33,8 @@ public class LogAutoConfiguration {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @ConditionalOnMissingBean
-    public TraceFilter traceFilter() {
-        return new TraceFilter();
+    public TraceFilter traceFilter(LogProperties logProperties) {
+        return new TraceFilter(logProperties);
     }
 
     /**

@@ -4,7 +4,6 @@ import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,7 +19,6 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final UserContextInterceptor userContextInterceptor;
-    private final CorsConfiguration corsConfiguration;
 
     /**
      * 注册拦截器。
@@ -40,15 +38,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 配置跨域。
+     * 跨域配置已通过 {@link com.sloth.boot.starter.web.filter.CorsFilter} 全局过滤器实现，
+     * 此处不再重复配置以避免 CORS 头重复。
      */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        String[] allowedOrigins = corsConfiguration.getAllowedOrigins().isEmpty() ? new String[]{"*"}
-            : corsConfiguration.getAllowedOrigins().toArray(new String[0]);
-        registry.addMapping("/**").allowedOriginPatterns(allowedOrigins)
-            .allowedMethods(corsConfiguration.getAllowedMethods().toArray(new String[0]))
-            .allowedHeaders(corsConfiguration.getAllowedHeaders().toArray(new String[0]))
-            .allowCredentials(corsConfiguration.isAllowCredentials()).maxAge(corsConfiguration.getMaxAge());
-    }
 }

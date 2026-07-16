@@ -9,7 +9,11 @@ import java.util.Base64;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class Base64Util {
+public final class Base64Util {
+
+    private Base64Util() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * Base64 编码

@@ -19,7 +19,11 @@ import java.util.Base64;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class SM4Util {
+public final class SM4Util {
+
+    private SM4Util() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     static {
         Security.addProvider(new BouncyCastleProvider());

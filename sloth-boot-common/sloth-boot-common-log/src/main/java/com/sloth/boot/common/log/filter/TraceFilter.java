@@ -3,6 +3,7 @@ package com.sloth.boot.common.log.filter;
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.constant.HeaderConstant;
 import com.sloth.boot.common.context.TraceContext;
+import com.sloth.boot.common.log.config.LogProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +27,29 @@ public class TraceFilter extends OncePerRequestFilter {
 
     private static final String TRACE_GUARD = TraceFilter.class.getName() + ".GUARD";
 
+    private final LogProperties logProperties;
+
+    /**
+     * 构造 Trace 过滤器。
+     *
+     * @param logProperties 日志配置
+     */
+    public TraceFilter(LogProperties logProperties) {
+        this.logProperties = logProperties;
+    }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getAttribute(TRACE_GUARD) != null;
+        if (request.getAttribute(TRACE_GUARD) != null) {
+            return true;
+        }
+        String requestUri = request.getRequestURI();
+        for (String excludeUrl : logProperties.getExcludeUrls()) {
+            if (requestUri.startsWith(excludeUrl) || requestUri.matches(excludeUrl)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

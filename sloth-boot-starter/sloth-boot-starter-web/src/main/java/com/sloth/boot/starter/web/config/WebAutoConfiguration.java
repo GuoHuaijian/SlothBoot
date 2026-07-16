@@ -56,14 +56,12 @@ public class WebAutoConfiguration {
      * 注册 WebMvc 配置。
      *
      * @param userContextInterceptor 用户上下文拦截器
-     * @param corsConfiguration      跨域配置
      * @return WebMvc 配置
      */
     @Bean
     @ConditionalOnMissingBean
-    public WebMvcConfiguration webMvcConfiguration(UserContextInterceptor userContextInterceptor,
-                                                   CorsConfiguration corsConfiguration) {
-        return new WebMvcConfiguration(userContextInterceptor, corsConfiguration);
+    public WebMvcConfiguration webMvcConfiguration(UserContextInterceptor userContextInterceptor) {
+        return new WebMvcConfiguration(userContextInterceptor);
     }
 
     /**

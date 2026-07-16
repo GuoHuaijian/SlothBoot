@@ -44,6 +44,13 @@ public class XssFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        String requestUri = request.getRequestURI();
+        for (String excludeUrl : xssProperties.getExcludeUrls()) {
+            if (requestUri.startsWith(excludeUrl) || requestUri.matches(excludeUrl)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
         filterChain.doFilter(new XssHttpServletRequestWrapper(request, xssProperties), response);
     }
 }

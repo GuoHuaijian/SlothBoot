@@ -15,7 +15,11 @@ import java.util.TreeMap;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class SignUtil {
+public final class SignUtil {
+
+    private SignUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 生成签名

@@ -17,7 +17,11 @@ import java.util.Base64;
  * @author sloth-boot
  * @since 1.0.0
  */
-public class AESUtil {
+public final class AESUtil {
+
+    private AESUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * 加密算法
