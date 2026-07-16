@@ -2,11 +2,9 @@ package com.sloth.boot.starter.threadpool.config;
 
 import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
-import com.sloth.boot.starter.threadpool.decorator.TtlTaskDecorator;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolAlarmTask;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolEndpoint;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolMetrics;
@@ -20,7 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
 import java.util.concurrent.ExecutorService;
@@ -32,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * 线程池自动配置。
  * <p>
- * 注册 {@link ThreadPoolRegistry}、{@link TaskDecorator}、{@link VisibleThreadPoolExecutor}、
+ * 注册 {@link ThreadPoolRegistry}、{@link VisibleThreadPoolExecutor}、
  * 虚拟线程执行器、{@link AsyncConfigurer}、{@link AsyncExceptionHandler}、
  * {@link ScheduledThreadPoolExecutor}、{@link ThreadPoolMetrics}、{@link ThreadPoolEndpoint}、
- * {@link ThreadPoolManager}、{@link ThreadPoolAlarmTask}，支持条件装配。
+ * {@link ThreadPoolAlarmTask}，支持条件装配。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -67,17 +64,6 @@ public class ThreadPoolAutoConfiguration {
     @ConditionalOnMissingBean
     public ThreadPoolBuilderFactory threadPoolBuilderFactory() {
         return new ThreadPoolBuilderFactory();
-    }
-
-    /**
-     * 注册任务装饰器。
-     *
-     * @return 任务装饰器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public TaskDecorator taskDecorator() {
-        return new TtlTaskDecorator();
     }
 
     /**
@@ -168,6 +154,26 @@ public class ThreadPoolAutoConfiguration {
     }
 
     /**
+     * 创建配置中声明的其他线程池（http-client、mq-consumer、data-sync 等）。
+     * <p>
+     * 默认和定时任务线程池由独立 Bean 创建，此处补充其余配置。
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "additionalPoolsInitializer")
+    public Object additionalPoolsInitializer(ThreadPoolProperties properties,
+                                             ThreadPoolRegistry threadPoolRegistry,
+                                             ThreadPoolBuilderFactory builderFactory) {
+        java.util.Set<String> builtIn = java.util.Set.of("default", "scheduled");
+        properties.getPools().forEach((name, config) -> {
+            if (!builtIn.contains(name) && threadPoolRegistry.getPool(name) == null) {
+                VisibleThreadPoolExecutor executor = builderFactory.buildExecutor(name, config);
+                threadPoolRegistry.register(name, executor);
+            }
+        });
+        return "additionalPoolsInitializer";
+    }
+
+    /**
      * 注册指标采集。
      *
      * @param meterRegistry      指标注册中心
@@ -185,34 +191,22 @@ public class ThreadPoolAutoConfiguration {
     /**
      * 注册线程池端点。
      *
-     * @param threadPoolRegistry 注册表
      * @return 线程池端点
      */
     @Bean
     @ConditionalOnClass(Endpoint.class)
     @ConditionalOnMissingBean
-    public ThreadPoolEndpoint threadPoolEndpoint(ThreadPoolRegistry threadPoolRegistry,
-                                                 ThreadPoolManager threadPoolManager) {
-        return new ThreadPoolEndpoint(threadPoolRegistry, threadPoolManager);
+    public ThreadPoolEndpoint threadPoolEndpoint() {
+        return new ThreadPoolEndpoint();
     }
 
     /**
-     * 注册线程池动态管理器。
-     *
-     * @param threadPoolRegistry 线程池注册表
-     * @return 线程池管理器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public ThreadPoolManager threadPoolManager(ThreadPoolRegistry threadPoolRegistry) {
-        return new ThreadPoolManager(threadPoolRegistry);
-    }
-
-    /**
-     * 注册线程池队列使用率告警任务。
+     * 注册线程池队列使用率告警任务，并调度定期执行。
      *
      * @param threadPoolRegistry 线程池注册表
      * @param eventPublisher     事件发布器
+     * @param properties         配置
+     * @param scheduler          定时任务线程池
      * @return 告警任务
      */
     @Bean
@@ -220,8 +214,12 @@ public class ThreadPoolAutoConfiguration {
     @ConditionalOnProperty(prefix = "sloth.thread-pool", name = "alarm-enabled", havingValue = "true")
     public ThreadPoolAlarmTask threadPoolAlarmTask(ThreadPoolRegistry threadPoolRegistry,
                                                     org.springframework.context.ApplicationEventPublisher eventPublisher,
-                                                    ThreadPoolProperties properties) {
-        return new ThreadPoolAlarmTask(threadPoolRegistry, eventPublisher, properties.getAlarm().getThreshold());
+                                                    ThreadPoolProperties properties,
+                                                    ScheduledThreadPoolExecutor scheduler) {
+        ThreadPoolAlarmTask task = new ThreadPoolAlarmTask(threadPoolRegistry, eventPublisher,
+            properties.getAlarm().getThreshold());
+        scheduler.scheduleAtFixedRate(task::check, 60, 60, TimeUnit.SECONDS);
+        return task;
     }
 
     /**

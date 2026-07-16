@@ -22,11 +22,6 @@ public class ThreadPoolProperties {
     private boolean enabled = true;
 
     /**
-     * 是否启用动态配置。
-     */
-    private boolean dynamic = true;
-
-    /**
      * 是否启用 Java 21 虚拟线程。
      * <p>
      * 启用后将注册基于虚拟线程的 Executor，适用于 I/O 密集型任务。

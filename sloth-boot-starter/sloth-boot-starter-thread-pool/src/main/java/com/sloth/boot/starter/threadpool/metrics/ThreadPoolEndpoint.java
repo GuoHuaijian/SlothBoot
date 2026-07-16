@@ -1,8 +1,7 @@
 package com.sloth.boot.starter.threadpool.metrics;
 
-import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
+import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -24,20 +23,6 @@ import java.util.Map;
 @Endpoint(id = "threadPools")
 public class ThreadPoolEndpoint {
 
-    private final ThreadPoolRegistry threadPoolRegistry;
-    private final ThreadPoolManager threadPoolManager;
-
-    /**
-     * 构造函数。
-     *
-     * @param threadPoolRegistry 线程池注册表
-     * @param threadPoolManager  线程池管理器
-     */
-    public ThreadPoolEndpoint(ThreadPoolRegistry threadPoolRegistry, ThreadPoolManager threadPoolManager) {
-        this.threadPoolRegistry = threadPoolRegistry;
-        this.threadPoolManager = threadPoolManager;
-    }
-
     /**
      * 读取全部线程池状态。
      *
@@ -45,18 +30,18 @@ public class ThreadPoolEndpoint {
      */
     @ReadOperation
     public Map<String, ThreadPoolSnapshot> pools() {
-        return threadPoolRegistry.getAllSnapshots();
+        return ThreadPools.getAllSnapshots();
     }
 
     /**
      * 读取单个线程池详细信息。
      *
      * @param poolName 线程池名称
-     * @return 线程池快照信息，不存在时返回错误提示
+     * @return 线程池快照信息，不存在时返回 null
      */
     @ReadOperation
     public ThreadPoolSnapshot pool(@Selector String poolName) {
-        VisibleThreadPoolExecutor executor = threadPoolRegistry.getPool(poolName);
+        VisibleThreadPoolExecutor executor = ThreadPools.getPool(poolName);
         if (executor == null) {
             return null;
         }
@@ -74,7 +59,7 @@ public class ThreadPoolEndpoint {
     @WriteOperation
     public Map<String, Object> updatePool(String poolName, Integer coreSize, Integer maxSize) {
         Map<String, Object> result = new LinkedHashMap<>();
-        VisibleThreadPoolExecutor executor = threadPoolRegistry.getPool(poolName);
+        VisibleThreadPoolExecutor executor = ThreadPools.getPool(poolName);
         if (executor == null) {
             result.put("success", false);
             result.put("message", "线程池不存在: " + poolName);
@@ -82,7 +67,7 @@ public class ThreadPoolEndpoint {
         }
         int newCore = coreSize != null ? coreSize : executor.getCorePoolSize();
         int newMax = maxSize != null ? maxSize : executor.getMaximumPoolSize();
-        threadPoolManager.updatePoolSize(poolName, newCore, newMax);
+        ThreadPools.resize(poolName, newCore, newMax);
         result.put("success", true);
         result.put("poolName", poolName);
         result.put("corePoolSize", newCore);

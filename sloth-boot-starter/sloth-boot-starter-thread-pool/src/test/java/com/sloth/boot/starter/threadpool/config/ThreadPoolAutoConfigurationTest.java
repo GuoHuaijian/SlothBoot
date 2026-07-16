@@ -1,14 +1,12 @@
 package com.sloth.boot.starter.threadpool.config;
 
 import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.core.task.TaskDecorator;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -26,12 +24,10 @@ class ThreadPoolAutoConfigurationTest {
     void registersCoreBeansByDefault() {
         contextRunner.run(context -> {
             assertThat(context.getBeansOfType(ThreadPoolRegistry.class)).isNotEmpty();
-            assertThat(context.getBeansOfType(TaskDecorator.class)).isNotEmpty();
             assertThat(context).hasBean("slothTaskExecutor");
             assertThat(context.getBeansOfType(VisibleThreadPoolExecutor.class)).isNotEmpty();
             assertThat(context.getBeansOfType(AsyncExceptionHandler.class)).isNotEmpty();
             assertThat(context.getBeansOfType(ScheduledThreadPoolExecutor.class)).isNotEmpty();
-            assertThat(context.getBeansOfType(ThreadPoolManager.class)).isNotEmpty();
         });
     }
 
@@ -40,11 +36,9 @@ class ThreadPoolAutoConfigurationTest {
     void disabledByProperty() {
         contextRunner.withPropertyValues("sloth.thread-pool.enabled=false").run(context -> {
             assertThat(context).doesNotHaveBean(ThreadPoolRegistry.class);
-            assertThat(context).doesNotHaveBean(TaskDecorator.class);
             assertThat(context).doesNotHaveBean("slothTaskExecutor");
             assertThat(context).doesNotHaveBean(AsyncExceptionHandler.class);
             assertThat(context).doesNotHaveBean(ScheduledThreadPoolExecutor.class);
-            assertThat(context).doesNotHaveBean(ThreadPoolManager.class);
         });
     }
 
