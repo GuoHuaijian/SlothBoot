@@ -3,7 +3,7 @@ package com.sloth.boot.example.observability.application.command;
 import com.sloth.boot.example.observability.application.model.vo.MetricsDemoVO;
 import com.sloth.boot.example.observability.application.model.vo.SlowOperationVO;
 import com.sloth.boot.example.observability.application.model.vo.TraceDemoVO;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <p>
  * 承载慢操作、模拟异常、链路追踪、自定义指标等演示逻辑，并通过 OTel Agent 注入的
  * {@link Meter} 注册自定义业务指标。
- * 使用预置的 {@code default} 线程池。
+ * 使用预置的 {@link ThreadPools#DEFAULT} 线程池。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -32,8 +32,8 @@ public class DemoCommand {
     private final LongCounter customCounter;
     private final DoubleHistogram processingTimer;
 
-    public DemoCommand(Meter meter, ThreadPoolRegistry threadPoolRegistry) {
-        this.executor = threadPoolRegistry.getPool("default");
+    public DemoCommand(Meter meter) {
+        this.executor = ThreadPools.defaultPool();
 
         this.errorCounter = meter.counterBuilder("demo.errors")
                 .setDescription("Business errors")

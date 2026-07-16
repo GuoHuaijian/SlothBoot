@@ -4,6 +4,7 @@ import com.sloth.boot.starter.threadpool.async.AsyncExceptionHandler;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolBuilderFactory;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import com.sloth.boot.starter.threadpool.decorator.TtlTaskDecorator;
 import com.sloth.boot.starter.threadpool.metrics.ThreadPoolAlarmTask;
@@ -52,7 +53,9 @@ public class ThreadPoolAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ThreadPoolRegistry threadPoolRegistry() {
-        return new ThreadPoolRegistry();
+        ThreadPoolRegistry registry = new ThreadPoolRegistry();
+        ThreadPools.init(registry);
+        return registry;
     }
 
     /**

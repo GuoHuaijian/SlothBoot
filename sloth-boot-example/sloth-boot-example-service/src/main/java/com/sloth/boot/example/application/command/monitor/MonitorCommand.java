@@ -8,13 +8,14 @@ import com.sloth.boot.starter.monitor.service.MetricsSummaryService;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolManager;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
 import com.sloth.boot.starter.threadpool.core.ThreadPoolSnapshot;
+import com.sloth.boot.starter.threadpool.core.ThreadPools;
+import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * 系统监控命令。
@@ -91,7 +92,7 @@ public class MonitorCommand {
      * @throws IllegalArgumentException 当线程池不存在时抛出
      */
     public Map<String, Object> submitTasks(String poolName, int count, long sleepMs) {
-        ExecutorService executor = threadPoolRegistry.getPool(poolName);
+        VisibleThreadPoolExecutor executor = ThreadPools.getPool(poolName);
         if (executor == null) {
             throw new IllegalArgumentException("线程池不存在: " + poolName);
         }

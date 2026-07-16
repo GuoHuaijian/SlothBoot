@@ -1,7 +1,7 @@
 package com.sloth.boot.example.observability.application.command;
 
 import com.sloth.boot.example.observability.application.model.vo.LoadTestResultVO;
-import com.sloth.boot.starter.threadpool.core.ThreadPoolRegistry;
+import com.sloth.boot.starter.threadpool.core.ThreadPools;
 import com.sloth.boot.starter.threadpool.core.VisibleThreadPoolExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 压测演示业务命令。
  * <p>
  * 并发调用各演示端点，用于在可观测性面板上批量产生指标、链路与日志数据。
- * 使用预置的 {@code http-client} 线程池。
+ * 使用预置的 {@link ThreadPools#HTTP_CLIENT} 线程池。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -31,11 +31,10 @@ public class LoadTestCommand {
     private final VisibleThreadPoolExecutor executor;
 
     public LoadTestCommand(RestTemplate restTemplate,
-                           @Value("${server.port:8080}") int serverPort,
-                           ThreadPoolRegistry threadPoolRegistry) {
+                           @Value("${server.port:8080}") int serverPort) {
         this.restTemplate = restTemplate;
         this.baseUrl = "http://localhost:" + serverPort;
-        this.executor = threadPoolRegistry.getPool("http-client");
+        this.executor = ThreadPools.httpClient();
     }
 
     /**
