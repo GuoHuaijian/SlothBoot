@@ -9,7 +9,6 @@ import com.sloth.boot.starter.sentinel.handler.SentinelBlockExceptionHandler;
 import com.sloth.boot.starter.sentinel.health.SentinelHealthIndicator;
 import com.sloth.boot.starter.sentinel.metrics.SentinelMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -77,7 +76,6 @@ public class SentinelAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(HealthIndicator.class)
     public SentinelHealthIndicator sentinelHealthIndicator(
             SentinelProperties sentinelProperties) {
         return new SentinelHealthIndicator(sentinelProperties);

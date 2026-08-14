@@ -2,7 +2,7 @@ package com.sloth.boot.starter.web.handler;
 
 import com.sloth.boot.common.result.R;
 import com.sloth.boot.common.util.JsonUtil;
-import com.sloth.boot.starter.web.config.SlothWebProperties;
+import com.sloth.boot.starter.web.config.WebProperties;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -28,7 +28,7 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
     private static final String API_DOCS_URI = "/v3/api-docs";
     private static final String KNIFE4J_URI = "/doc.html";
 
-    private final SlothWebProperties slothWebProperties;
+    private final WebProperties slothWebProperties;
 
     /**
      * 判断是否需要执行响应包装。

@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @ConfigurationProperties(prefix = "sloth.web")
-public class SlothWebProperties {
+public class WebProperties {
 
     /**
      * 是否启用统一响应包装。

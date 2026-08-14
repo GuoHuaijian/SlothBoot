@@ -7,7 +7,6 @@ import com.sloth.boot.starter.seata.tracing.SeataTracingFilter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.seata.spring.annotation.GlobalTransactionScanner;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,7 +29,7 @@ import org.springframework.core.env.Environment;
 @Slf4j
 @AutoConfiguration
 @ConditionalOnClass(GlobalTransactionScanner.class)
-@ConditionalOnProperty(prefix = "sloth.seata", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "sloth.seata", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SeataProperties.class)
 public class SeataAutoConfiguration {
 
@@ -53,7 +52,6 @@ public class SeataAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(HealthIndicator.class)
     public SeataHealthIndicator seataHealthIndicator(SeataProperties seataProperties) {
         return new SeataHealthIndicator(seataProperties);
     }

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.monitor.config;
 import com.sloth.boot.starter.monitor.tracing.TraceContextBridge;
 import io.micrometer.tracing.Tracer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration
 @ConditionalOnClass(name = "io.micrometer.tracing.Tracer")
-@ConditionalOnProperty(prefix = "sloth.monitor", name = "tracing-enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sloth.monitor.tracing", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(TracingProperties.class)
 public class TracingAutoConfiguration {
 
@@ -38,6 +39,7 @@ public class TracingAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(Tracer.class)
     public TraceContextBridge traceContextBridge(Tracer tracer) {
         return new TraceContextBridge(tracer);
     }

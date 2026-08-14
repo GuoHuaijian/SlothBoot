@@ -2,6 +2,7 @@ package com.sloth.boot.starter.redis.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Redis 配置属性。
@@ -10,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.redis")
 public class RedisProperties {
 

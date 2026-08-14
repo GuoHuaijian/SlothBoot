@@ -4,7 +4,6 @@ import com.sloth.boot.starter.job.health.JobHealthIndicator;
 import com.sloth.boot.starter.job.metrics.JobMetrics;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -52,7 +51,6 @@ public class JobAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(HealthIndicator.class)
     public JobHealthIndicator jobHealthIndicator(JobProperties jobProperties) {
         return new JobHealthIndicator(jobProperties);
     }

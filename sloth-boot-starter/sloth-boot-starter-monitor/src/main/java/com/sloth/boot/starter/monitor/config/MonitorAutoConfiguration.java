@@ -22,6 +22,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -111,6 +112,7 @@ public class MonitorAutoConfiguration {
     @Bean
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public FilterRegistrationBean<HttpMetricsFilter> httpMetricsFilter(MeterRegistry meterRegistry,
                                                                        MonitorProperties monitorProperties,
@@ -131,6 +133,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(name = {"com.sloth.boot.common.log.event.SlowOperationEvent", "io.micrometer.core.instrument.MeterRegistry"})
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public SlowOperationEventListener slowOperationEventListener(MeterRegistry meterRegistry,
                                                                   ObjectProvider<AlarmService> alarmServiceProvider) {
@@ -145,6 +148,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public JvmMetricsConfig jvmMetricsConfig(MeterRegistry meterRegistry) {
         return new JvmMetricsConfig(meterRegistry);
@@ -216,6 +220,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public BusinessMetrics businessMetrics(MeterRegistry meterRegistry) {
         return new BusinessMetrics(meterRegistry);
@@ -240,6 +245,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public MetricsSummaryService metricsSummaryService(MeterRegistry meterRegistry) {
         return new MetricsSummaryService(meterRegistry);
@@ -285,6 +291,7 @@ public class MonitorAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean
     public SystemResourceCollector systemResourceCollector(MonitorProperties monitorProperties,
                                                            ObjectProvider<AlarmService> alarmServiceProvider,

@@ -6,7 +6,7 @@ import com.sloth.boot.common.security.config.SecurityAutoConfiguration;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
-import com.sloth.boot.starter.web.config.SlothWebProperties;
+import com.sloth.boot.starter.web.config.WebProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -29,15 +29,15 @@ class WebAutoConfigurationTest {
             assertThat(context.getBeansOfType(GlobalExceptionHandler.class)).isNotEmpty();
             assertThat(context.getBeansOfType(GlobalResponseAdvice.class)).isNotEmpty();
             assertThat(context.getBeansOfType(UserContextInterceptor.class)).isNotEmpty();
-            assertThat(context.getBeansOfType(SlothWebProperties.class)).isNotEmpty();
+            assertThat(context.getBeansOfType(WebProperties.class)).isNotEmpty();
         });
     }
 
     @Test
-    @DisplayName("SlothWebProperties 默认值正确")
+    @DisplayName("WebProperties 默认值正确")
     void defaultPropertiesValues() {
         contextRunner.run(context -> {
-            SlothWebProperties props = context.getBeansOfType(SlothWebProperties.class).values().iterator().next();
+            WebProperties props = context.getBeansOfType(WebProperties.class).values().iterator().next();
             assertThat(props.isResponseWrapper()).isTrue();
             assertThat(props.isBodyCacheEnabled()).isFalse();
         });
@@ -58,7 +58,7 @@ class WebAutoConfigurationTest {
     void responseWrapperDisabled() {
         contextRunner.withPropertyValues("sloth.web.response-wrapper=false").run(context -> {
             assertThat(context.getBeansOfType(GlobalResponseAdvice.class)).isNotEmpty();
-            SlothWebProperties props = context.getBeansOfType(SlothWebProperties.class).values().iterator().next();
+            WebProperties props = context.getBeansOfType(WebProperties.class).values().iterator().next();
             assertThat(props.isResponseWrapper()).isFalse();
         });
     }

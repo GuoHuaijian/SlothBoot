@@ -2,7 +2,6 @@ package com.sloth.boot.common.config;
 
 import com.sloth.boot.common.util.I18nUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnClass(name = "org.springframework.context.MessageSource")
 public class I18nAutoConfiguration {
 
     @Bean

@@ -2,6 +2,7 @@ package com.sloth.boot.starter.gateway.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.gateway.cors")
 public class GatewayCorsProperties {
 

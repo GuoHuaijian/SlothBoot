@@ -19,7 +19,7 @@ import java.util.Set;
 @Data
 @Validated
 @ConfigurationProperties(prefix = "sloth.web.cors")
-public class CorsConfiguration {
+public class WebCorsProperties {
 
     /**
      * 允许的来源。

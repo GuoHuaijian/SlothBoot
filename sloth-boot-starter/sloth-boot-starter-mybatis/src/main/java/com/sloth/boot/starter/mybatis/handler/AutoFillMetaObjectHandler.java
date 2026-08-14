@@ -2,7 +2,7 @@ package com.sloth.boot.starter.mybatis.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.sloth.boot.common.context.UserContext;
-import com.sloth.boot.starter.mybatis.config.MybatisPlusProperties;
+import com.sloth.boot.starter.mybatis.config.MybatisProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
-    private final MybatisPlusProperties properties;
+    private final MybatisProperties properties;
 
-    public AutoFillMetaObjectHandler(MybatisPlusProperties properties) {
+    public AutoFillMetaObjectHandler(MybatisProperties properties) {
         this.properties = properties;
     }
 

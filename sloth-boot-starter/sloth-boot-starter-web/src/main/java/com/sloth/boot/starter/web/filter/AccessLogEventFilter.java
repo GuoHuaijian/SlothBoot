@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.web.filter;
 
 import com.sloth.boot.common.context.UserContext;
-import com.sloth.boot.starter.web.config.SlothWebProperties;
+import com.sloth.boot.starter.web.config.WebProperties;
 import com.sloth.boot.starter.web.event.AccessLogEvent;
 import com.sloth.boot.starter.web.util.ServletUtil;
 import jakarta.servlet.FilterChain;
@@ -29,7 +29,7 @@ import java.io.IOException;
 public class AccessLogEventFilter extends OncePerRequestFilter {
 
     private final ApplicationEventPublisher eventPublisher;
-    private final SlothWebProperties webProperties;
+    private final WebProperties webProperties;
 
     /**
      * 构造访问日志事件过滤器。
@@ -37,7 +37,7 @@ public class AccessLogEventFilter extends OncePerRequestFilter {
      * @param eventPublisher 事件发布器
      * @param webProperties  Web 配置
      */
-    public AccessLogEventFilter(ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
+    public AccessLogEventFilter(ApplicationEventPublisher eventPublisher, WebProperties webProperties) {
         this.eventPublisher = eventPublisher;
         this.webProperties = webProperties;
     }

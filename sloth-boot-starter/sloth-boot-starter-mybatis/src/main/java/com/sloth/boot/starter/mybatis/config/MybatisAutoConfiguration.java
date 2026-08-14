@@ -51,7 +51,7 @@ import java.sql.SQLException;
 @AutoConfiguration
 @ConditionalOnClass(MybatisPlusInterceptor.class)
 @ConditionalOnProperty(prefix = "sloth.mybatis", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties(MybatisPlusProperties.class)
+@EnableConfigurationProperties(MybatisProperties.class)
 @EnableTransactionManagement
 public class MybatisAutoConfiguration {
 
@@ -65,7 +65,7 @@ public class MybatisAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(MybatisPlusProperties properties, Environment environment,
+    public MybatisPlusInterceptor mybatisPlusInterceptor(MybatisProperties properties, Environment environment,
                                                          DataSource dataSource) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(detectDbType(environment, dataSource)));
@@ -104,7 +104,7 @@ public class MybatisAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(MetaObjectHandler.class)
-    public MetaObjectHandler metaObjectHandler(MybatisPlusProperties properties) {
+    public MetaObjectHandler metaObjectHandler(MybatisProperties properties) {
         return new AutoFillMetaObjectHandler(properties);
     }
 
@@ -116,7 +116,7 @@ public class MybatisAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(SlowSqlInterceptor.class)
-    public SlowSqlInterceptor slowSqlInterceptor(MybatisPlusProperties properties) {
+    public SlowSqlInterceptor slowSqlInterceptor(MybatisProperties properties) {
         return new SlowSqlInterceptor(properties);
     }
 

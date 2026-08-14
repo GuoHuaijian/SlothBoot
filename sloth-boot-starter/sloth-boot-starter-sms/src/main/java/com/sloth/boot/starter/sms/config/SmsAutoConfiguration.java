@@ -8,7 +8,6 @@ import com.sloth.boot.starter.sms.core.TencentSmsClient;
 import com.sloth.boot.starter.sms.health.SmsHealthIndicator;
 import com.sloth.boot.starter.sms.metrics.SmsMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -24,7 +23,6 @@ import org.springframework.context.annotation.Bean;
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnClass(SmsClient.class)
 @ConditionalOnProperty(prefix = "sloth.sms", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SmsProperties.class)
 public class SmsAutoConfiguration {
@@ -58,7 +56,6 @@ public class SmsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(HealthIndicator.class)
     public SmsHealthIndicator smsHealthIndicator(SmsProperties smsProperties) {
         return new SmsHealthIndicator(smsProperties);
     }

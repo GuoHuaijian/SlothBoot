@@ -5,7 +5,6 @@ import com.sloth.boot.starter.rocketmq.health.RocketMQHealthIndicator;
 import com.sloth.boot.starter.rocketmq.producer.MessageProducer;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -46,7 +45,6 @@ public class RocketMQAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(name = "slothMqHealthIndicator")
-    @ConditionalOnClass(HealthIndicator.class)
     public RocketMQHealthIndicator slothMqHealthIndicator(RocketMQTemplate rocketMQTemplate) {
         return new RocketMQHealthIndicator(rocketMQTemplate);
     }

@@ -12,9 +12,7 @@ import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
 import com.sloth.boot.starter.web.interceptor.UserContextInterceptor;
 import com.sloth.boot.starter.web.log.OperateLogAspect;
 import com.sloth.boot.starter.web.log.RequestLogFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -35,10 +33,9 @@ import org.springframework.core.Ordered;
  * @since 1.0.0
  */
 @AutoConfiguration
-@ConditionalOnClass(HttpServletRequest.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = "sloth.web", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties({SlothWebProperties.class, CorsConfiguration.class, GzipProperties.class})
+@EnableConfigurationProperties({WebProperties.class, WebCorsProperties.class, GzipProperties.class, XssProperties.class})
 public class WebAutoConfiguration {
 
     /**
@@ -78,13 +75,13 @@ public class WebAutoConfiguration {
     /**
      * 注册统一响应包装处理器。
      *
-     * @param slothWebProperties Web 配置
+     * @param webProperties Web 配置
      * @return 统一响应包装处理器
      */
     @Bean
     @ConditionalOnMissingBean
-    public GlobalResponseAdvice globalResponseAdvice(SlothWebProperties slothWebProperties) {
-        return new GlobalResponseAdvice(slothWebProperties);
+    public GlobalResponseAdvice globalResponseAdvice(WebProperties webProperties) {
+        return new GlobalResponseAdvice(webProperties);
     }
 
     /**
@@ -114,7 +111,7 @@ public class WebAutoConfiguration {
     /**
      * 注册 XSS 过滤器。
      *
-     * @param xssProperties XSS 配置（由 SecurityAutoConfiguration 注册）
+     * @param xssProperties XSS 配置
      * @return XSS 过滤器注册器
      */
     @Bean
@@ -137,7 +134,7 @@ public class WebAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(name = "slothCorsFilterRegistration")
-    public FilterRegistrationBean<CorsFilter> slothCorsFilterRegistration(CorsConfiguration corsConfiguration) {
+    public FilterRegistrationBean<CorsFilter> slothCorsFilterRegistration(WebCorsProperties corsConfiguration) {
         FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new CorsFilter(corsConfiguration));
         registrationBean.addUrlPatterns("/*");
@@ -177,7 +174,7 @@ public class WebAutoConfiguration {
     @ConditionalOnMissingBean(name = "slothAccessLogFilterRegistration")
     @ConditionalOnProperty(prefix = "sloth.web", name = "access-log-event-enabled", havingValue = "true")
     public FilterRegistrationBean<AccessLogEventFilter> slothAccessLogFilterRegistration(
-        ApplicationEventPublisher eventPublisher, SlothWebProperties webProperties) {
+        ApplicationEventPublisher eventPublisher, WebProperties webProperties) {
         FilterRegistrationBean<AccessLogEventFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new AccessLogEventFilter(eventPublisher, webProperties));
         registration.addUrlPatterns("/*");

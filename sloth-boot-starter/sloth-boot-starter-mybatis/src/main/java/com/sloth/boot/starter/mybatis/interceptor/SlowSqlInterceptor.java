@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.mybatis.interceptor;
 
-import com.sloth.boot.starter.mybatis.config.MybatisPlusProperties;
+import com.sloth.boot.starter.mybatis.config.MybatisProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
@@ -30,7 +30,7 @@ import java.util.Properties;
     @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class SlowSqlInterceptor implements Interceptor {
 
-    private final MybatisPlusProperties mybatisPlusProperties;
+    private final MybatisProperties mybatisPlusProperties;
 
     /**
      * 执行拦截逻辑。

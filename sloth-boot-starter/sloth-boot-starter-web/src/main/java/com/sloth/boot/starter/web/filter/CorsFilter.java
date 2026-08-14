@@ -1,6 +1,6 @@
 package com.sloth.boot.starter.web.filter;
 
-import com.sloth.boot.starter.web.config.CorsConfiguration;
+import com.sloth.boot.starter.web.config.WebCorsProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,14 +22,14 @@ import java.io.IOException;
  */
 public class CorsFilter extends OncePerRequestFilter {
 
-    private final CorsConfiguration corsConfiguration;
+    private final WebCorsProperties corsConfiguration;
 
     /**
      * 构造 CORS 过滤器。
      *
      * @param corsConfiguration 跨域配置
      */
-    public CorsFilter(CorsConfiguration corsConfiguration) {
+    public CorsFilter(WebCorsProperties corsConfiguration) {
         this.corsConfiguration = corsConfiguration;
     }
 

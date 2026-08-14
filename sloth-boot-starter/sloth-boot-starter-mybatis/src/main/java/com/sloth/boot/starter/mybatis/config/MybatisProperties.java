@@ -2,6 +2,7 @@ package com.sloth.boot.starter.mybatis.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,8 +14,9 @@ import java.util.Set;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.mybatis")
-public class MybatisPlusProperties {
+public class MybatisProperties {
 
     /**
      * 是否启用租户插件。

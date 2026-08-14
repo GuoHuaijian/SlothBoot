@@ -63,6 +63,18 @@
       "type": "java.lang.Long",
       "defaultValue": 60000,
       "description": "系统资源采集间隔（毫秒）。"
+    },
+    {
+      "name": "sloth.monitor.tracing.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "是否启用链路追踪桥接。"
+    },
+    {
+      "name": "sloth.monitor.tracing.sampler-rate",
+      "type": "java.lang.Double",
+      "defaultValue": 1.0,
+      "description": "链路采样率，范围 0.0 ~ 1.0。"
     }
   ],
   "hints": [

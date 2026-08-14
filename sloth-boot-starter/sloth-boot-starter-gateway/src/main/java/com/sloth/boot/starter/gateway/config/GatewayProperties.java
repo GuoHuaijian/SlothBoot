@@ -2,6 +2,7 @@ package com.sloth.boot.starter.gateway.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.gateway")
 public class GatewayProperties {
 

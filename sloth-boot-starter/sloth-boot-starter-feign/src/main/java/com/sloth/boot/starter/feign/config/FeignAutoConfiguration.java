@@ -10,11 +10,11 @@ import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.support.FeignHttpMessageConverters;
@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignClient")
 @ConditionalOnProperty(prefix = "sloth.feign", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import({FeignLogConfig.class, OkHttpConfig.class})
+@EnableConfigurationProperties(FeignProperties.class)
 public class FeignAutoConfiguration {
 
     /**
@@ -82,7 +83,6 @@ public class FeignAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(HealthIndicator.class)
     public FeignHealthIndicator feignHealthIndicator(
             ObjectProvider<java.util.Map<String, Object>> feignClients) {
         return new FeignHealthIndicator(feignClients.getIfAvailable(java.util.Collections::emptyMap));

@@ -3,6 +3,7 @@ package com.sloth.boot.starter.auth.config;
 import com.sloth.boot.starter.auth.enums.DeviceStrategy;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
+@Validated
 @ConfigurationProperties(prefix = "sloth.auth")
 public class AuthProperties {
 
