@@ -29,7 +29,7 @@ import org.springframework.core.env.Environment;
 @Slf4j
 @AutoConfiguration
 @ConditionalOnClass(GlobalTransactionScanner.class)
-@ConditionalOnProperty(prefix = "sloth.seata", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sloth.seata", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(SeataProperties.class)
 public class SeataAutoConfiguration {
 

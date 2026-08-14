@@ -2,7 +2,6 @@ package com.sloth.boot.starter.monitor.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * 链路追踪配置属性。
@@ -11,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
  * @since 1.0.0
  */
 @Data
-@Validated
 @ConfigurationProperties(prefix = "sloth.monitor.tracing")
 public class TracingProperties {
 

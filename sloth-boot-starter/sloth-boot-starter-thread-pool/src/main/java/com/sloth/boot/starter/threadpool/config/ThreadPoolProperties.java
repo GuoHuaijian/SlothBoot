@@ -2,7 +2,6 @@ package com.sloth.boot.starter.threadpool.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Data
-@Validated
 @ConfigurationProperties(prefix = "sloth.thread-pool")
 public class ThreadPoolProperties {
 

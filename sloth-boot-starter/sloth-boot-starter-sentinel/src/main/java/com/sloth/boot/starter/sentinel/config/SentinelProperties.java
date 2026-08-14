@@ -2,7 +2,6 @@ package com.sloth.boot.starter.sentinel.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * Sentinel 配置属性。
@@ -11,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
  * @since 1.0.0
  */
 @Data
-@Validated
 @ConfigurationProperties(prefix = "sloth.sentinel")
 public class SentinelProperties {
 
