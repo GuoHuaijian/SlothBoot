@@ -36,12 +36,6 @@ import java.util.concurrent.Callable;
  */
 public final class ContextSnapshot {
 
-    private static final boolean MDC_AVAILABLE;
-
-    static {
-        MDC_AVAILABLE = isClassPresent("org.slf4j.MDC");
-    }
-
     private final TraceContext.TraceInfo traceInfo;
     private final UserContext.UserInfo userInfo;
     private final Map<String, String> mdcContext;
@@ -61,7 +55,7 @@ public final class ContextSnapshot {
     public static ContextSnapshot capture() {
         TraceContext.TraceInfo traceInfo = TraceContext.get();
         UserContext.UserInfo userInfo = UserContext.get();
-        Map<String, String> mdcContext = MDC_AVAILABLE ? MDC.getCopyOfContextMap() : null;
+        Map<String, String> mdcContext = MDC.getCopyOfContextMap();
         return new ContextSnapshot(traceInfo, userInfo, mdcContext);
     }
 
@@ -75,12 +69,10 @@ public final class ContextSnapshot {
         if (userInfo != null) {
             UserContext.set(userInfo);
         }
-        if (MDC_AVAILABLE) {
-            if (mdcContext != null) {
-                MDC.setContextMap(mdcContext);
-            } else {
-                MDC.clear();
-            }
+        if (mdcContext != null) {
+            MDC.setContextMap(mdcContext);
+        } else {
+            MDC.clear();
         }
     }
 
@@ -90,9 +82,7 @@ public final class ContextSnapshot {
     public void clear() {
         TraceContext.clear();
         UserContext.clear();
-        if (MDC_AVAILABLE) {
-            MDC.clear();
-        }
+        MDC.clear();
     }
 
     /**
@@ -128,14 +118,5 @@ public final class ContextSnapshot {
                 clear();
             }
         };
-    }
-
-    private static boolean isClassPresent(String className) {
-        try {
-            Class.forName(className, false, ContextSnapshot.class.getClassLoader());
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 }

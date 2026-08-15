@@ -2,7 +2,6 @@ package com.sloth.boot.common.util;
 
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -41,11 +40,10 @@ public final class I18nMessages {
     }
 
     private static String getPattern(String key) {
-        try {
-            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.getDefault());
-            return bundle.getString(key);
-        } catch (MissingResourceException e) {
+        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.getDefault());
+        if (!bundle.containsKey(key)) {
             return key;
         }
+        return bundle.getString(key);
     }
 }
