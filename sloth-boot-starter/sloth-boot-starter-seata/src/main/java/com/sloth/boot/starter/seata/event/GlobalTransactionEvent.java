@@ -1,19 +1,21 @@
 package com.sloth.boot.starter.seata.event;
 
-import com.sloth.boot.common.event.BaseEvent;
-import lombok.Getter;
-
 /**
  * 全局事务事件。
  * <p>
  * 在分布式事务开始、提交、回滚时发布，用于审计和监控。
  *
+ * @param xid        全局事务 ID
+ * @param status     事务状态
+ * @param costTimeMs 事务耗时（毫秒）
  * @author sloth-boot
  * @since 1.0.0
  */
-@Getter
-public class GlobalTransactionEvent extends BaseEvent {
+public record GlobalTransactionEvent(String xid, Status status, long costTimeMs) {
 
+    /**
+     * 全局事务状态。
+     */
     public enum Status {
         /** 事务开始 */
         BEGIN,
@@ -23,16 +25,5 @@ public class GlobalTransactionEvent extends BaseEvent {
         ROLLED_BACK,
         /** 事务超时 */
         TIMEOUT
-    }
-
-    private final String xid;
-    private final Status status;
-    private final long costTimeMs;
-
-    public GlobalTransactionEvent(Object source, String xid, Status status, long costTimeMs) {
-        super(source);
-        this.xid = xid;
-        this.status = status;
-        this.costTimeMs = costTimeMs;
     }
 }

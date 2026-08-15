@@ -2,7 +2,7 @@ package com.sloth.boot.starter.gateway.handler;
 
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.result.R;
-import com.sloth.boot.common.util.I18nUtil;
+import com.sloth.boot.common.util.I18nMessages;
 import com.sloth.boot.common.util.JsonUtil;
 import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
@@ -37,7 +37,7 @@ public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        String fallbackMsg = I18nUtil.getMessage(GlobalErrorCode.INTERNAL_ERROR.getI18nKey());
+        String fallbackMsg = I18nMessages.getMessage(GlobalErrorCode.INTERNAL_ERROR.getI18nKey());
         String body = JsonUtil.toJson(R.fail(GlobalErrorCode.INTERNAL_ERROR.getCode(),
                 ex.getMessage() != null ? ex.getMessage() : fallbackMsg));
         DataBufferFactory bufferFactory = response.bufferFactory();

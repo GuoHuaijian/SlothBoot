@@ -6,7 +6,7 @@ import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
 import com.sloth.boot.common.exception.SystemException;
 import com.sloth.boot.common.result.R;
-import com.sloth.boot.common.util.I18nUtil;
+import com.sloth.boot.common.util.I18nMessages;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public R<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
-        return handleBadRequest(ex, I18nUtil.getMessage("sloth.error.missing_param", ex.getParameterName()));
+        return handleBadRequest(ex, I18nMessages.getMessage("sloth.error.missing_param", ex.getParameterName()));
     }
 
     /**
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
         log.warn("[Web] 媒体类型不支持, msg={}", ex.getMessage(), ex);
         return R.fail(GlobalErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
-            I18nUtil.getMessage("sloth.error.media_type_not_supported"));
+            I18nMessages.getMessage("sloth.error.media_type_not_supported"));
     }
 
     /**
@@ -156,7 +156,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public R<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return handleBadRequest(ex, I18nUtil.getMessage("sloth.error.body_parse_failed"));
+        return handleBadRequest(ex, I18nMessages.getMessage("sloth.error.body_parse_failed"));
     }
 
     /**
@@ -168,7 +168,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public R<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.warn("[Web] 上传文件过大, msg={}", ex.getMessage(), ex);
-        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.file_too_large"));
+        return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nMessages.getMessage("sloth.error.file_too_large"));
     }
 
     /**
@@ -181,7 +181,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleException(Exception ex) {
         if (isDuplicateKeyException(ex)) {
             log.warn("[Biz] 数据重复, msg={}", ex.getMessage(), ex);
-            return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nUtil.getMessage("sloth.error.data_duplicate"));
+            return R.fail(GlobalErrorCode.BAD_REQUEST.getCode(), I18nMessages.getMessage("sloth.error.data_duplicate"));
         }
         if (isAccessDeniedException(ex)) {
             log.warn("[Biz] 权限不足, msg={}", ex.getMessage(), ex);
@@ -251,15 +251,15 @@ public class GlobalExceptionHandler {
     private R<Void> buildBlockExceptionResponse(Throwable throwable) {
         if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.flow.FlowException")
             || isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException")) {
-            return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nUtil.getMessage("sloth.error.sentinel_flow"));
+            return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nMessages.getMessage("sloth.error.sentinel_flow"));
         }
         if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.degrade.DegradeException")
             || isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.system.SystemBlockException")) {
-            return R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
+            return R.fail(503, I18nMessages.getMessage("sloth.error.sentinel_degrade"));
         }
         if (isInstanceOf(throwable, "com.alibaba.csp.sentinel.slots.block.authority.AuthorityException")) {
-            return R.fail(GlobalErrorCode.FORBIDDEN.getCode(), I18nUtil.getMessage("sloth.error.sentinel_authority"));
+            return R.fail(GlobalErrorCode.FORBIDDEN.getCode(), I18nMessages.getMessage("sloth.error.sentinel_authority"));
         }
-        return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nUtil.getMessage("sloth.error.sentinel_blocked"));
+        return R.fail(GlobalErrorCode.TOO_MANY_REQUESTS.getCode(), I18nMessages.getMessage("sloth.error.sentinel_blocked"));
     }
 }

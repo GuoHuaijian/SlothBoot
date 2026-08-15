@@ -71,7 +71,7 @@ public class AccessLogEventFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 log.trace("获取用户上下文失败, 跳过用户ID记录", e);
             }
-            AccessLogEvent event = new AccessLogEvent(this, request.getMethod(), request.getRequestURI(),
+            AccessLogEvent event = new AccessLogEvent(request.getMethod(), request.getRequestURI(),
                 request.getQueryString(), clientIp, request.getHeader("User-Agent"), userId,
                 response.getStatus(), elapsed, requestBody);
             eventPublisher.publishEvent(event);

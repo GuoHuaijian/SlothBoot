@@ -20,6 +20,6 @@ public class OrderStatusEventConsumer {
     @EventListener
     public void onOrderStatusChanged(OrderStatusEvent event) {
         log.info("收到订单状态变更事件: orderId={}, status={}, message={}",
-            event.getOrderId(), event.getStatus(), event.getMessage());
+            event.orderId(), event.status(), event.message());
     }
 }

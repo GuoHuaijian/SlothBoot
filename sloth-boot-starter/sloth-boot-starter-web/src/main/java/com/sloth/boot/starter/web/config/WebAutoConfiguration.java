@@ -1,6 +1,5 @@
 package com.sloth.boot.starter.web.config;
 
-import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.config.LogProperties;
 import com.sloth.boot.common.security.sign.SignProperties;
 import com.sloth.boot.common.security.xss.XssProperties;
@@ -107,7 +106,7 @@ public class WebAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public OperateLogAspect operateLogAspect(EventPublisher eventPublisher) {
+    public OperateLogAspect operateLogAspect(ApplicationEventPublisher eventPublisher) {
         return new OperateLogAspect(eventPublisher);
     }
 

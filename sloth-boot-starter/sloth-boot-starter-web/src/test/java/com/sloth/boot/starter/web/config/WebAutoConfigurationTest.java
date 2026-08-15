@@ -1,6 +1,5 @@
 package com.sloth.boot.starter.web.config;
 
-import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.config.LogAutoConfiguration;
 import com.sloth.boot.common.security.config.SecurityAutoConfiguration;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
@@ -19,8 +18,7 @@ class WebAutoConfigurationTest {
 
     private final WebApplicationContextRunner contextRunner =
         new WebApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(LogAutoConfiguration.class, SecurityAutoConfiguration.class, WebAutoConfiguration.class))
-            .withBean(EventPublisher.class, () -> new EventPublisher(event -> {}));
+            .withConfiguration(AutoConfigurations.of(LogAutoConfiguration.class, SecurityAutoConfiguration.class, WebAutoConfiguration.class));
 
     @Test
     @DisplayName("默认配置下注册所有核心 Bean")

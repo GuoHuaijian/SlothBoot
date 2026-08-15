@@ -1,10 +1,8 @@
 package com.sloth.boot.example.observability.infrastructure.config;
 
-import com.sloth.boot.common.event.EventPublisher;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -32,19 +30,5 @@ public class AppConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
-    }
-
-    /**
-     * 操作日志事件发布器。
-     * <p>
-     * 供 {@code sloth-boot-starter-web} 的 OperateLogAspect 切面依赖；
-     * 项目级无自动装配声明该 Bean，故在此显式提供。
-     *
-     * @param applicationEventPublisher Spring 事件发布器
-     * @return Sloth Boot 事件发布器
-     */
-    @Bean
-    public EventPublisher eventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        return new EventPublisher(applicationEventPublisher);
     }
 }

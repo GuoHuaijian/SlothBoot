@@ -43,7 +43,7 @@ public class ThreadPoolAlarmTask {
                 log.warn("[ThreadPool] 线程池 {} 队列使用率告警: {}% ({}/{})", snapshot.poolName(),
                     String.format("%.1f", usagePercent), snapshot.queueSize(), snapshot.queueTotalCapacity());
 
-                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(this, snapshot.poolName(),
+                ThreadPoolAlarmEvent event = new ThreadPoolAlarmEvent(snapshot.poolName(),
                     snapshot.activeCount(), snapshot.queueSize(), snapshot.queueTotalCapacity(),
                     usagePercent, snapshot.completedTaskCount());
                 eventPublisher.publishEvent(event);

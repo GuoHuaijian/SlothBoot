@@ -59,7 +59,7 @@ public class RedisDemoCommand {
 
         if (pubSubTemplate != null) {
             pubSubTemplate.subscribe("demo:order:events", OrderStatusEvent.class, event -> {
-                log.info("收到订单事件: orderId={}, status={}", event.getOrderId(), event.getStatus());
+                log.info("收到订单事件: orderId={}, status={}", event.orderId(), event.status());
                 receivedEvents.add(event);
                 while (receivedEvents.size() > MAX_EVENTS) {
                     receivedEvents.removeFirst();
@@ -187,7 +187,7 @@ public class RedisDemoCommand {
      *
      */
     public void publishOrderEvent(Long orderId, String status, String message) {
-        OrderStatusEvent event = OrderStatusEvent.of(this, orderId, status, message);
+        OrderStatusEvent event = OrderStatusEvent.of(orderId, status, message);
         if (pubSubTemplate != null) {
             pubSubTemplate.publish("demo:order:events", event);
         }

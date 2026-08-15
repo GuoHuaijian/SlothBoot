@@ -28,7 +28,7 @@ public class OperateLogListener {
      */
     @EventListener
     public void handleOperateLogEvent(OperateLogEvent event) {
-        OperateLogDTO dto = event.getOperateLog();
+        OperateLogDTO dto = event.operateLog();
         if (logProperties.isPrintOperateLog()) {
             log.info("[Operate] {}", JsonUtil.toJson(dto));
         }

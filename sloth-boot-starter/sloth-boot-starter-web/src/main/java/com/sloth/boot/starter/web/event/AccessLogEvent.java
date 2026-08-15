@@ -1,8 +1,5 @@
 package com.sloth.boot.starter.web.event;
 
-import com.sloth.boot.common.event.BaseEvent;
-import lombok.Getter;
-
 /**
  * API 访问日志事件。
  * <p>
@@ -14,82 +11,19 @@ import lombok.Getter;
  * }
  * </pre>
  *
+ * @param method      请求方法（GET/POST/PUT/DELETE）
+ * @param uri         请求 URI
+ * @param queryString 查询参数
+ * @param clientIp    客户端 IP
+ * @param userAgent   User-Agent
+ * @param userId      用户 ID
+ * @param statusCode  HTTP 响应状态码
+ * @param elapsed     请求执行耗时（毫秒）
+ * @param requestBody 请求体内容（可选，仅当 bodyCache 开启时有值）
  * @author sloth-boot
  * @since 1.0.0
  */
-@Getter
-public class AccessLogEvent extends BaseEvent {
-
-    /**
-     * 请求方法（GET/POST/PUT/DELETE）。
-     */
-    private final String method;
-
-    /**
-     * 请求 URI。
-     */
-    private final String uri;
-
-    /**
-     * 查询参数。
-     */
-    private final String queryString;
-
-    /**
-     * 客户端 IP。
-     */
-    private final String clientIp;
-
-    /**
-     * User-Agent。
-     */
-    private final String userAgent;
-
-    /**
-     * 用户 ID。
-     */
-    private final Long userId;
-
-    /**
-     * HTTP 响应状态码。
-     */
-    private final Integer statusCode;
-
-    /**
-     * 请求执行耗时（毫秒）。
-     */
-    private final long elapsed;
-
-    /**
-     * 请求体内容（可选，仅当 bodyCache 开启时有值）。
-     */
-    private final String requestBody;
-
-    /**
-     * 构造访问日志事件。
-     *
-     * @param source      事件源
-     * @param method      请求方法
-     * @param uri         请求 URI
-     * @param queryString 查询参数
-     * @param clientIp    客户端 IP
-     * @param userAgent   User-Agent
-     * @param userId      用户 ID
-     * @param statusCode  HTTP 响应状态码
-     * @param elapsed     请求耗时（毫秒）
-     * @param requestBody 请求体内容
-     */
-    public AccessLogEvent(Object source, String method, String uri, String queryString, String clientIp,
-                          String userAgent, Long userId, Integer statusCode, long elapsed, String requestBody) {
-        super(source);
-        this.method = method;
-        this.uri = uri;
-        this.queryString = queryString;
-        this.clientIp = clientIp;
-        this.userAgent = userAgent;
-        this.userId = userId;
-        this.statusCode = statusCode;
-        this.elapsed = elapsed;
-        this.requestBody = requestBody;
-    }
+public record AccessLogEvent(String method, String uri, String queryString, String clientIp,
+                             String userAgent, Long userId, Integer statusCode, long elapsed,
+                             String requestBody) {
 }

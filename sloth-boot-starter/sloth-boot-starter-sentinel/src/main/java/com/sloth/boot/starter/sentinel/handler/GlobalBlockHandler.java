@@ -7,7 +7,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import com.sloth.boot.common.result.R;
-import com.sloth.boot.common.util.I18nUtil;
+import com.sloth.boot.common.util.I18nMessages;
 
 /**
  * Sentinel 全局拦截处理器。
@@ -25,12 +25,12 @@ public class GlobalBlockHandler {
      */
     public R<Void> handle(BlockException exception) {
         return switch (exception) {
-            case FlowException e -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
-            case DegradeException e -> R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_degrade"));
-            case ParamFlowException e -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_flow"));
-            case SystemBlockException e -> R.fail(503, I18nUtil.getMessage("sloth.error.sentinel_system"));
-            case AuthorityException e -> R.fail(403, I18nUtil.getMessage("sloth.error.sentinel_authority"));
-            default -> R.fail(429, I18nUtil.getMessage("sloth.error.sentinel_blocked"));
+            case FlowException e -> R.fail(429, I18nMessages.getMessage("sloth.error.sentinel_flow"));
+            case DegradeException e -> R.fail(503, I18nMessages.getMessage("sloth.error.sentinel_degrade"));
+            case ParamFlowException e -> R.fail(429, I18nMessages.getMessage("sloth.error.sentinel_flow"));
+            case SystemBlockException e -> R.fail(503, I18nMessages.getMessage("sloth.error.sentinel_system"));
+            case AuthorityException e -> R.fail(403, I18nMessages.getMessage("sloth.error.sentinel_authority"));
+            default -> R.fail(429, I18nMessages.getMessage("sloth.error.sentinel_blocked"));
         };
     }
 }

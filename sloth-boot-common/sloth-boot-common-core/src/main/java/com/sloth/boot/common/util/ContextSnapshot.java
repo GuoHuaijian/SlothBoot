@@ -3,8 +3,6 @@ package com.sloth.boot.common.util;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.context.UserContext;
 import org.slf4j.MDC;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -13,7 +11,7 @@ import java.util.concurrent.Callable;
  * 上下文快照工具类。
  * <p>
  * 用于在线程切换（线程池、异步任务、消息消费等）时捕获和恢复上下文信息，
- * 包括 {@link TraceContext}、{@link UserContext}、SLF4J MDC 和 {@link RequestContextHolder}。
+ * 包括 {@link TraceContext}、{@link UserContext} 和 SLF4J MDC。
  * <p>
  * 使用示例：
  * <pre>
@@ -39,24 +37,20 @@ import java.util.concurrent.Callable;
 public final class ContextSnapshot {
 
     private static final boolean MDC_AVAILABLE;
-    private static final boolean REQUESTContextHolder_AVAILABLE;
 
     static {
         MDC_AVAILABLE = isClassPresent("org.slf4j.MDC");
-        REQUESTContextHolder_AVAILABLE = isClassPresent("org.springframework.web.context.request.RequestContextHolder");
     }
 
     private final TraceContext.TraceInfo traceInfo;
     private final UserContext.UserInfo userInfo;
     private final Map<String, String> mdcContext;
-    private final RequestAttributes requestAttributes;
 
     private ContextSnapshot(TraceContext.TraceInfo traceInfo, UserContext.UserInfo userInfo,
-                            Map<String, String> mdcContext, RequestAttributes requestAttributes) {
+                            Map<String, String> mdcContext) {
         this.traceInfo = traceInfo;
         this.userInfo = userInfo;
         this.mdcContext = mdcContext;
-        this.requestAttributes = requestAttributes;
     }
 
     /**
@@ -68,9 +62,7 @@ public final class ContextSnapshot {
         TraceContext.TraceInfo traceInfo = TraceContext.get();
         UserContext.UserInfo userInfo = UserContext.get();
         Map<String, String> mdcContext = MDC_AVAILABLE ? MDC.getCopyOfContextMap() : null;
-        RequestAttributes requestAttributes = REQUESTContextHolder_AVAILABLE
-            ? RequestContextHolder.getRequestAttributes() : null;
-        return new ContextSnapshot(traceInfo, userInfo, mdcContext, requestAttributes);
+        return new ContextSnapshot(traceInfo, userInfo, mdcContext);
     }
 
     /**
@@ -90,9 +82,6 @@ public final class ContextSnapshot {
                 MDC.clear();
             }
         }
-        if (REQUESTContextHolder_AVAILABLE && requestAttributes != null) {
-            RequestContextHolder.setRequestAttributes(requestAttributes);
-        }
     }
 
     /**
@@ -103,9 +92,6 @@ public final class ContextSnapshot {
         UserContext.clear();
         if (MDC_AVAILABLE) {
             MDC.clear();
-        }
-        if (REQUESTContextHolder_AVAILABLE) {
-            RequestContextHolder.resetRequestAttributes();
         }
     }
 

@@ -17,7 +17,7 @@ public class MessageFailureLogListener {
     @EventListener
     public void onMessageFailure(MessageFailureLogEvent event) {
         log.error("[MQ] 消息消费失败: topic={}, tag={}, msgId={}, group={}, retryTimes={}, error={}",
-            event.getTopic(), event.getTag(), event.getMsgId(),
-            event.getConsumerGroup(), event.getRetryTimes(), event.getErrorMessage());
+            event.topic(), event.tag(), event.msgId(),
+            event.consumerGroup(), event.retryTimes(), event.errorMessage());
     }
 }

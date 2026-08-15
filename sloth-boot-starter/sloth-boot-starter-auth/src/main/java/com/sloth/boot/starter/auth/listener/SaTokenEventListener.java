@@ -218,7 +218,7 @@ public class SaTokenEventListener implements SaTokenListener {
         } catch (Exception e) {
             log.debug("[Auth] 获取请求信息失败(非 Web 环境)", e);
         }
-        LoginEvent event = new LoginEvent(this, userId, loginType, loginIp, userAgent, device);
+        LoginEvent event = new LoginEvent(userId, loginType, loginIp, userAgent, device);
         eventPublisher.publishEvent(event);
     }
 }

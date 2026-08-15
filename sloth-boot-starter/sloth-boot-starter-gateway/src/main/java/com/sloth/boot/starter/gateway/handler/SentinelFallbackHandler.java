@@ -1,7 +1,7 @@
 package com.sloth.boot.starter.gateway.handler;
 
 import com.sloth.boot.common.result.R;
-import com.sloth.boot.common.util.I18nUtil;
+import com.sloth.boot.common.util.I18nMessages;
 import com.sloth.boot.common.util.JsonUtil;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -27,7 +27,7 @@ public class SentinelFallbackHandler {
     public Mono<Void> handle(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        byte[] body = JsonUtil.toJson(R.fail(429, I18nUtil.getMessage("sloth.error.gateway_fallback"))).getBytes(StandardCharsets.UTF_8);
+        byte[] body = JsonUtil.toJson(R.fail(429, I18nMessages.getMessage("sloth.error.gateway_fallback"))).getBytes(StandardCharsets.UTF_8);
         return response.writeWith(Mono.just(response.bufferFactory().wrap(body)));
     }
 }

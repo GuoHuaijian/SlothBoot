@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.symmetric.AES;
 import com.sloth.boot.common.exception.BizException;
 import com.sloth.boot.common.exception.GlobalErrorCode;
-import com.sloth.boot.common.util.SpringContextUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -16,13 +15,27 @@ import java.sql.SQLException;
 
 /**
  * 加密字段处理器。
+ * <p>
+ * MyBatis 直接实例化本类（非 Spring 托管），加密密钥由自动配置在启动时通过
+ * {@link #setEncryptKey(String)} 注入。
  *
  * @author sloth-boot
  * @since 1.0.0
  */
 public class EncryptTypeHandler extends BaseTypeHandler<String> {
 
+    private static volatile String encryptKey;
+
     private volatile AES aesInstance;
+
+    /**
+     * 注入加密密钥（由自动配置调用）。
+     *
+     * @param key 加密密钥
+     */
+    public static void setEncryptKey(String key) {
+        encryptKey = key;
+    }
 
     /**
      * 设置非空参数。
@@ -103,7 +116,7 @@ public class EncryptTypeHandler extends BaseTypeHandler<String> {
     }
 
     private byte[] resolveKey() {
-        String configuredKey = SpringContextUtil.getProperty("sloth.mybatis.encrypt-key");
+        String configuredKey = encryptKey;
         if (StrUtil.isBlank(configuredKey)) {
             throw BizException.of(GlobalErrorCode.BAD_REQUEST);
         }

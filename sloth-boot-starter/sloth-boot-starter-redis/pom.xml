@@ -35,6 +35,11 @@
 
         <dependency>
             <groupId>com.sloth.boot</groupId>
+            <artifactId>sloth-boot-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sloth.boot</groupId>
             <artifactId>sloth-boot-starter-web</artifactId>
         </dependency>
 

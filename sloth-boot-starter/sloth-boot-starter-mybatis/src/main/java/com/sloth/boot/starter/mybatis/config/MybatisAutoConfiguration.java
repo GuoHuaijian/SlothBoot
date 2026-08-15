@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.sloth.boot.common.context.UserContext;
 import com.sloth.boot.starter.mybatis.handler.AutoFillMetaObjectHandler;
+import com.sloth.boot.starter.mybatis.handler.EncryptTypeHandler;
 import com.sloth.boot.starter.mybatis.injector.InsertBatchSqlInjector;
 import com.sloth.boot.starter.mybatis.interceptor.DataScopeInterceptor;
 import com.sloth.boot.starter.mybatis.interceptor.SlowSqlInterceptor;
@@ -151,6 +152,21 @@ public class MybatisAutoConfiguration {
     @ConditionalOnMissingBean(ISqlInjector.class)
     public ISqlInjector sqlInjector() {
         return new InsertBatchSqlInjector();
+    }
+
+    /**
+     * 注入加密字段处理器的密钥。
+     * <p>
+     * MyBatis 直接实例化 {@link EncryptTypeHandler}，无法构造器注入，
+     * 故在启动阶段将密钥写入静态槽位。
+     *
+     * @param environment 环境信息
+     * @return 初始化器
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "encryptTypeHandlerKeyInitializer")
+    public org.springframework.beans.factory.InitializingBean encryptTypeHandlerKeyInitializer(Environment environment) {
+        return () -> EncryptTypeHandler.setEncryptKey(environment.getProperty("sloth.mybatis.encrypt-key"));
     }
 
     /**

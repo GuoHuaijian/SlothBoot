@@ -10,9 +10,20 @@ Main module roles:
 
 - `sloth-boot-dependencies`: dependency BOM and version alignment.
 - `sloth-boot-parent`: shared parent POM, compiler, plugin, and baseline dependencies.
-- `sloth-boot-common`: framework-neutral common capabilities.
+- `sloth-boot-common-core`: framework-neutral common capabilities. Must not depend on Spring.
+- `sloth-boot-common-log` / `sloth-boot-common-security` / `sloth-boot-common-doc` / `sloth-boot-common-test`: Spring-aware shared modules (auto-configurations, servlet filters, SpEL helpers).
 - `sloth-boot-starter`: optional Spring Boot starter capabilities.
 - `sloth-boot-example`: runnable examples only.
+
+## Framework Neutrality Rules
+
+- `sloth-boot-common-core` must compile and run without Spring on the classpath. No `org.springframework.*` imports, no auto-configuration classes, no `@Component`/`@ConfigurationProperties`.
+- Spring-related shared helpers (e.g. SpEL parsing) live in `sloth-boot-common-log`.
+- `sloth-boot-common-log` / `sloth-boot-common-security` are the sanctioned Spring-aware common modules; servlet filters and auto-configurations belong there or in a starter, never in `sloth-boot-common-core`.
+- Do not add static service locators that reach into the Spring container (`ApplicationContextAware`, `RequestContextHolder`, static `MessageSource` holders). Use constructor injection.
+- Spring events are plain POJO/record payloads published through `ApplicationEventPublisher`; never extend `ApplicationEvent`.
+- Internal i18n messages are read through the neutral `I18nMessages` helper (JDK `ResourceBundle`, `Locale.getDefault()`); do not reintroduce Spring `MessageSource` holders in common modules.
+- A type handler instantiated by a third-party framework (e.g. MyBatis) that needs configuration must expose a static setter invoked by auto-configuration instead of reaching into the container.
 
 ## Engineering Rules
 

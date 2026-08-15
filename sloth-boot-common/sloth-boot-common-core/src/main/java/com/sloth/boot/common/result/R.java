@@ -5,7 +5,7 @@ import com.sloth.boot.common.constant.CommonConstant;
 import com.sloth.boot.common.context.TraceContext;
 import com.sloth.boot.common.exception.ErrorCode;
 import com.sloth.boot.common.exception.GlobalErrorCode;
-import com.sloth.boot.common.util.I18nUtil;
+import com.sloth.boot.common.util.I18nMessages;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -64,7 +64,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> ok() {
         R<T> r = new R<>();
         r.setCode(CommonConstant.SUCCESS);
-        r.setMsg(I18nUtil.getMessage("sloth.success"));
+        r.setMsg(I18nMessages.getMessage("sloth.success"));
         return r;
     }
 
@@ -105,7 +105,7 @@ public class R<T> implements Serializable {
     public static <T> R<T> fail() {
         R<T> r = new R<>();
         r.setCode(CommonConstant.FAIL);
-        r.setMsg(I18nUtil.getMessage("sloth.fail"));
+        r.setMsg(I18nMessages.getMessage("sloth.fail"));
         return r;
     }
 
@@ -188,7 +188,7 @@ public class R<T> implements Serializable {
             r.setMsg(baseEx.getMessage());
         } else {
             r.setCode(GlobalErrorCode.INTERNAL_ERROR.getCode());
-            r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : I18nUtil.getMessage("sloth.error.internal"));
+            r.setMsg(throwable.getMessage() != null ? throwable.getMessage() : I18nMessages.getMessage("sloth.error.internal"));
         }
         return r;
     }
@@ -205,7 +205,7 @@ public class R<T> implements Serializable {
     private static String resolveMsg(ErrorCode errorCode) {
         String i18nKey = errorCode.getI18nKey();
         if (i18nKey != null) {
-            String resolved = I18nUtil.getMessage(i18nKey);
+            String resolved = I18nMessages.getMessage(i18nKey);
             if (!resolved.equals(i18nKey)) {
                 return resolved;
             }
