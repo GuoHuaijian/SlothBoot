@@ -63,7 +63,7 @@ public class PageResult<T> implements Serializable {
         result.setTotal(total);
         result.setPageNum(pageNum);
         result.setPageSize(pageSize);
-        result.setTotalPages((int) Math.ceil((double) total / pageSize));
+        result.setTotalPages(pageSize <= 0 ? 0 : (int) Math.ceil((double) total / pageSize));
         return result;
     }
 

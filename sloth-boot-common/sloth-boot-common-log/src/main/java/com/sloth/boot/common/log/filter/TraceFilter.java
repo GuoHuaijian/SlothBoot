@@ -27,6 +27,11 @@ public class TraceFilter extends OncePerRequestFilter {
 
     private static final String TRACE_GUARD = TraceFilter.class.getName() + ".GUARD";
 
+    private static final int MAX_TRACE_ID_LENGTH = 64;
+
+    private static final java.util.regex.Pattern TRACE_ID_PATTERN =
+            java.util.regex.Pattern.compile("[0-9a-zA-Z-]{1," + MAX_TRACE_ID_LENGTH + "}");
+
     private final LogProperties logProperties;
 
     /**
@@ -59,21 +64,22 @@ public class TraceFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         request.setAttribute(TRACE_GUARD, Boolean.TRUE);
 
-        // 错误派发：请求属性中已有 traceId，恢复到 MDC
+        // 错误派发：请求属性中已有 traceId，恢复到 MDC 与 TraceContext
         String existing = (String) request.getAttribute(HeaderConstant.TRACE_ID);
         if (existing != null) {
-            MDC.put(HeaderConstant.MDC_TRACE_ID, existing);
+            restoreContext(existing);
             try {
                 filterChain.doFilter(request, response);
             } finally {
                 MDC.remove(HeaderConstant.MDC_TRACE_ID);
+                TraceContext.clear();
             }
             return;
         }
 
-        // 正常请求：生成 traceId
+        // 正常请求：生成 traceId，非法入站值不信任，重新生成
         String traceId = request.getHeader(HeaderConstant.TRACE_ID);
-        if (StrUtil.isBlank(traceId)) {
+        if (!isValidTraceId(traceId)) {
             traceId = TraceContext.generateTraceId();
         }
 
@@ -91,5 +97,16 @@ public class TraceFilter extends OncePerRequestFilter {
             MDC.remove(HeaderConstant.MDC_TRACE_ID);
             TraceContext.clear();
         }
+    }
+
+    private void restoreContext(String traceId) {
+        MDC.put(HeaderConstant.MDC_TRACE_ID, traceId);
+        TraceContext.TraceInfo traceInfo = new TraceContext.TraceInfo();
+        traceInfo.setTraceId(traceId);
+        TraceContext.set(traceInfo);
+    }
+
+    private boolean isValidTraceId(String traceId) {
+        return !StrUtil.isBlank(traceId) && TRACE_ID_PATTERN.matcher(traceId).matches();
     }
 }

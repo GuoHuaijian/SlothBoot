@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,6 +77,22 @@ class ContextTest {
 
             assertThat(UserContext.getDataScope()).isEqualTo("dept");
             assertThat(UserContext.getExtra()).containsEntry("key", "value");
+        }
+
+        @Test
+        @DisplayName("getExtra 返回不可修改视图，源 Map 变更不影响")
+        void extraIsUnmodifiable() {
+            UserContext.UserInfo info = new UserContext.UserInfo();
+            Map<String, Object> extra = new HashMap<>();
+            extra.put("deptId", 100L);
+            info.setExtra(extra);
+            extra.put("evil", true);
+
+            UserContext.set(info);
+
+            assertThat(UserContext.getExtra()).containsEntry("deptId", 100L).doesNotContainKey("evil");
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> UserContext.getExtra().put("x", 1))
+                .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 

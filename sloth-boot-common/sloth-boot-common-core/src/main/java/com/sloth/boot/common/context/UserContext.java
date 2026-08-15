@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -82,8 +83,30 @@ public class UserContext implements Serializable {
          */
         private String dataScope;
 
-        /** 扩展信息 */
+        /**
+         * 扩展信息
+         */
+        @Getter(AccessLevel.NONE)
+        @Setter(AccessLevel.NONE)
         private Map<String, Object> extra;
+
+        /**
+         * 获取扩展信息（不可修改视图）。
+         *
+         * @return 扩展信息
+         */
+        public Map<String, Object> getExtra() {
+            return extra != null ? Collections.unmodifiableMap(extra) : null;
+        }
+
+        /**
+         * 设置扩展信息。
+         *
+         * @param extra 扩展信息
+         */
+        public void setExtra(Map<String, Object> extra) {
+            this.extra = extra != null ? new HashMap<>(extra) : null;
+        }
     }
 
     /**

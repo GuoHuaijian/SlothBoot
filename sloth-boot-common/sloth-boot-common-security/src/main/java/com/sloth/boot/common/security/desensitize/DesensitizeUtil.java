@@ -29,6 +29,8 @@ public final class DesensitizeUtil {
 
     /**
      * 身份证号脱敏（保留前4后4）
+     * <p>
+     * 使用字符级处理而非正则，避免末位为 {@code X} 的身份证号无法匹配而明文泄露。
      *
      * @param idCard 身份证号
      * @return 脱敏后的身份证号
@@ -38,7 +40,7 @@ public final class DesensitizeUtil {
             return idCard;
         }
         int length = idCard.length();
-        return idCard.replaceAll("(\\d{4})\\d{" + (length - 8) + "}(\\d{4})", "$1****$2");
+        return idCard.substring(0, 4) + "****" + idCard.substring(length - 4);
     }
 
     /**

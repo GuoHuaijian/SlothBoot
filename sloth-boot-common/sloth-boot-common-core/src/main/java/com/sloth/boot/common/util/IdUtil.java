@@ -1,7 +1,5 @@
 package com.sloth.boot.common.util;
 
-import cn.hutool.core.lang.Snowflake;
-
 /**
  * ID 工具类
  *
@@ -12,29 +10,6 @@ public final class IdUtil {
 
     private IdUtil() {
         throw new UnsupportedOperationException("Utility class");
-    }
-
-    /**
-     * 雪花算法实例
-     */
-    private static final Snowflake SNOWFLAKE = cn.hutool.core.util.IdUtil.getSnowflake(1, 1);
-
-    /**
-     * 生成雪花 ID
-     *
-     * @return 雪花 ID
-     */
-    public static long snowflakeId() {
-        return SNOWFLAKE.nextId();
-    }
-
-    /**
-     * 生成雪花 ID 字符串
-     *
-     * @return 雪花 ID 字符串
-     */
-    public static String snowflakeIdStr() {
-        return String.valueOf(snowflakeId());
     }
 
     /**

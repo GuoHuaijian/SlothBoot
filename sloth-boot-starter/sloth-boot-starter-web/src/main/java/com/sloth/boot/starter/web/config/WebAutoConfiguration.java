@@ -2,10 +2,12 @@ package com.sloth.boot.starter.web.config;
 
 import com.sloth.boot.common.event.EventPublisher;
 import com.sloth.boot.common.log.config.LogProperties;
+import com.sloth.boot.common.security.sign.SignProperties;
 import com.sloth.boot.common.security.xss.XssProperties;
 import com.sloth.boot.starter.web.filter.AccessLogEventFilter;
 import com.sloth.boot.starter.web.filter.BodyCacheFilter;
 import com.sloth.boot.starter.web.filter.CorsFilter;
+import com.sloth.boot.starter.web.filter.SignFilter;
 import com.sloth.boot.starter.web.filter.WebXssFilter;
 import com.sloth.boot.starter.web.handler.GlobalExceptionHandler;
 import com.sloth.boot.starter.web.handler.GlobalResponseAdvice;
@@ -35,7 +37,8 @@ import org.springframework.core.Ordered;
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = "sloth.web", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties({WebProperties.class, WebCorsProperties.class, GzipProperties.class, XssProperties.class})
+@EnableConfigurationProperties({WebProperties.class, WebCorsProperties.class, GzipProperties.class, XssProperties.class,
+    SignProperties.class})
 public class WebAutoConfiguration {
 
     /**
@@ -106,6 +109,24 @@ public class WebAutoConfiguration {
     @ConditionalOnMissingBean
     public OperateLogAspect operateLogAspect(EventPublisher eventPublisher) {
         return new OperateLogAspect(eventPublisher);
+    }
+
+    /**
+     * 注册请求签名验证过滤器。
+     *
+     * @param signProperties 签名配置
+     * @return 签名过滤器注册器
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "slothSignFilterRegistration")
+    @ConditionalOnProperty(prefix = "sloth.sign", name = "enabled", havingValue = "true")
+    public FilterRegistrationBean<SignFilter> slothSignFilterRegistration(SignProperties signProperties) {
+        FilterRegistrationBean<SignFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new SignFilter(signProperties));
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setName("slothSignFilter");
+        registrationBean.setOrder(Integer.MIN_VALUE + 60);
+        return registrationBean;
     }
 
     /**

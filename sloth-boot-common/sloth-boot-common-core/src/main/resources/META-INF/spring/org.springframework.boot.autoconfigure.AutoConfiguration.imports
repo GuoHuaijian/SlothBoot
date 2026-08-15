@@ -1,1 +1,2 @@
 com.sloth.boot.common.config.I18nAutoConfiguration
+com.sloth.boot.common.config.SpringContextUtilAutoConfiguration

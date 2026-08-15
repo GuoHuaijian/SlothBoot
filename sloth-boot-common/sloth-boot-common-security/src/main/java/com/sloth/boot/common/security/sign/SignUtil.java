@@ -3,6 +3,8 @@ package com.sloth.boot.common.security.sign;
 import com.sloth.boot.common.security.crypto.HashUtil;
 import com.sloth.boot.common.util.JsonUtil;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -85,7 +87,8 @@ public final class SignUtil {
             }
         }
         String generatedSign = generateSign(params, secretKey, timestamp, nonce);
-        return generatedSign.equals(sign);
+        return MessageDigest.isEqual(generatedSign.getBytes(StandardCharsets.UTF_8),
+            sign.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

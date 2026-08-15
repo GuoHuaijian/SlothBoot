@@ -35,4 +35,11 @@ class PageResultTest {
         PageResult<String> result = PageResult.of(List.of(), 0, 1, 10);
         assertThat(result.getTotalPages()).isZero();
     }
+
+    @Test
+    @DisplayName("pageSize 为 0 时 totalPages 为 0，不产生溢出")
+    void pageSizeZeroTotalPages() {
+        PageResult<String> result = PageResult.of(List.of(), 100, 1, 0);
+        assertThat(result.getTotalPages()).isZero();
+    }
 }

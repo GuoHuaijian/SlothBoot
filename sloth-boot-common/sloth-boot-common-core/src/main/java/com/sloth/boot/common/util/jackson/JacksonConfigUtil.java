@@ -67,8 +67,8 @@ public final class JacksonConfigUtil {
      */
     public static SimpleModule createCustomSerializersModule() {
         SimpleModule module = new SimpleModule("sloth-custom-serializers");
+        // 仅将包装类型 Long 序列化为字符串，避免前端 JS 精度丢失；基本类型 long 保持数字
         module.addSerializer(Long.class, new ToStringSerializer());
-        module.addSerializer(long.class, new ToStringSerializer());
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
@@ -79,6 +79,7 @@ public final class JacksonConfigUtil {
         module.addDeserializer(BigDecimal.class, new BigDecimalDeserializer());
         module.addSerializer(IBaseEnum.class, new IBaseEnumSerializer());
         module.addDeserializer(IBaseEnum.class, new IBaseEnumDeserializer());
+        module.setDeserializerModifier(new IBaseEnumDeserializerModifier());
         return module;
     }
 }
