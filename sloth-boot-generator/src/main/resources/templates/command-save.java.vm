@@ -1,0 +1,52 @@
+package $model.commandPackage;
+
+#foreach($imp in $model.importsFor("save_command"))##
+import $imp;
+#end##
+
+/**
+ * 新增$model.moduleDisplayName命令
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class $model.saveCommandClassName {
+
+    private final $model.mapperClassName $model.mapperVariableName;
+
+#if($model.usesForm)##
+    private final $model.convertClassName $model.convertVariableName;
+
+    /**
+     * 执行新增$model.moduleDisplayName。
+     *
+     * @param form 表单
+     * @return 主键 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public $model.pkType execute($model.formClassName form) {
+        $model.className $model.variableName = ${model.convertVariableName}.toEntity(form);
+        ${model.mapperVariableName}.insert($model.variableName);
+        log.info("新增$model.moduleDisplayName成功: id={}", ${model.variableName}.${model.pkGetterName}());
+        return ${model.variableName}.${model.pkGetterName}();
+    }
+
+#else##
+    /**
+     * 执行新增$model.moduleDisplayName。
+     *
+     * @param $model.variableName 实体
+     * @return 主键 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public $model.pkType execute($model.className $model.variableName) {
+        ${model.mapperVariableName}.insert($model.variableName);
+        log.info("新增$model.moduleDisplayName成功: id={}", ${model.variableName}.${model.pkGetterName}());
+        return ${model.variableName}.${model.pkGetterName}();
+    }
+
+#end##
+}

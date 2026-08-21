@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="$model.mapperPackage.$model.mapperClassName">
+
+    <!-- 通用结果映射 -->
+    <resultMap id="BaseResultMap" type="$model.poPackage.$model.className">
+#foreach($f in $model.allFields)##
+#if($f.primaryKey)##
+        <id column="$f.columnName" property="$f.fieldName"/>
+#else##
+        <result column="$f.columnName" property="$f.fieldName"/>
+#end##
+#end##
+    </resultMap>
+
+    <!-- 全部列 -->
+    <sql id="Base_Column_List">
+        $model.baseColumnList
+    </sql>
+
+</mapper>

@@ -1,0 +1,30 @@
+package $model.commandPackage;
+
+#foreach($imp in $model.importsFor("delete_command"))##
+import $imp;
+#end##
+
+/**
+ * 删除$model.moduleDisplayName命令
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class $model.deleteCommandClassName {
+
+    private final $model.mapperClassName $model.mapperVariableName;
+
+    /**
+     * 执行删除$model.moduleDisplayName（逻辑删除）。
+     *
+     * @param id 主键 ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void execute($model.pkType id) {
+        ${model.mapperVariableName}.deleteById(id);
+        log.info("删除$model.moduleDisplayName成功: id={}", id);
+    }
+}

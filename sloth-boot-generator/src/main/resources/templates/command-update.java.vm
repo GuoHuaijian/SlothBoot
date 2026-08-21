@@ -1,0 +1,55 @@
+package $model.commandPackage;
+
+#foreach($imp in $model.importsFor("update_command"))##
+import $imp;
+#end##
+
+/**
+ * 更新$model.moduleDisplayName命令
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class $model.updateCommandClassName {
+
+    private final $model.mapperClassName $model.mapperVariableName;
+
+#if($model.usesForm)##
+    private final $model.convertClassName $model.convertVariableName;
+
+    /**
+     * 执行更新$model.moduleDisplayName。
+     *
+     * @param id   主键 ID
+     * @param form 表单
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void execute($model.pkType id, $model.formClassName form) {
+        $model.className $model.variableName = ${model.mapperVariableName}.selectById(id);
+#if($model.generateErrorCode)##
+        if ($model.variableName == null) {
+            throw new BizException(${model.errorCodeClassName}.NOT_FOUND);
+        }
+#end##
+        ${model.convertVariableName}.updateEntity(form, $model.variableName);
+        ${model.mapperVariableName}.updateById($model.variableName);
+        log.info("更新$model.moduleDisplayName成功: id={}", id);
+    }
+
+#else##
+    /**
+     * 执行更新$model.moduleDisplayName。
+     *
+     * @param $model.variableName 实体（须含主键）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void execute($model.className $model.variableName) {
+        ${model.mapperVariableName}.updateById($model.variableName);
+        log.info("更新$model.moduleDisplayName成功: id={}", ${model.variableName}.${model.pkGetterName}());
+    }
+
+#end##
+}

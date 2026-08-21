@@ -1,0 +1,126 @@
+package $model.controllerPackage;
+
+#foreach($imp in $model.importsFor("controller"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}管理接口
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+#if($model.swaggerAnnotations)##
+@Tag(name = "$model.moduleDisplayName管理")
+#end##
+@RestController
+@RequestMapping("$model.apiPath")
+@RequiredArgsConstructor
+public class $model.controllerClassName {
+
+#if($model.generateCommand && $model.usesForm)##
+    private final $model.saveCommandClassName $model.saveCommandVariableName;
+
+    private final $model.updateCommandClassName $model.updateCommandVariableName;
+
+    private final $model.deleteCommandClassName $model.deleteCommandVariableName;
+
+#end##
+#if($model.generateQuery)##
+    private final $model.getQueryClassName $model.getQueryVariableName;
+
+#end##
+#if($model.generateQuery && $model.generateQry)##
+    private final $model.pageQueryClassName $model.pageQueryVariableName;
+
+#end##
+#if($model.generateCommand && $model.usesForm)##
+    /**
+     * 新增$model.moduleDisplayName
+     *
+     * @param form 新增表单
+     * @return 主键 ID
+     */
+#if($model.operateLogEnabled)##
+    #if($model.saveOperateLogAnnotation)$model.saveOperateLogAnnotation#end
+#end##
+#if($model.swaggerAnnotations)##
+    @Operation(summary = "新增$model.moduleDisplayName")
+#end##
+    @PostMapping
+    public $model.resultSimpleName<Long> save(#if($model.validationAnnotations)@Valid #end@RequestBody $model.formClassName form) {
+        return ${model.resultSimpleName}.ok(${model.saveCommandVariableName}.execute(form));
+    }
+
+    /**
+     * 更新$model.moduleDisplayName
+     *
+     * @param id   主键 ID
+     * @param form 更新表单
+     * @return 空
+     */
+#if($model.operateLogEnabled)##
+    #if($model.updateOperateLogAnnotation)$model.updateOperateLogAnnotation#end
+#end##
+#if($model.swaggerAnnotations)##
+    @Operation(summary = "更新$model.moduleDisplayName")
+#end##
+    @PutMapping("/{id}")
+    public $model.resultSimpleName<Void> update(@PathVariable("$model.pkFieldName") $model.pkType id,
+                                                #if($model.validationAnnotations)@Valid #end@RequestBody $model.formClassName form) {
+        ${model.updateCommandVariableName}.execute(id, form);
+        return ${model.resultSimpleName}.ok();
+    }
+
+    /**
+     * 删除$model.moduleDisplayName
+     *
+     * @param id 主键 ID
+     * @return 空
+     */
+#if($model.operateLogEnabled)##
+    #if($model.deleteOperateLogAnnotation)$model.deleteOperateLogAnnotation#end
+#end##
+#if($model.swaggerAnnotations)##
+    @Operation(summary = "删除$model.moduleDisplayName")
+#end##
+    @DeleteMapping("/{id}")
+    public $model.resultSimpleName<Void> delete(@PathVariable("$model.pkFieldName") $model.pkType id) {
+        ${model.deleteCommandVariableName}.execute(id);
+        return ${model.resultSimpleName}.ok();
+    }
+
+#end##
+#if($model.generateQuery)##
+    /**
+     * 查询$model.moduleDisplayName详情
+     *
+     * @param id 主键 ID
+     * @return 详情
+     */
+#if($model.swaggerAnnotations)##
+    @Operation(summary = "查询$model.moduleDisplayName详情")
+#end##
+    @GetMapping("/{id}")
+    public $model.resultSimpleName<#if($model.usesVo)$model.voClassName#else$model.className#end> get(@PathVariable("$model.pkFieldName") $model.pkType id) {
+        return ${model.resultSimpleName}.ok(${model.getQueryVariableName}.execute(id));
+    }
+
+#end##
+#if($model.generateQuery && $model.generateQry)##
+    /**
+     * 分页查询$model.moduleDisplayName
+     *
+     * @param qry 查询参数
+     * @return 分页结果
+     */
+#if($model.swaggerAnnotations)##
+    @Operation(summary = "分页查询$model.moduleDisplayName")
+#end##
+    @GetMapping("/page")
+    public $model.resultSimpleName<$model.pageResultSimpleName<#if($model.usesVo)$model.voClassName#else$model.className#end>> page($model.qryClassName qry) {
+        return ${model.resultSimpleName}.ok(${model.pageQueryVariableName}.execute(qry));
+    }
+
+#end##
+}

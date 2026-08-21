@@ -1,0 +1,37 @@
+package $model.errorCodePackage;
+
+#foreach($imp in $model.importsFor("error_code"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}业务错误码
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Getter
+@AllArgsConstructor
+public enum $model.errorCodeClassName implements ErrorCode {
+
+#if($model.duplicateErrorCode)##
+    /**
+     * $model.moduleDisplayName不存在
+     */
+    NOT_FOUND($model.notFoundErrorCode, "$model.moduleDisplayName不存在"),
+
+    /**
+     * $!{model.uniqueFieldName}已存在
+     */
+    ALREADY_EXISTS($model.duplicateErrorCode, "$model.moduleDisplayName已存在");
+#else##
+    /**
+     * $model.moduleDisplayName不存在
+     */
+    NOT_FOUND($model.notFoundErrorCode, "$model.moduleDisplayName不存在");
+#end##
+
+    private final int code;
+
+    private final String msg;
+}

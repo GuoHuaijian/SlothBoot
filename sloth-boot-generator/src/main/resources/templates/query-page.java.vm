@@ -1,0 +1,59 @@
+package $model.queryPackage;
+
+#foreach($imp in $model.importsFor("page_query"))##
+import $imp;
+#end##
+
+/**
+ * 分页查询$model.moduleDisplayName查询
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Component
+@RequiredArgsConstructor
+public class $model.pageQueryClassName {
+
+    private final $model.mapperClassName $model.mapperVariableName;
+
+#if($model.usesVo)##
+    private final $model.convertClassName $model.convertVariableName;
+
+    /**
+     * 执行分页查询$model.moduleDisplayName。
+     *
+     * @param query 查询参数
+     * @return 分页结果
+     */
+    public $model.pageResultSimpleName<$model.voClassName> execute(#if($model.generateQry)$model.qryClassName query#else$model.baseQuerySimpleName query#end) {
+        $model.pageResultSimpleName<$model.className> pageResult = ${model.mapperVariableName}.selectPage(query, buildWrapper(query));
+        List<$model.voClassName> voList = ${model.convertVariableName}.toVOList(pageResult.getList());
+        return ${model.pageResultSimpleName}.of(voList, pageResult.getTotal(), pageResult.getPageNum(), pageResult.getPageSize());
+    }
+
+    /**
+     * 构建查询条件（仅拼接非空参数）。
+     */
+    private $model.wrapperSimpleName<$model.className> buildWrapper($model.baseQuerySimpleName query) {
+        return new $model.wrapperSimpleName<$model.className>()
+#foreach($line in $model.wrapperConditionLines)##
+            $line
+#end##
+            .orderByDesc($model.className::$model.pkGetterName);
+    }
+
+#else##
+    /**
+     * 执行分页查询$model.moduleDisplayName。
+     *
+     * @param query 查询参数
+     * @return 分页结果
+     */
+    public $model.pageResultSimpleName<$model.className> execute(#if($model.generateQry)$model.qryClassName query#else$model.baseQuerySimpleName query#end) {
+        $model.wrapperSimpleName<$model.className> wrapper = new $model.wrapperSimpleName<>();
+        wrapper.orderByDesc($model.className::$model.pkGetterName);
+        return ${model.mapperVariableName}.selectPage(query, wrapper);
+    }
+
+#end##
+}

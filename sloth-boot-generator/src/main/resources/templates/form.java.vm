@@ -1,0 +1,39 @@
+package $model.formPackage;
+
+#foreach($imp in $model.importsFor("form"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}新增/更新表单
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Data
+#if($model.swaggerAnnotations)##
+@Schema(description = "$model.moduleDisplayName新增/更新表单")
+#end##
+public class $model.formClassName {
+
+#foreach($f in $model.formFields)##
+#if($f.comment)##
+    /** $f.comment */
+#end##
+#if($model.validationAnnotations && $f.required)##
+#if($f.stringType)##
+    @NotBlank(message = "$!{f.displayName}不能为空")
+#else##
+    @NotNull(message = "$!{f.displayName}不能为空")
+#end##
+#end##
+#if($model.validationAnnotations && $f.stringType && $f.length > 0)##
+    @Size(max = $f.length, message = "$!{f.displayName}长度不能超过$f.length")
+#end##
+#if($model.swaggerAnnotations && $f.comment)##
+    @Schema(description = "$f.comment")
+#end##
+    private $f.javaType $f.fieldName;
+
+#end##
+}

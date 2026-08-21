@@ -1,9 +1,15 @@
 package com.sloth.boot.generator.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Data;
 
 /**
  * 代码生成器配置。
+ * <p>
+ * 覆盖数据源连接、输出路径、包结构与分层开关；所有生成物均可通过
+ * {@code generateXxx} 开关独立启停，基础类引用可通过 FQCN 配置替换。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -11,15 +17,10 @@ import lombok.Data;
 @Data
 public class GeneratorConfig {
 
-    // ==================== 数据库配置 ====================
+    // ==================== 数据源配置 ====================
 
     /**
-     * 数据库驱动
-     */
-    private String driver = "com.mysql.cj.jdbc.Driver";
-
-    /**
-     * 数据库 URL
+     * JDBC URL（MySQL 建议追加 useInformationSchema=true 以读取列注释）
      */
     private String url = "";
 
@@ -33,111 +34,240 @@ public class GeneratorConfig {
      */
     private String password = "";
 
-    // ==================== 包配置 ====================
+    // ==================== 输出配置 ====================
 
     /**
-     * 父包名
+     * 输出根目录（默认当前工作目录）
      */
-    private String parentPackage = "com.sloth.boot";
+    private String outputDir = System.getProperty("user.dir");
 
     /**
-     * 模块名（生成在 parentPackage 下）
+     * Java 源码根路径（相对 outputDir）
+     */
+    private String javaSourcePath = "src/main/java";
+
+    /**
+     * Mapper XML 是否与接口同包输出（Sloth Boot 约定，需配合 resources 打包规则）
+     */
+    private boolean mapperXmlSamePackage = true;
+
+    /**
+     * Mapper XML 独立输出路径（mapperXmlSamePackage=false 时生效，相对 outputDir）
+     */
+    private String mapperXmlPath = "src/main/resources/mapper";
+
+    /**
+     * 已存在文件是否覆盖
+     */
+    private boolean fileOverride = false;
+
+    // ==================== 包结构配置 ====================
+
+    /**
+     * 业务模块根包
+     */
+    private String rootPackage = "com.example.app";
+
+    /**
+     * 模块名（作为各分层包的最后一级，如 user）
      */
     private String moduleName = "system";
 
     /**
-     * Entity 包名
+     * Controller 包（相对 rootPackage）
      */
-    private String entityPackage = "domain.entity";
+    private String controllerPackage = "adapter.controller";
 
     /**
-     * Mapper 包名
+     * Command 包（相对 rootPackage）
      */
-    private String mapperPackage = "mapper";
+    private String commandPackage = "application.command";
 
     /**
-     * Service 包名
+     * Query 包（相对 rootPackage）
      */
-    private String servicePackage = "service";
+    private String queryPackage = "application.query";
 
     /**
-     * Service 实现类包名
+     * 表单对象包（相对 rootPackage）
      */
-    private String serviceImplPackage = "service.impl";
+    private String formPackage = "application.model.form";
 
     /**
-     * Controller 包名
+     * 查询参数包（相对 rootPackage）
      */
-    private String controllerPackage = "controller";
-
-    // ==================== 路径配置 ====================
+    private String queryModelPackage = "application.model.query";
 
     /**
-     * Java 源码根路径
+     * VO 包（相对 rootPackage）
      */
-    private String javaPath = "src/main/java";
+    private String voPackage = "application.model.vo";
 
     /**
-     * 资源文件根路径
+     * MapStruct 转换器包（相对 rootPackage）
      */
-    private String resourcesPath = "src/main/resources";
+    private String convertPackage = "application.model.convert";
 
     /**
-     * Mapper XML 输出路径
+     * 错误码枚举包（相对 rootPackage）
      */
-    private String mapperXmlPath = "src/main/resources/mapper";
-
-    // ==================== 表配置 ====================
+    private String errorCodePackage = "application.model.enums";
 
     /**
-     * 需要生成的表名（为空则生成所有表）
+     * PO 包（相对 rootPackage）
      */
-    private String[] tableNames = {};
+    private String poPackage = "infrastructure.model.po";
 
     /**
-     * 表名前缀（生成时会移除）
+     * Mapper 包（相对 rootPackage）
      */
-    private String[] tablePrefixes = {"sys_", "biz_"};
+    private String mapperPackage = "infrastructure.repository.mapper";
+
+    // ==================== 表选择配置 ====================
 
     /**
-     * 逻辑删除字段名
+     * 需要生成的表名（为空则生成数据库全部表）
      */
-    private String logicDeleteColumnName = "deleted";
+    private List<String> tableNames = List.of();
 
     /**
-     * 乐观锁字段名
+     * 排除的表名
      */
-    private String versionColumnName = "version";
-
-    // ==================== 模板配置 ====================
+    private List<String> excludeTables = List.of();
 
     /**
-     * 是否覆盖已有文件
+     * 移除的表名前缀
      */
-    private boolean fileOverride = false;
+    private List<String> tablePrefixes = Arrays.asList("sys_", "biz_");
+
+    // ==================== 基础类引用 ====================
 
     /**
-     * 是否生成 Swagger 注解
+     * 实体基类 FQCN（空表示不继承）
      */
-    private boolean swagger = true;
+    private String baseEntityFqcn = "com.sloth.boot.starter.mybatis.core.BaseEntity";
 
     /**
-     * 是否使用 Lombok
+     * Mapper 基础接口 FQCN（空表示继承原生 BaseMapper）
      */
-    private boolean lombok = true;
+    private String baseMapperFqcn = "com.sloth.boot.starter.mybatis.core.BaseMapperX";
 
     /**
-     * Entity 是否继承 BaseEntity
+     * 条件构造器 FQCN
      */
-    private boolean baseEntity = true;
+    private String queryWrapperFqcn = "com.sloth.boot.starter.mybatis.core.LambdaQueryWrapperX";
 
     /**
-     * 作者名
+     * 统一返回体 FQCN
+     */
+    private String resultFqcn = "com.sloth.boot.common.result.R";
+
+    /**
+     * 分页返回体 FQCN
+     */
+    private String pageResultFqcn = "com.sloth.boot.common.result.PageResult";
+
+    /**
+     * 分页查询参数基类 FQCN
+     */
+    private String baseQueryFqcn = "com.sloth.boot.common.base.BaseQuery";
+
+    /**
+     * 操作日志注解 FQCN（空表示不生成 @OperateLog）
+     */
+    private String operateLogFqcn = "com.sloth.boot.common.log.annotation.OperateLog";
+
+    /**
+     * 操作日志类型枚举 FQCN
+     */
+    private String operateTypeFqcn = "com.sloth.boot.common.log.annotation.OperateTypeEnum";
+
+    // ==================== 功能开关 ====================
+
+    /**
+     * 是否生成 Controller
+     */
+    private boolean generateController = true;
+
+    /**
+     * 是否生成写操作 Command（Save/Update/Delete）
+     */
+    private boolean generateCommand = true;
+
+    /**
+     * 是否生成读操作 Query（Get/Page）
+     */
+    private boolean generateQuery = true;
+
+    /**
+     * 是否生成 Form 表单对象
+     */
+    private boolean generateForm = true;
+
+    /**
+     * 是否生成分页查询参数 Qry
+     */
+    private boolean generateQry = true;
+
+    /**
+     * 是否生成 VO 视图对象
+     */
+    private boolean generateVo = true;
+
+    /**
+     * 是否生成 MapStruct 转换器
+     */
+    private boolean generateConvert = true;
+
+    /**
+     * 是否生成错误码枚举
+     */
+    private boolean generateErrorCode = true;
+
+    /**
+     * 是否生成 Mapper XML
+     */
+    private boolean generateMapperXml = true;
+
+    /**
+     * 是否在 PO 上继承 baseEntityFqcn 指定的基类（同时排除基类已含字段）
+     */
+    private boolean extendsBaseEntity = true;
+
+    /**
+     * 是否生成 springdoc 注解（@Tag/@Operation/@Schema）
+     */
+    private boolean swaggerAnnotations = true;
+
+    /**
+     * 是否生成 jakarta 校验注解（@NotBlank/@NotNull/@Size）
+     */
+    private boolean validationAnnotations = true;
+
+    // ==================== 文档与错误码 ====================
+
+    /**
+     * 作者名（写入 Javadoc）
      */
     private String author = "sloth-boot";
 
     /**
-     * 输出目录（默认当前项目）
+     * 版本号（写入 Javadoc @since）
      */
-    private String outputDir = System.getProperty("user.dir");
+    private String sinceVersion = "1.0.0";
+
+    /**
+     * REST 接口前缀
+     */
+    private String apiPrefix = "/api";
+
+    /**
+     * 业务错误码前缀（如 1001 → 生成 100101、100102…）
+     */
+    private String errorCodePrefix = "1001";
+
+    /**
+     * 业务错误码起始序号
+     */
+    private int errorCodeStart = 1;
 }

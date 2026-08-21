@@ -1,0 +1,52 @@
+package $model.convertPackage;
+
+#foreach($imp in $model.importsFor("convert"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}对象转换器
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface $model.convertClassName {
+
+#if($model.generateForm)##
+    /**
+     * 表单转实体。
+     *
+     * @param form 表单
+     * @return 实体
+     */
+    $model.className toEntity($model.formClassName form);
+
+    /**
+     * 表单更新到已有实体（配合乐观锁更新）。
+     *
+     * @param form   表单
+     * @param entity 待更新实体
+     */
+    void updateEntity($model.formClassName form, @MappingTarget $model.className entity);
+
+#end##
+#if($model.generateVo)##
+    /**
+     * 实体转视图对象。
+     *
+     * @param entity 实体
+     * @return 视图对象
+     */
+    $model.voClassName toVO($model.className entity);
+
+    /**
+     * 实体列表转视图对象列表。
+     *
+     * @param entityList 实体列表
+     * @return 视图对象列表
+     */
+    List<$model.voClassName> toVOList(List<$model.className> entityList);
+
+#end##
+}

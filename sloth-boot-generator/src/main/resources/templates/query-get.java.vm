@@ -1,0 +1,50 @@
+package $model.queryPackage;
+
+#foreach($imp in $model.importsFor("get_query"))##
+import $imp;
+#end##
+
+/**
+ * 查询$model.moduleDisplayName详情查询
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Component
+@RequiredArgsConstructor
+public class $model.getQueryClassName {
+
+    private final $model.mapperClassName $model.mapperVariableName;
+
+#if($model.usesVo)##
+    private final $model.convertClassName $model.convertVariableName;
+
+    /**
+     * 执行$model.moduleDisplayName详情查询。
+     *
+     * @param id 主键 ID
+     * @return 详情视图对象
+     */
+    public $model.voClassName execute($model.pkType id) {
+        $model.className $model.variableName = ${model.mapperVariableName}.selectById(id);
+#if($model.generateErrorCode)##
+        if ($model.variableName == null) {
+            throw new BizException(${model.errorCodeClassName}.NOT_FOUND);
+        }
+#end##
+        return ${model.convertVariableName}.toVO($model.variableName);
+    }
+
+#else##
+    /**
+     * 执行$model.moduleDisplayName详情查询。
+     *
+     * @param id 主键 ID
+     * @return 实体
+     */
+    public $model.className execute($model.pkType id) {
+        return ${model.mapperVariableName}.selectById(id);
+    }
+
+#end##
+}

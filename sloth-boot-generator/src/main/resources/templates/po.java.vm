@@ -1,0 +1,48 @@
+package $model.poPackage;
+
+#foreach($imp in $model.importsFor("po"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.tableComment}实体类
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Data
+#if($model.extendsBaseEntity)##
+@EqualsAndHashCode(callSuper = true)
+@TableName("$model.tableName")
+public class $model.className extends $model.baseEntitySimpleName {
+
+#else##
+@EqualsAndHashCode(callSuper = false)
+@TableName("$model.tableName")
+public class $model.className implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#end##
+#foreach($f in $model.poFields)##
+#if($f.comment)##
+    /**
+     * $f.comment
+     */
+#end##
+#if(!$model.extendsBaseEntity && $f.auditRole == "id")##
+    @TableId(type = IdType.ASSIGN_ID)
+#elseif(!$model.extendsBaseEntity && $f.auditRole == "insert_fill")##
+    @TableField(fill = FieldFill.INSERT)
+#elseif(!$model.extendsBaseEntity && $f.auditRole == "insert_update_fill")##
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+#elseif(!$model.extendsBaseEntity && $f.auditRole == "logic_delete")##
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+#elseif(!$model.extendsBaseEntity && $f.auditRole == "version")##
+    @Version
+#end##
+    private $f.javaType $f.fieldName;
+
+#end##
+}

@@ -1,0 +1,16 @@
+package $model.mapperPackage;
+
+#foreach($imp in $model.importsFor("mapper"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.tableComment}Mapper 接口
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Mapper
+public interface $model.mapperClassName extends $model.baseMapperSimpleName<$model.className> {
+
+}

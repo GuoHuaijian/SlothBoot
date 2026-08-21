@@ -1,0 +1,32 @@
+package $model.voPackage;
+
+#foreach($imp in $model.importsFor("vo"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}视图对象
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Data
+#if($model.swaggerAnnotations)##
+@Schema(description = "$model.moduleDisplayName视图对象")
+#end##
+public class $model.voClassName {
+
+#foreach($f in $model.voFields)##
+#if($f.comment)##
+    /** $f.comment */
+#end##
+#if($f.javaType == "Long")##
+    @JsonSerialize(using = ToStringSerializer.class)
+#end##
+#if($model.swaggerAnnotations && $f.comment)##
+    @Schema(description = "$f.comment")
+#end##
+    private $f.javaType $f.fieldName;
+
+#end##
+}

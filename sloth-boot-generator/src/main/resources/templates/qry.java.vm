@@ -1,0 +1,30 @@
+package $model.qryPackage;
+
+#foreach($imp in $model.importsFor("qry"))##
+import $imp;
+#end##
+
+/**
+ * $!{model.moduleDisplayName}分页查询参数
+ *
+ * @author $model.author
+ * @since $model.sinceVersion
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+#if($model.swaggerAnnotations)##
+@Schema(description = "$model.moduleDisplayName分页查询参数")
+#end##
+public class $model.qryClassName extends $model.baseQuerySimpleName {
+
+#foreach($f in $model.qryFields)##
+#if($f.comment)##
+    /** $f.comment */
+#end##
+#if($model.swaggerAnnotations && $f.comment)##
+    @Schema(description = "$f.comment#if($f.stringType)（模糊匹配）#end")
+#end##
+    private $f.javaType $f.fieldName;
+
+#end##
+}
