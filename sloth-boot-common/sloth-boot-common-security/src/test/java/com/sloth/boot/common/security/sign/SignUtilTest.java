@@ -75,4 +75,34 @@ class SignUtilTest {
 
         assertThat(SignUtil.verifySignFromJson(json, sign, secretKey, timestamp, nonce)).isTrue();
     }
+
+    @Test
+    void should_reject_parameter_smuggling_with_same_canonical_form() {
+        long timestamp = System.currentTimeMillis();
+        Map<String, Object> signed = Map.of("x", "1", "y", "2");
+        String sign = SignUtil.generateSign(signed, secretKey, timestamp, nonce);
+
+        // 重组参数结构后待签串不同，旧签名必须失效
+        Map<String, Object> smuggled = Map.of("x", "1&y=2");
+        assertThat(SignUtil.verifySign(smuggled, sign, secretKey, timestamp, nonce)).isFalse();
+    }
+
+    @Test
+    void should_roundtrip_values_containing_special_chars() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("redirect", "https://a.com/?x=1&y=2");
+        params.put("note", "a=b c&中文%100");
+
+        long timestamp = System.currentTimeMillis();
+        String sign = SignUtil.generateSign(params, secretKey, timestamp, nonce);
+
+        assertThat(SignUtil.verifySign(params, sign, secretKey, timestamp, nonce)).isTrue();
+    }
+
+    @Test
+    void should_reject_null_sign() {
+        Map<String, Object> params = Map.of("key", "value");
+
+        assertThat(SignUtil.verifySign(params, null, secretKey, System.currentTimeMillis(), nonce)).isFalse();
+    }
 }

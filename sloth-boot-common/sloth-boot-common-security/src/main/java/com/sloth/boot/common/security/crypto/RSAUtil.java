@@ -35,6 +35,16 @@ public final class RSAUtil {
     private static final String ALGORITHM = "RSA";
 
     /**
+     * 加密变换：PKCS#1 v1.5 填充（旧版兼容，显式声明避免 Provider 默认值差异）
+     */
+    private static final String CIPHER_PKCS1 = "RSA/ECB/PKCS1Padding";
+
+    /**
+     * 加密变换：OAEPWithSHA-256（推荐，抗 Bleichenbacher 填充预言攻击）
+     */
+    private static final String CIPHER_OAEP = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
+
+    /**
      * 签名算法
      */
     private static final String SIGN_ALGORITHM = "SHA256withRSA";
@@ -76,17 +86,63 @@ public final class RSAUtil {
     }
 
     /**
-     * 使用公钥进行 RSA 加密。
+     * 使用公钥进行 RSA-OAEP 加密（推荐）。
+     * <p>
+     * 使用 OAEPWithSHA-256 填充，与 {@link #decryptOaep(String, String)} 配对使用。
      *
      * @param data      待加密数据
      * @param publicKey Base64 编码的公钥
      * @return Base64 编码的加密数据
      * @throws RuntimeException 加密失败时抛出
      */
+    public static String encryptOaep(String data, String publicKey) {
+        return doEncrypt(data, publicKey, CIPHER_OAEP);
+    }
+
+    /**
+     * 使用私钥进行 RSA-OAEP 解密（推荐）。
+     *
+     * @param data       Base64 编码的加密数据
+     * @param privateKey Base64 编码的私钥
+     * @return 解密后的原始数据
+     * @throws RuntimeException 解密失败时抛出
+     */
+    public static String decryptOaep(String data, String privateKey) {
+        return doDecrypt(data, privateKey, CIPHER_OAEP);
+    }
+
+    /**
+     * 使用公钥进行 RSA 加密（PKCS#1 v1.5 填充，显式声明）。
+     *
+     * @param data      待加密数据
+     * @param publicKey Base64 编码的公钥
+     * @return Base64 编码的加密数据
+     * @throws RuntimeException 加密失败时抛出
+     * @deprecated PKCS#1 v1.5 填充存在 Bleichenbacher 填充预言风险；请改用 {@link #encryptOaep(String, String)}
+     */
+    @Deprecated(since = "1.0.0")
     public static String encrypt(String data, String publicKey) {
+        return doEncrypt(data, publicKey, CIPHER_PKCS1);
+    }
+
+    /**
+     * 使用私钥进行 RSA 解密（PKCS#1 v1.5 填充，显式声明）。
+     *
+     * @param data       Base64 编码的加密数据
+     * @param privateKey Base64 编码的私钥
+     * @return 解密后的原始数据
+     * @throws RuntimeException 解密失败时抛出
+     * @deprecated PKCS#1 v1.5 填充存在填充预言风险；请改用 {@link #decryptOaep(String, String)}
+     */
+    @Deprecated(since = "1.0.0")
+    public static String decrypt(String data, String privateKey) {
+        return doDecrypt(data, privateKey, CIPHER_PKCS1);
+    }
+
+    private static String doEncrypt(String data, String publicKey, String transformation) {
         try {
             PublicKey key = getPublicKeyFromString(publicKey);
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(encrypted);
@@ -95,18 +151,10 @@ public final class RSAUtil {
         }
     }
 
-    /**
-     * 使用私钥进行 RSA 解密。
-     *
-     * @param data       Base64 编码的加密数据
-     * @param privateKey Base64 编码的私钥
-     * @return 解密后的原始数据
-     * @throws RuntimeException 解密失败时抛出
-     */
-    public static String decrypt(String data, String privateKey) {
+    private static String doDecrypt(String data, String privateKey, String transformation) {
         try {
             PrivateKey key = getPrivateKeyFromString(privateKey);
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(data));
             return new String(decrypted, StandardCharsets.UTF_8);
@@ -138,22 +186,44 @@ public final class RSAUtil {
 
     /**
      * 使用公钥验证签名（SHA256withRSA）。
+     * <p>
+     * 签名值来自外部输入：非法 Base64 或格式错误的签名返回 {@code false} 而非抛出异常，
+     * 密钥配置错误仍会快速失败。
      *
      * @param data      原始数据
      * @param sign      Base64 编码的签名
      * @param publicKey Base64 编码的公钥
      * @return {@code true} 验证成功，{@code false} 验证失败
-     * @throws RuntimeException 验签失败时抛出
+     * @throws RuntimeException 公钥解析失败时抛出
      */
     public static boolean verify(String data, String sign, String publicKey) {
+        PublicKey key = getPublicKey(publicKey);
+        Signature signature = getSignature(SIGN_ALGORITHM);
         try {
-            PublicKey key = getPublicKeyFromString(publicKey);
-            Signature signature = Signature.getInstance(SIGN_ALGORITHM);
             signature.initVerify(key);
             signature.update(data.getBytes(StandardCharsets.UTF_8));
             return signature.verify(Base64.getDecoder().decode(sign));
+        } catch (IllegalArgumentException | java.security.SignatureException e) {
+            // 外部签名数据不合法，视为验签失败而非系统错误
+            return false;
         } catch (Exception e) {
             throw SystemException.of("RSA verification failed", e);
+        }
+    }
+
+    private static PublicKey getPublicKey(String publicKey) {
+        try {
+            return getPublicKeyFromString(publicKey);
+        } catch (Exception e) {
+            throw SystemException.of("RSA verification failed: invalid public key", e);
+        }
+    }
+
+    private static Signature getSignature(String algorithm) {
+        try {
+            return Signature.getInstance(algorithm);
+        } catch (Exception e) {
+            throw SystemException.of("RSA signature algorithm unavailable: " + algorithm, e);
         }
     }
 

@@ -86,6 +86,9 @@ public class DocAutoConfiguration {
 
     /**
      * 注册默认接口分组。
+     * <p>
+     * 未配置 {@code base-packages} 时不限制扫描包，匹配全部路径，
+     * 避免业务代码不在默认包名下时文档为空。
      *
      * @param docProperties 文档配置
      * @return 分组文档对象
@@ -94,14 +97,13 @@ public class DocAutoConfiguration {
     @ConditionalOnMissingBean
     public GroupedOpenApi groupedOpenApi(DocProperties docProperties) {
         List<String> basePackages = docProperties.getBasePackages();
-        String[] packagesToScan = basePackages == null || basePackages.isEmpty()
-            ? new String[]{"com.sloth.boot"}
-            : basePackages.toArray(String[]::new);
-        return GroupedOpenApi.builder()
+        GroupedOpenApi.Builder builder = GroupedOpenApi.builder()
             .group("default")
-            .packagesToScan(packagesToScan)
-            .pathsToMatch("/**")
-            .build();
+            .pathsToMatch("/**");
+        if (basePackages != null && !basePackages.isEmpty()) {
+            builder.packagesToScan(basePackages.toArray(String[]::new));
+        }
+        return builder.build();
     }
 
     /**

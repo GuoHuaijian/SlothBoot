@@ -98,6 +98,24 @@ class ContextSnapshotTest {
         assertThat(UserContext.get()).isNull();
     }
 
+    @Test
+    @DisplayName("apply 先清空已有上下文，快照中不存在的项不残留")
+    void apply_clearsStaleContextFirst() {
+        // 无任何上下文的线程先捕获快照
+        ContextSnapshot snapshot = ContextSnapshot.capture();
+
+        // 目标线程携带陈旧上下文
+        UserContext.set(buildUserInfo());
+        TraceContext.set(buildTraceInfo());
+        MDC.put("staleKey", "staleValue");
+
+        snapshot.apply();
+
+        assertThat(UserContext.get()).isNull();
+        assertThat(TraceContext.get()).isNull();
+        assertThat(MDC.get("staleKey")).isNull();
+    }
+
     private static UserContext.UserInfo buildUserInfo() {
         UserContext.UserInfo info = new UserContext.UserInfo();
         info.setUserId(100L);

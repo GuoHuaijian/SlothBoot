@@ -1,7 +1,5 @@
 package com.sloth.boot.common.util;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.regex.Pattern;
 
 /**
@@ -53,50 +51,6 @@ public final class IpUtil {
     private static final String IP_PREFIX_192 = "192.168.";
     /** 127.0.0.0 ~ 127.255.255.255（本地回环地址） */
     private static final String IP_PREFIX_127 = "127.";
-
-    /**
-     * 未知 IP
-     */
-    private static final String UNKNOWN_IP = "unknown";
-
-    /**
-     * 从 HttpServletRequest 中获取客户端真实 IP
-     * <p>
-     * 依次检查以下请求头：
-     * <ol>
-     *   <li>{@code X-Real-IP}（Nginx 代理）</li>
-     *   <li>{@code X-Forwarded-For}（多级代理，取第一个）</li>
-     *   <li>{@code Proxy-Client-IP}（Apache 代理）</li>
-     *   <li>{@code WL-Proxy-Client-IP}（WebLogic 代理）</li>
-     *   <li>{@code request.getRemoteAddr()}（直接连接）</li>
-     * </ol>
-     *
-     * @param request HttpServletRequest
-     * @return 客户端 IP 地址
-     */
-    public static String getClientIp(HttpServletRequest request) {
-        if (request == null) {
-            return null;
-        }
-        String ip = request.getHeader("X-Real-IP");
-        if (isBlankOrUnknown(ip)) {
-            ip = request.getHeader("X-Forwarded-For");
-        }
-        if (isBlankOrUnknown(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (isBlankOrUnknown(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (isBlankOrUnknown(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        // 处理多级代理的情况（X-Forwarded-For 可能包含多个 IP）
-        if (ip != null && ip.contains(",")) {
-            ip = ip.split(",")[0].trim();
-        }
-        return ip;
-    }
 
     /**
      * 判断是否为内网 IP
@@ -218,9 +172,5 @@ public final class IpUtil {
             }
         }
         return ip;
-    }
-
-    private static boolean isBlankOrUnknown(String value) {
-        return value == null || value.isEmpty() || UNKNOWN_IP.equalsIgnoreCase(value);
     }
 }

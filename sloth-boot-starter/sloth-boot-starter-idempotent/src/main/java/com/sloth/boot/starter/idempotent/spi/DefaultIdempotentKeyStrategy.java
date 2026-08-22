@@ -2,7 +2,6 @@ package com.sloth.boot.starter.idempotent.spi;
 
 import cn.hutool.core.util.StrUtil;
 import com.sloth.boot.common.context.UserContext;
-import com.sloth.boot.common.util.IpUtil;
 import com.sloth.boot.starter.web.util.ServletUtil;
 import com.sloth.boot.common.util.SpelUtil;
 import com.sloth.boot.starter.idempotent.annotation.Idempotent;
@@ -47,7 +46,7 @@ public class DefaultIdempotentKeyStrategy implements IdempotentKeyStrategy {
                 joinPoint.getArgs(), idempotent.key(), idempotent.key());
         }
         Long userId = UserContext.getUserId();
-        String userPart = userId != null ? String.valueOf(userId) : IpUtil.getClientIp(ServletUtil.getRequest());
+        String userPart = userId != null ? String.valueOf(userId) : ServletUtil.getClientIp(ServletUtil.getRequest());
         return prefix + joinPoint.getSignature().toShortString() + ":" + userPart;
     }
 }

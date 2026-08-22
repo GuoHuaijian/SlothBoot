@@ -5,8 +5,6 @@ import com.sloth.boot.common.exception.SystemException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 /**
  * 反射工具类
@@ -119,34 +117,17 @@ public final class ReflectionUtil {
     }
 
     /**
-     * 获取父类泛型参数的实际类型
+     * 获取父类泛型参数的实际类型。
+     * <p>
+     * 实现委托给 {@link GenericTypeUtil#resolveTypeArgument(Class, int)}，避免重复维护
+     * 泛型解析逻辑。
      *
      * @param clazz 子类
      * @param index 泛型参数索引（从 0 开始）
      * @return 泛型参数的实际类型，无法解析返回 null
      */
     public static Class<?> getSuperClassGenericType(Class<?> clazz, int index) {
-        if (clazz == null) {
-            return null;
-        }
-        Type genericSuperclass = clazz.getGenericSuperclass();
-        while (!(genericSuperclass instanceof ParameterizedType)) {
-            if (clazz.getSuperclass() == null || clazz.getSuperclass() == Object.class) {
-                return null;
-            }
-            clazz = clazz.getSuperclass();
-            genericSuperclass = clazz.getGenericSuperclass();
-        }
-        ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-        Type[] typeArguments = parameterizedType.getActualTypeArguments();
-        if (index < 0 || index >= typeArguments.length) {
-            return null;
-        }
-        Type typeArgument = typeArguments[index];
-        if (typeArgument instanceof Class) {
-            return (Class<?>) typeArgument;
-        }
-        return null;
+        return GenericTypeUtil.resolveTypeArgument(clazz, index);
     }
 
     private static Field findField(Class<?> clazz, String fieldName) {

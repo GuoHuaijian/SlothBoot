@@ -1,8 +1,9 @@
 package com.sloth.boot.common.security.sign;
 
-import com.sloth.boot.common.security.crypto.HashUtil;
 import com.sloth.boot.common.util.JsonUtil;
+import com.sloth.boot.common.util.SecurityUtil;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Map;
@@ -11,8 +12,15 @@ import java.util.TreeMap;
 /**
  * 请求签名工具类。
  * <p>
- * 提供基于 SHA-256 的请求签名校验机制。将所有请求参数按字典序排列后拼接时间戳、随机数和密钥， 再进行 SHA-256
- * 哈希生成签名，用于防止请求篡改和重放攻击。
+ * 提供基于 HMAC-SHA256 的请求签名机制。所有请求参数按字典序排列，key 与 value
+ * 均做 URL 编码后拼接时间戳与随机数，再使用密钥进行 HMAC-SHA256 运算生成签名，
+ * 用于防止请求篡改。
+ * <p>
+ * 编码保证待签串与参数一一对应：value 中的 {@code &}、{@code =} 等字符会被转义，
+ * 无法通过重组参数结构伪造既有签名。
+ * <p>
+ * 防重放说明：时间戳窗口校验只能拒绝超出窗口的过期请求；nonce 的唯一性校验需要
+ * 由调用方结合存储（如 Redis SETNX）实现，本类不负责 nonce 的持久化与查重。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -24,6 +32,26 @@ public final class SignUtil {
     }
 
     /**
+     * 参数分隔符
+     */
+    private static final String PARAM_SEPARATOR = "&";
+
+    /**
+     * 键值分隔符
+     */
+    private static final String KEY_VALUE_SEPARATOR = "=";
+
+    /**
+     * 时间戳签名字段名
+     */
+    private static final String TIMESTAMP_FIELD = "timestamp";
+
+    /**
+     * 随机数签名字段名
+     */
+    private static final String NONCE_FIELD = "nonce";
+
+    /**
      * 生成签名
      *
      * @param params    参数Map
@@ -33,23 +61,7 @@ public final class SignUtil {
      * @return 签名
      */
     public static String generateSign(Map<String, Object> params, String secretKey, long timestamp, String nonce) {
-        // 将参数按字典序排序
-        TreeMap<String, Object> sortedParams = new TreeMap<>(params);
-
-        // 构建待签名字符串
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
-            if (!sb.isEmpty()) {
-                sb.append("&");
-            }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
-        }
-
-        // 添加时间戳、随机数和密钥
-        sb.append("&timestamp=").append(timestamp).append("&nonce=").append(nonce).append("&secret=").append(secretKey);
-
-        // SHA256 哈希
-        return HashUtil.sha256(sb.toString());
+        return SecurityUtil.hmacSha256(buildSignContent(params, timestamp, nonce), secretKey);
     }
 
     /**
@@ -87,6 +99,9 @@ public final class SignUtil {
             }
         }
         String generatedSign = generateSign(params, secretKey, timestamp, nonce);
+        if (sign == null) {
+            return false;
+        }
         return MessageDigest.isEqual(generatedSign.getBytes(StandardCharsets.UTF_8),
             sign.getBytes(StandardCharsets.UTF_8));
     }
@@ -134,5 +149,55 @@ public final class SignUtil {
                                              String nonce, int validTimeSeconds) {
         Map<String, Object> params = JsonUtil.parseObject(json, Map.class);
         return verifySign(params, sign, secretKey, timestamp, nonce, validTimeSeconds);
+    }
+
+    /**
+     * 构建待签名字符串。
+     * <p>
+     * 参数按 key 字典序排列，key 与 value 均经 URL 编码后以 {@code k=v} 形式拼接，
+     * 最后追加时间戳与随机数字段。
+     *
+     * @param params    参数Map
+     * @param timestamp 时间戳
+     * @param nonce     随机数
+     * @return 待签名字符串
+     */
+    private static String buildSignContent(Map<String, Object> params, long timestamp, String nonce) {
+        TreeMap<String, Object> sortedParams = new TreeMap<>(params == null ? Map.of() : params);
+        StringBuilder sb = new StringBuilder(64);
+        for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
+            if (!sb.isEmpty()) {
+                sb.append(PARAM_SEPARATOR);
+            }
+            sb.append(percentEncode(entry.getKey()))
+                .append(KEY_VALUE_SEPARATOR)
+                .append(percentEncode(asString(entry.getValue())));
+        }
+        sb.append(PARAM_SEPARATOR).append(TIMESTAMP_FIELD).append(KEY_VALUE_SEPARATOR).append(timestamp)
+            .append(PARAM_SEPARATOR).append(NONCE_FIELD).append(KEY_VALUE_SEPARATOR).append(percentEncode(nonce));
+        return sb.toString();
+    }
+
+    /**
+     * URL 编码（空格编码为 %20，符合 RFC 3986）。
+     *
+     * @param value 原始字符串
+     * @return 编码后的字符串
+     */
+    private static String percentEncode(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
+    }
+
+    /**
+     * 参数值转字符串，null 视为空串。
+     *
+     * @param value 参数值
+     * @return 字符串形式
+     */
+    private static String asString(Object value) {
+        return value == null ? "" : String.valueOf(value);
     }
 }

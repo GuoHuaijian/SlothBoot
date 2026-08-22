@@ -60,9 +60,15 @@ public final class ContextSnapshot {
     }
 
     /**
-     * 在当前线程应用快照中的上下文
+     * 在当前线程应用快照中的上下文。
+     * <p>
+     * 先清空目标线程已有上下文再写入快照内容，避免线程池复用时
+     * 快照中不存在的上下文项残留为陈旧值。
      */
     public void apply() {
+        TraceContext.clear();
+        UserContext.clear();
+        MDC.clear();
         if (traceInfo != null) {
             TraceContext.set(traceInfo);
         }
@@ -71,8 +77,6 @@ public final class ContextSnapshot {
         }
         if (mdcContext != null) {
             MDC.setContextMap(mdcContext);
-        } else {
-            MDC.clear();
         }
     }
 

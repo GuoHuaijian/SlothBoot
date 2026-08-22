@@ -24,7 +24,9 @@ import java.util.Map;
  * <p>
  * 对 {@link HttpServletRequest} 进行包装，自动对请求参数（query parameter）、
  * {@code getParameterMap}、{@code getQueryString} 进行 XSS 清洗。
- * 同时缓存请求体的字节数组，支持对 body 内容的二次读取。
+ * <p>
+ * 请求体缓存策略：仅对文本类内容（JSON/XML 等）缓存请求体以支持二次读取；
+ * multipart 上传、二进制流等大体积内容直接透传原始流，避免整包读入内存。
  *
  * @author sloth-boot
  * @since 1.0.0
@@ -33,11 +35,28 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     private static final Logger log = LoggerFactory.getLogger(XssHttpServletRequestWrapper.class);
 
+    /**
+     * 二进制流内容类型前缀
+     */
+    private static final String MULTIPART_PREFIX = "multipart/";
+
+    /**
+     * 二进制流内容类型
+     */
+    private static final String OCTET_STREAM = "application/octet-stream";
+
     private final XssProperties xssProperties;
+
+    /**
+     * 缓存的请求体字节数组；不缓存时为 {@code null}
+     */
     private final byte[] body;
 
     /**
      * 构造 XSS 请求包装器。
+     * <p>
+     * 文本类请求体（无 Content-Type、JSON、XML、表单等）会被缓存以支持二次读取；
+     * multipart 与二进制流不缓存，保持单次读取语义。
      *
      * @param request       原始 HTTP 请求
      * @param xssProperties XSS 配置
@@ -46,21 +65,43 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public XssHttpServletRequestWrapper(HttpServletRequest request, XssProperties xssProperties) {
         super(request);
         this.xssProperties = xssProperties;
-        try {
-            body = request.getInputStream().readAllBytes();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read request body for XSS wrapping", e);
+        if (shouldCacheBody(request)) {
+            try {
+                body = request.getInputStream().readAllBytes();
+            } catch (IOException e) {
+                throw new UncheckedIOException("Failed to read request body for XSS wrapping", e);
+            }
+        } else {
+            body = null;
         }
     }
 
     /**
-     * 获取输入流，基于缓存的请求体字节数组，支持多次读取。
+     * 判断是否需要缓存请求体：multipart 与二进制流体积可能很大，直接透传。
+     *
+     * @param request 原始 HTTP 请求
+     * @return 是否缓存
+     */
+    private boolean shouldCacheBody(HttpServletRequest request) {
+        String contentType = request.getContentType();
+        if (contentType == null) {
+            return true;
+        }
+        String normalized = contentType.toLowerCase(java.util.Locale.ROOT);
+        return !normalized.startsWith(MULTIPART_PREFIX) && !normalized.startsWith(OCTET_STREAM);
+    }
+
+    /**
+     * 获取输入流。已缓存时基于缓存的字节数组支持多次读取；未缓存时透传原始输入流。
      *
      * @return Servlet 输入流
      * @throws IOException IO 异常
      */
     @Override
     public ServletInputStream getInputStream() throws IOException {
+        if (body == null) {
+            return super.getInputStream();
+        }
         final ByteArrayInputStream bais = new ByteArrayInputStream(body);
         return new ServletInputStream() {
             @Override
@@ -130,12 +171,15 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] values = super.getParameterValues(name);
-        if (values != null) {
-            for (int i = 0; i < values.length; i++) {
-                values[i] = XssCleaner.clean(values[i], xssProperties);
-            }
+        if (values == null) {
+            return null;
         }
-        return values;
+        // 拷贝后再清洗，避免修改容器内部缓存的参数数组
+        String[] cleanedValues = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            cleanedValues[i] = XssCleaner.clean(values[i], xssProperties);
+        }
+        return cleanedValues;
     }
 
     /**

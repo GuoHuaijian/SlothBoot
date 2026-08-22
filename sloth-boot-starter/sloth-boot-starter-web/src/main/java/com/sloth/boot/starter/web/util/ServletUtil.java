@@ -1,7 +1,6 @@
 package com.sloth.boot.starter.web.util;
 
 import com.sloth.boot.common.exception.SystemException;
-import com.sloth.boot.common.util.IpUtil;
 import com.sloth.boot.common.util.JsonUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,13 +47,49 @@ public final class ServletUtil {
     }
 
     /**
-     * 获取客户端 IP 地址
+     * 未知 IP 标识
+     */
+    private static final String UNKNOWN_IP = "unknown";
+
+    /**
+     * 获取客户端 IP 地址。
+     * <p>
+     * 依次检查 {@code X-Real-IP}、{@code X-Forwarded-For}（多级代理取第一个）、
+     * {@code Proxy-Client-IP}、{@code WL-Proxy-Client-IP}，均缺失时回退
+     * {@code request.getRemoteAddr()}。请求头可被伪造，生产环境应确保只在可信代理后使用。
      *
-     * @param request HttpServletRequest
-     * @return 客户端 IP 地址
+     * @param request HttpServletRequest，可为 null（非 Web 上下文）
+     * @return 客户端 IP 地址，无法获取时返回 null
      */
     public static String getClientIp(HttpServletRequest request) {
-        return IpUtil.getClientIp(request);
+        if (request == null) {
+            return null;
+        }
+        String ip = firstNonBlankHeader(request, "X-Real-IP", "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP");
+        if (ip == null) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip != null && ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
+        return ip;
+    }
+
+    /**
+     * 按优先级返回第一个非空且非 unknown 的请求头。
+     *
+     * @param request HttpServletRequest
+     * @param names   请求头名称（按优先级排列）
+     * @return 第一个有效值，均无效时返回 null
+     */
+    private static String firstNonBlankHeader(HttpServletRequest request, String... names) {
+        for (String name : names) {
+            String value = request.getHeader(name);
+            if (value != null && !value.isEmpty() && !UNKNOWN_IP.equalsIgnoreCase(value)) {
+                return value;
+            }
+        }
+        return null;
     }
 
     /**

@@ -39,6 +39,16 @@ public final class SpelUtil {
     private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
     private static final DefaultParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
+    /**
+     * 模板表达式前缀
+     */
+    private static final String TEMPLATE_PREFIX = "#{";
+
+    /**
+     * 变量引用前缀
+     */
+    private static final String VARIABLE_PREFIX = "#";
+
     private SpelUtil() {
         throw new UnsupportedOperationException("Utility class");
     }
@@ -63,12 +73,13 @@ public final class SpelUtil {
             args,
             PARAMETER_NAME_DISCOVERER
         );
-        if (expression.contains("#")) {
-            return EXPRESSION_PARSER.parseExpression(expression).getValue(context, String.class);
-        }
-        if (expression.contains("{") || expression.contains("}")) {
+        // 模板表达式以 #{ 开头，必须先于普通 SpEL 判定，否则会被当作变量解析失败
+        if (expression.contains(TEMPLATE_PREFIX)) {
             return EXPRESSION_PARSER.parseExpression(expression, ParserContext.TEMPLATE_EXPRESSION)
                 .getValue(context, String.class);
+        }
+        if (expression.contains(VARIABLE_PREFIX)) {
+            return EXPRESSION_PARSER.parseExpression(expression).getValue(context, String.class);
         }
         return expression;
     }
